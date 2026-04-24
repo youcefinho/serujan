@@ -1,0 +1,2 @@
+COMMENT ON POLICY "Anyone can submit a lead" ON public.leads IS
+  'Public contact form: anonymous visitors can submit leads. Read/update/delete are denied (no policies exist), so submitted data is only viewable by the project owner via the Lovable Cloud dashboard. WITH CHECK (true) is intentional for public form submission.';
