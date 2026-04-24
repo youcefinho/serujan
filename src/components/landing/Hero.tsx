@@ -1,4 +1,5 @@
 import { Phone, Calendar, Mail, Clock } from "lucide-react";
+import { openCalendly } from "@/lib/calendly";
 import heroBanner from "@/assets/hero-banner.jpg";
 import mathisRed from "@/assets/mathis-red.jpg";
 
@@ -43,13 +44,13 @@ export function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
-            <a
-              href="#contact"
-              className="group inline-flex items-center justify-center gap-2 px-6 py-4 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform"
+            <button
+              onClick={openCalendly}
+              className="group inline-flex items-center justify-center gap-2 px-6 py-4 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
             >
               <Calendar className="w-5 h-5" />
               Prendre rendez-vous
-            </a>
+            </button>
             <a
               href="tel:8199183409"
               className="inline-flex items-center justify-center gap-2 px-6 py-4 border-2 border-foreground/80 text-foreground font-bold rounded-md hover:bg-foreground hover:text-navy transition"

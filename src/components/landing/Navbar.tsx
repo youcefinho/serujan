@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Phone, Calendar, Menu, X } from "lucide-react";
+import { openCalendly } from "@/lib/calendly";
 import logoEquipe from "@/assets/logo-equipe-color.png";
 
 const links = [
@@ -76,13 +77,13 @@ export function Navbar() {
             <Phone className="w-4 h-4" />
             819-918-3409
           </a>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-crimson text-primary-foreground text-sm font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform"
+          <button
+            onClick={openCalendly}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-crimson text-primary-foreground text-sm font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
           >
             <Calendar className="w-4 h-4" />
             Rendez-vous
-          </a>
+          </button>
         </div>
 
         {/* Mobile hamburger */}
@@ -122,13 +123,12 @@ export function Navbar() {
               <Phone className="w-5 h-5 text-crimson" />
               <span className="font-semibold">819-918-3409</span>
             </a>
-            <a
-              href="#contact"
-              onClick={close}
-              className="block text-center py-3.5 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson"
+            <button
+              onClick={(e) => { close(); openCalendly(e); }}
+              className="block w-full text-center py-3.5 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson cursor-pointer"
             >
               Prendre rendez-vous
-            </a>
+            </button>
           </div>
         </nav>
       </div>
