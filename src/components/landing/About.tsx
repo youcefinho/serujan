@@ -10,7 +10,7 @@ const values = [
 export function About() {
   return (
     <section id="apropos" className="py-24 lg:py-32 bg-navy-deep">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-16 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="relative order-2 lg:order-1">
           <div className="absolute -inset-2 border-2 border-crimson rounded-2xl translate-x-4 translate-y-4" />
           <div className="relative aspect-[4/5] bg-cream rounded-2xl overflow-hidden shadow-elevate">
@@ -27,7 +27,7 @@ export function About() {
         <div className="order-1 lg:order-2 space-y-8">
           <div>
             <span className="text-crimson text-sm font-bold uppercase tracking-widest">À propos</span>
-            <h2 className="mt-3 text-4xl md:text-5xl font-bold leading-tight">
+            <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
               Un courtier immobilier à Gatineau qui comprend vos enjeux.
             </h2>
           </div>
@@ -46,7 +46,7 @@ export function About() {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {values.map(({ icon: Icon, label }) => (
               <div key={label} className="bg-card border border-border rounded-xl p-4 text-center hover:border-crimson transition">
                 <Icon className="w-6 h-6 text-crimson mx-auto mb-2" />

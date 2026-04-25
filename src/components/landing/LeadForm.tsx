@@ -90,15 +90,15 @@ export function LeadForm() {
 
   return (
     <section id="contact" className="py-24 lg:py-32 bg-navy">
-      <div className="max-w-4xl mx-auto px-6 lg:px-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-12">
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">Contact</span>
-          <h2 className="mt-3 text-4xl md:text-5xl font-bold">Démarrons votre projet.</h2>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold">Démarrons votre projet.</h2>
         </div>
 
         <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-elevate" suppressHydrationWarning>
           {!mounted ? (
-            <div className="p-10 lg:p-16 min-h-[600px] flex items-center justify-center">
+            <div className="p-6 sm:p-10 lg:p-16 min-h-[600px] flex items-center justify-center">
               <Loader2 className="w-6 h-6 animate-spin text-crimson" />
             </div>
           ) : (
@@ -119,7 +119,7 @@ export function LeadForm() {
             ))}
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 lg:p-10 space-y-5" noValidate>
+          <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-10 space-y-5" noValidate>
             {/* Honeypot — invisible to humans, filled by bots */}
             <div className="sr-only" aria-hidden="true">
               <label htmlFor="website">Ne pas remplir</label>

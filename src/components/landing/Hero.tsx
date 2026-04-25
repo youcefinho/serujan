@@ -24,14 +24,14 @@ export function Hero() {
       <div className="absolute top-0 left-0 w-1 h-full bg-gradient-crimson z-10" />
       <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-crimson/10 blur-3xl z-10" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-24 lg:pt-32 pb-24 grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pt-24 lg:pt-32 pb-24 grid lg:grid-cols-2 gap-12 items-center">
         <div className="space-y-8">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-white/5 backdrop-blur">
             <span className="w-2 h-2 rounded-full bg-crimson animate-pulse" />
-            <span className="text-xs uppercase tracking-widest font-semibold">La Transaction Sans Stress · Gatineau</span>
+            <span className="text-[10px] sm:text-xs uppercase tracking-widest font-semibold">La Transaction Sans Stress · Gatineau</span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
             Votre premier achat à Gatineau.
             <span className="block text-crimson mt-2">Sans stress.</span>
             <span className="block">Sans mauvaise surprise.</span>
@@ -40,27 +40,27 @@ export function Hero() {
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
             <span className="text-foreground font-semibold">Mathis Guimont</span> · Courtier immobilier résidentiel à Gatineau
             <br />
-            <span className="text-sm">L'Équipe Xavier Charron & Ali Al · Acheter ou vendre dans l'Outaouais</span>
+            <span className="text-xs sm:text-sm">L'Équipe Xavier Charron & Ali Al · Acheter ou vendre dans l'Outaouais</span>
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={openCalendly}
-              className="group inline-flex items-center justify-center gap-2 px-6 py-4 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
+              className="group inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 bg-gradient-crimson text-primary-foreground text-sm sm:text-base font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
             >
               <Calendar className="w-5 h-5" />
               Prendre rendez-vous
             </button>
             <a
               href="tel:8199183409"
-              className="inline-flex items-center justify-center gap-2 px-6 py-4 border-2 border-foreground/80 text-foreground font-bold rounded-md hover:bg-foreground hover:text-navy transition"
+              className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 border-2 border-foreground/80 text-foreground text-sm sm:text-base font-bold rounded-md hover:bg-foreground hover:text-navy transition"
             >
               <Phone className="w-5 h-5" />
               Appeler maintenant
             </a>
             <a
               href="#contact"
-              className="inline-flex items-center justify-center gap-2 px-6 py-4 border-2 border-foreground/30 text-foreground/90 font-bold rounded-md hover:border-foreground transition"
+              className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 border-2 border-foreground/30 text-foreground/90 text-sm sm:text-base font-bold rounded-md hover:border-foreground transition"
             >
               <Mail className="w-5 h-5" />
               Envoyer un message
@@ -74,7 +74,7 @@ export function Hero() {
               <span className="relative inline-flex w-2 h-2 rounded-full bg-emerald-500" />
             </span>
             <Clock className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-emerald-300">
               Réponse en moins de 2h · 7j/7 · Québec & Ontario
             </span>
           </div>

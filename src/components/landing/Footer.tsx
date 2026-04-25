@@ -12,7 +12,7 @@ function TikTokIcon({ className }: { className?: string }) {
 export function Footer() {
   return (
     <footer className="bg-navy-deep border-t border-border pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="grid md:grid-cols-3 gap-12 pb-12 border-b border-border">
           <div className="space-y-4">
             <img src={logoEquipe} alt="L'Équipe Xavier Charron & Ali Al" className="h-20 w-auto" loading="lazy" decoding="async" />
@@ -33,7 +33,7 @@ export function Footer() {
               <li>
                 <a href="mailto:info@mathisguimont.com" className="flex items-center gap-3 hover:text-crimson transition">
                   <Mail className="w-4 h-4" />
-                  <span>info@mathisguimont.com</span>
+                  <span className="truncate">info@mathisguimont.com</span>
                 </a>
               </li>
               <li className="flex items-start gap-3 text-muted-foreground">

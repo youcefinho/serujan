@@ -9,17 +9,17 @@ const steps = [
 export function Process() {
   return (
     <section className="py-24 lg:py-32 bg-navy">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-16 max-w-2xl mx-auto">
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">Le processus</span>
-          <h2 className="mt-3 text-4xl md:text-5xl font-bold">5 étapes vers votre propriété.</h2>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold">5 étapes vers votre propriété.</h2>
         </div>
 
-        <div className="relative grid md:grid-cols-5 gap-6">
-          <div className="hidden md:block absolute top-8 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-crimson to-transparent" />
+        <div className="relative grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="hidden lg:block absolute top-8 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-crimson to-transparent" />
           {steps.map((s) => (
-            <div key={s.n} className="relative text-center md:text-left space-y-3">
-              <div className="relative z-10 w-16 h-16 mx-auto md:mx-0 rounded-full bg-gradient-crimson flex items-center justify-center font-black text-2xl shadow-crimson">
+            <div key={s.n} className="relative text-center sm:text-left space-y-3">
+              <div className="relative z-10 w-16 h-16 mx-auto sm:mx-0 rounded-full bg-gradient-crimson flex items-center justify-center font-black text-2xl shadow-crimson">
                 {s.n}
               </div>
               <h3 className="text-xl font-bold">{s.title}</h3>

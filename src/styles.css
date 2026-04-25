@@ -85,11 +85,13 @@
 @layer base {
   * {
     border-color: var(--color-border);
+    min-width: 0;
   }
 
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
+    overflow-x: hidden;
   }
 
   body {
@@ -97,6 +99,9 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   /* Prevent horizontal overflow on mobile */
@@ -114,6 +119,13 @@
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  img, video, svg {
+    max-width: 100%;
+    height: auto;
   }
 }
 

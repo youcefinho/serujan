@@ -18,17 +18,17 @@ const services = [
 export function Services() {
   return (
     <section id="services" className="py-24 lg:py-32 bg-navy">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-16">
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">Services</span>
-          <h2 className="mt-3 text-4xl md:text-5xl font-bold">Deux missions. Une expertise.</h2>
+          <h2 className="mt-3 text-2xl sm:text-4xl md:text-5xl font-bold">Deux missions. Une expertise.</h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           {services.map(({ icon: Icon, title, desc, points }) => (
             <div
               key={title}
-              className="group relative bg-card border border-border rounded-2xl p-8 lg:p-10 overflow-hidden hover:border-crimson transition"
+              className="group relative bg-card border border-border rounded-2xl p-6 sm:p-8 lg:p-10 overflow-hidden hover:border-crimson transition"
             >
               <div className="absolute top-0 right-0 w-40 h-40 bg-crimson/10 rounded-full blur-3xl group-hover:bg-crimson/20 transition" />
               <div className="relative space-y-6">

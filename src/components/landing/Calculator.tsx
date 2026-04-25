@@ -9,7 +9,7 @@ export function Calculator() {
 
   const monthly = useMemo(() => {
     const principal = price * (1 - down / 100);
-    const r = rate / 100 / 12;
+    const r = Math.pow(1 + rate / 100 / 2, 1 / 6) - 1;
     const n = years * 12;
     if (r === 0) return principal / n;
     return (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
@@ -20,14 +20,14 @@ export function Calculator() {
 
   return (
     <section className="py-24 lg:py-32 bg-navy-deep">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-12 max-w-2xl mx-auto">
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">Outil</span>
-          <h2 className="mt-3 text-4xl md:text-5xl font-bold">Calculateur hypothécaire</h2>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold">Calculateur hypothécaire</h2>
           <p className="mt-4 text-muted-foreground">Estimez votre paiement mensuel en quelques secondes.</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 bg-card border border-border rounded-2xl p-6 lg:p-10 shadow-elevate">
+        <div className="grid lg:grid-cols-2 gap-6 bg-card border border-border rounded-2xl p-4 sm:p-6 lg:p-10 shadow-elevate">
           <div className="space-y-6">
             <Field label="Prix de la propriété" value={fmt(price)}>
               <input
@@ -59,10 +59,10 @@ export function Calculator() {
             </Field>
           </div>
 
-          <div className="bg-gradient-hero border border-border rounded-xl p-8 flex flex-col justify-center items-center text-center space-y-4">
+          <div className="bg-gradient-hero border border-border rounded-xl p-5 sm:p-8 flex flex-col justify-center items-center text-center space-y-4">
             <CalcIcon className="w-10 h-10 text-crimson" strokeWidth={1.5} />
             <div className="text-sm uppercase tracking-widest text-muted-foreground">Paiement mensuel estimé</div>
-            <div className="text-5xl lg:text-6xl font-black text-crimson">{fmt(monthly)}</div>
+            <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-crimson">{fmt(monthly)}</div>
             <div className="text-sm text-muted-foreground pt-4 border-t border-border w-full">
               <div className="flex justify-between py-1"><span>Mise de fonds</span><span className="text-foreground">{fmt(price * down / 100)}</span></div>
               <div className="flex justify-between py-1"><span>Montant emprunté</span><span className="text-foreground">{fmt(price * (1 - down / 100))}</span></div>

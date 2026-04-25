@@ -50,12 +50,12 @@ export function Testimonials() {
     <section id="temoignages" className="py-24 lg:py-32 bg-navy-deep relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-crimson/5 blur-3xl pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-16">
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">
             Témoignages
           </span>
-          <h2 className="mt-3 text-4xl md:text-5xl font-bold">
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold">
             Ils ont fait confiance à Mathis.
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -79,7 +79,7 @@ export function Testimonials() {
             <span className="text-crimson text-sm font-bold uppercase tracking-widest">
               Vendu récemment
             </span>
-            <h3 className="mt-3 text-3xl md:text-4xl font-bold">
+            <h3 className="mt-3 text-2xl sm:text-3xl md:text-4xl font-bold">
               Des résultats concrets dans l'Outaouais.
             </h3>
           </div>
@@ -88,7 +88,7 @@ export function Testimonials() {
             {ventesRecentes.map((v, i) => (
               <div
                 key={i}
-                className="group relative bg-card border border-border rounded-xl p-6 hover:border-crimson transition-all hover:shadow-crimson"
+                className="group relative bg-card border border-border rounded-xl p-4 sm:p-6 hover:border-crimson transition-all hover:shadow-crimson"
               >
                 <div className="absolute top-4 right-4 px-2 py-1 bg-crimson/10 border border-crimson/30 rounded-full">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-crimson">
@@ -99,7 +99,7 @@ export function Testimonials() {
                   {v.quartier}
                 </div>
                 <div className="mt-2 text-lg font-bold text-foreground">{v.type}</div>
-                <div className="mt-4 text-3xl font-bold text-crimson">{v.prix}</div>
+                <div className="mt-4 text-2xl sm:text-3xl font-bold text-crimson">{v.prix}</div>
                 <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   Vendu en {v.delai}
@@ -127,7 +127,7 @@ function TestimonialCard({
   initials: string;
 }) {
   return (
-    <div className="relative bg-card border border-border rounded-2xl p-8 hover:border-crimson/50 transition-all hover:shadow-elevate">
+    <div className="relative bg-card border border-border rounded-2xl p-5 sm:p-8 hover:border-crimson/50 transition-all hover:shadow-elevate">
       <Quote className="absolute top-6 right-6 w-8 h-8 text-crimson/20" />
 
       <div className="flex gap-1 mb-4">
