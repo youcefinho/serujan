@@ -47,6 +47,7 @@ export function Hero() {
             <button
               onClick={openCalendly}
               className="group inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 bg-gradient-crimson text-primary-foreground text-sm sm:text-base font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
+              aria-label="Prendre rendez-vous avec Mathis Guimont"
             >
               <Calendar className="w-5 h-5" />
               Prendre rendez-vous
@@ -54,6 +55,7 @@ export function Hero() {
             <a
               href="tel:8199183409"
               className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 border-2 border-foreground/80 text-foreground text-sm sm:text-base font-bold rounded-md hover:bg-foreground hover:text-navy transition"
+              aria-label="Appeler Mathis Guimont au 819-918-3409"
             >
               <Phone className="w-5 h-5" />
               Appeler maintenant
@@ -61,6 +63,7 @@ export function Hero() {
             <a
               href="#contact"
               className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 border-2 border-foreground/30 text-foreground/90 text-sm sm:text-base font-bold rounded-md hover:border-foreground transition"
+              aria-label="Envoyer un message à Mathis Guimont"
             >
               <Mail className="w-5 h-5" />
               Envoyer un message

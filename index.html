@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr-CA">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mathis Guimont · Courtier immobilier à Gatineau</title>
+
+    <!-- Canonical & hreflang -->
+    <link rel="canonical" href="https://mathis-guimont.netlify.app/" />
+    <link rel="alternate" hreflang="fr-CA" href="https://mathis-guimont.netlify.app/" />
 
     <!-- SEO Meta -->
     <meta name="description" content="Courtier immobilier résidentiel à Gatineau spécialisé premiers acheteurs et investisseurs. Acheter ou vendre à Gatineau sans stress." />
@@ -11,6 +15,7 @@
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mathis-guimont.netlify.app/" />
     <meta property="og:title" content="Mathis Guimont · Courtier immobilier à Gatineau" />
     <meta property="og:description" content="La Transaction Sans Stress. Acheter ou vendre à Gatineau avec un courtier qui comprend vos enjeux." />
     <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/07323fda-b00e-4760-88fc-ff140424efe0/id-preview-1b99b660--02a3869a-46d4-4e60-ba80-3d36b2abb27d.lovable.app-1777065278263.png" />
@@ -21,10 +26,24 @@
     <meta name="twitter:description" content="Courtier immobilier résidentiel à Gatineau" />
     <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/07323fda-b00e-4760-88fc-ff140424efe0/id-preview-1b99b660--02a3869a-46d4-4e60-ba80-3d36b2abb27d.lovable.app-1777065278263.png" />
 
-    <!-- Fonts -->
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
+    <!-- Fonts (preconnect + font-display:swap) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
+    <link rel="dns-prefetch" href="https://assets.calendly.com" />
+    <link rel="preconnect" href="https://assets.calendly.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" /></noscript>
 
     <!-- JSON-LD Schema.org -->
     <script type="application/ld+json">
@@ -35,7 +54,7 @@
       "jobTitle": "Courtier immobilier résidentiel",
       "telephone": "+1-819-918-3409",
       "email": "info@mathisguimont.com",
-      "url": "https://mathisguimont.com",
+      "url": "https://mathis-guimont.netlify.app",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Gatineau",
@@ -56,8 +75,10 @@
     }
     </script>
 
-    <!-- Calendly popup widget -->
-    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
+    <!-- Calendly popup widget (non-render-blocking) -->
+    <link rel="preload" as="style" href="https://assets.calendly.com/assets/external/widget.css" />
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" /></noscript>
     <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
     <!-- Loading spinner (visible before React mounts) -->

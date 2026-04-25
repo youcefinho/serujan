@@ -34,6 +34,7 @@ export function Calculator() {
                 type="range" min={150000} max={1500000} step={5000}
                 value={price} onChange={(e) => setPrice(+e.target.value)}
                 className="w-full accent-crimson"
+                aria-label="Prix de la propriété"
               />
             </Field>
             <Field label="Mise de fonds" value={`${down}%`}>
@@ -41,6 +42,7 @@ export function Calculator() {
                 type="range" min={5} max={50} step={1}
                 value={down} onChange={(e) => setDown(+e.target.value)}
                 className="w-full accent-crimson"
+                aria-label="Mise de fonds en pourcentage"
               />
             </Field>
             <Field label="Taux d'intérêt" value={`${rate.toFixed(2)}%`}>
@@ -48,6 +50,7 @@ export function Calculator() {
                 type="range" min={2} max={10} step={0.05}
                 value={rate} onChange={(e) => setRate(+e.target.value)}
                 className="w-full accent-crimson"
+                aria-label="Taux d'intérêt"
               />
             </Field>
             <Field label="Amortissement" value={`${years} ans`}>
@@ -55,6 +58,7 @@ export function Calculator() {
                 type="range" min={5} max={30} step={1}
                 value={years} onChange={(e) => setYears(+e.target.value)}
                 className="w-full accent-crimson"
+                aria-label="Durée d'amortissement en années"
               />
             </Field>
           </div>
@@ -67,7 +71,7 @@ export function Calculator() {
               <div className="flex justify-between py-1"><span>Mise de fonds</span><span className="text-foreground">{fmt(price * down / 100)}</span></div>
               <div className="flex justify-between py-1"><span>Montant emprunté</span><span className="text-foreground">{fmt(price * (1 - down / 100))}</span></div>
             </div>
-            <a href="#contact" className="mt-2 inline-flex px-6 py-3 bg-gradient-crimson rounded-md font-bold text-sm shadow-crimson">
+            <a href="#contact" className="mt-2 inline-flex px-6 py-3 bg-gradient-crimson rounded-md font-bold text-sm shadow-crimson" aria-label="Discuter de mon projet immobilier">
               Discuter de mon projet
             </a>
           </div>

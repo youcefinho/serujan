@@ -9,7 +9,7 @@ const stats = [
 
 export function StatsBar() {
   return (
-    <section className="relative bg-crimson text-primary-foreground py-6 border-y border-crimson-glow">
+    <section className="relative bg-crimson text-primary-foreground py-6 border-y border-crimson-glow" aria-label="Statistiques clés">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
         {stats.map(({ icon: Icon, label }) => (
           <div key={label} className="flex items-center gap-3 justify-center md:justify-start">

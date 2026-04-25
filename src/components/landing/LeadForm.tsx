@@ -112,6 +112,7 @@ export function LeadForm() {
                 className={`py-5 font-bold uppercase tracking-widest text-sm transition relative ${
                   tab === t ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
+                aria-label={t === "buy" ? "Formulaire acheteur" : "Formulaire vendeur"}
               >
                 {t === "buy" ? "J'achète" : "Je vends"}
                 {tab === t && <span className="absolute bottom-0 left-0 right-0 h-1 bg-crimson" />}
@@ -121,7 +122,7 @@ export function LeadForm() {
 
           <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-10 space-y-5" noValidate>
             {/* Honeypot — invisible to humans, filled by bots */}
-            <div className="sr-only" aria-hidden="true">
+            <div style={{ display: "none" }} aria-hidden="true">
               <label htmlFor="website">Ne pas remplir</label>
               <input
                 type="text"

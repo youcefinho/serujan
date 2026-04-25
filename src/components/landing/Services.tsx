@@ -46,6 +46,7 @@ export function Services() {
                 <a
                   href="#contact"
                   className="inline-flex items-center gap-2 text-crimson font-bold group-hover:gap-4 transition-all"
+                  aria-label={`En savoir plus sur le service ${title.toLowerCase()}`}
                 >
                   En savoir plus <ArrowRight className="w-4 h-4" />
                 </a>

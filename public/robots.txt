@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://mathisguimont.com/sitemap.xml
+Sitemap: https://mathis-guimont.netlify.app/sitemap.xml

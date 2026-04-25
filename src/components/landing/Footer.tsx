@@ -25,13 +25,13 @@ export function Footer() {
             <h4 className="text-sm font-bold uppercase tracking-widest text-crimson">Contact</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="tel:8199183409" className="flex items-center gap-3 hover:text-crimson transition">
+                <a href="tel:8199183409" className="flex items-center gap-3 hover:text-crimson transition" aria-label="Appeler le 819-918-3409">
                   <Phone className="w-4 h-4" />
                   <span>819-918-3409</span>
                 </a>
               </li>
               <li>
-                <a href="mailto:info@mathisguimont.com" className="flex items-center gap-3 hover:text-crimson transition">
+                <a href="mailto:info@mathisguimont.com" className="flex items-center gap-3 hover:text-crimson transition" aria-label="Envoyer un courriel à info@mathisguimont.com">
                   <Mail className="w-4 h-4" />
                   <span className="truncate">info@mathisguimont.com</span>
                 </a>
@@ -63,7 +63,7 @@ export function Footer() {
               ))}
             </div>
             <p className="text-xs text-muted-foreground pt-2">
-              <a href="https://instagram.com/mathis_guimont" className="hover:text-crimson transition">@mathis_guimont</a>
+              <a href="https://instagram.com/mathis_guimont" className="hover:text-crimson transition" aria-label="Voir le profil Instagram de Mathis Guimont">@mathis_guimont</a>
             </p>
             <p className="text-xs text-muted-foreground">
               Disponible 7j/7 pour répondre à vos questions.
@@ -72,7 +72,13 @@ export function Footer() {
         </div>
 
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} Mathis Guimont · Courtier immobilier résidentiel · OACIQ</p>
+          <p>© {new Date().getFullYear()} Mathis Guimont · Courtier immobilier résidentiel</p>
+          <p>
+            <a href="https://www.oaciq.com" target="_blank" rel="noopener noreferrer" className="hover:text-crimson transition" aria-label="Visiter le site de l'OACIQ">
+              Courtier immobilier résidentiel — OACIQ
+            </a>
+            {" "}· Permis nº <span className="font-semibold">XXXXXX</span>
+          </p>
           <p>Conçu avec passion à Gatineau</p>
         </div>
       </div>

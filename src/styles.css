@@ -44,8 +44,8 @@
   /* Brand */
   --navy: oklch(0.21 0.04 260);          /* #0D1B2A */
   --navy-deep: oklch(0.16 0.035 260);
-  --crimson: oklch(0.52 0.22 25);        /* #C41230 */
-  --crimson-glow: oklch(0.6 0.24 25);
+  --crimson: oklch(0.56 0.22 25);        /* #D8182F — WCAG AA 3:1+ on navy */
+  --crimson-glow: oklch(0.63 0.24 25);
   --cream: oklch(0.97 0.01 80);
 
   --background: var(--navy);
@@ -73,7 +73,7 @@
 
   --gradient-hero: radial-gradient(ellipse at top right, oklch(0.3 0.05 260) 0%, var(--navy) 50%, var(--navy-deep) 100%);
   --gradient-crimson: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-glow) 100%);
-  --shadow-crimson: 0 20px 60px -20px oklch(0.52 0.22 25 / 0.5);
+  --shadow-crimson: 0 20px 60px -20px oklch(0.56 0.22 25 / 0.5);
   --shadow-elevate: 0 30px 80px -30px oklch(0 0 0 / 0.6);
 }
 

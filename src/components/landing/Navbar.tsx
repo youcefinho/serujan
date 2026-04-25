@@ -43,7 +43,7 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 md:h-[72px] flex items-center justify-between">
         {/* Logo */}
-        <a href="/" className="shrink-0">
+        <a href="/" className="shrink-0" aria-label="Accueil — Mathis Guimont">
           <div className="bg-white rounded-md p-1.5 shadow-lg">
             <img
               src={logoEquipe}
@@ -73,6 +73,7 @@ export function Navbar() {
           <a
             href="tel:8199183409"
             className="flex items-center gap-2 text-sm text-foreground/80 hover:text-foreground transition"
+            aria-label="Appeler le 819-918-3409"
           >
             <Phone className="w-4 h-4" />
             819-918-3409
@@ -80,6 +81,7 @@ export function Navbar() {
           <button
             onClick={openCalendly}
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-crimson text-primary-foreground text-sm font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
+            aria-label="Prendre rendez-vous"
           >
             <Calendar className="w-4 h-4" />
             Rendez-vous
@@ -119,6 +121,7 @@ export function Navbar() {
             <a
               href="tel:8199183409"
               className="flex items-center gap-3 px-4 py-3 text-foreground hover:text-crimson transition"
+              aria-label="Appeler le 819-918-3409"
             >
               <Phone className="w-5 h-5 text-crimson" />
               <span className="font-semibold">819-918-3409</span>
@@ -126,6 +129,7 @@ export function Navbar() {
             <button
               onClick={(e) => { close(); openCalendly(e); }}
               className="block w-full text-center py-3.5 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson cursor-pointer"
+              aria-label="Prendre rendez-vous avec Mathis Guimont"
             >
               Prendre rendez-vous
             </button>
