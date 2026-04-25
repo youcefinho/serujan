@@ -11,7 +11,7 @@ interface Stat {
 const stats: Stat[] = [
   { icon: Star, value: 50, suffix: "+", label: "avis 5 étoiles" },
   { icon: Users, value: 200, suffix: "+", label: "clients accompagnés" },
-  { icon: MapPin, label: "Gatineau · Outaouais", suffix: "" },
+  { icon: MapPin, label: "Outaouais", suffix: "" },
   { icon: Clock, value: 7, suffix: "j/7", label: "disponible" },
 ];
 

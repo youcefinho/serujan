@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: "Vendez-vous des condos à Gatineau ?",
-    a: "Oui, je vends et j'aide à acheter des condos partout à Gatineau et en Outaouais. Je connais bien les particularités du marché des copropriétés : fonds de prévoyance, déclaration de copropriété, frais de condo — on examine tout ensemble avant de signer.",
+    a: "Oui, je vends et j'aide à acheter des condos partout en Outaouais. Je connais bien les particularités du marché des copropriétés : fonds de prévoyance, déclaration de copropriété, frais de condo — on examine tout ensemble avant de signer.",
   },
 ];
 

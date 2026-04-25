@@ -45,9 +45,8 @@ export function Hero() {
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-            <span className="text-foreground font-semibold">Mathis Guimont</span> · Courtier immobilier résidentiel à Gatineau
-            <br />
-            <span className="text-xs sm:text-sm">L'Équipe Xavier Charron & Ali Al · Acheter ou vendre dans l'Outaouais</span>
+            "Et si on se trompe de quartier ? Et si la maison a des problèmes cachés ? Et si on n'est pas vraiment prêts financièrement ?"<br/><br/>
+            <span className="text-foreground font-semibold">Mathis Guimont</span> est le seul courtier de Gatineau qui répond à ces questions avant même que vous les posiez.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
@@ -85,7 +84,7 @@ export function Hero() {
             </span>
             <Clock className="w-3.5 h-3.5 text-emerald-400" />
             <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-emerald-300">
-              Réponse en moins de 2h · 7j/7 · Québec & Ontario
+              Réponse en moins de 2h · 7j/7 · Outaouais
             </span>
           </div>
         </div>
@@ -101,10 +100,16 @@ export function Hero() {
               loading="eager"
               decoding="async"
             />
+            {/* Nouvelle génération badge */}
+            <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm border border-white/20 text-navy px-4 py-2.5 rounded-xl shadow-elevate transform rotate-2">
+              <span className="block text-[10px] font-bold uppercase tracking-widest text-crimson mb-0.5">22 ans</span>
+              <span className="block font-black text-sm leading-tight">Nouvelle<br/>génération</span>
+            </div>
+            
             <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-navy-deep/90 to-transparent">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-1 bg-crimson" />
-                <span className="text-sm font-semibold">Courtier certifié OACIQ · Québec & Ontario</span>
+                <span className="text-sm font-semibold">Outaouais</span>
               </div>
             </div>
           </div>

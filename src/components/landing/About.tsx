@@ -21,8 +21,18 @@ export function About() {
               loading="lazy"
               decoding="async"
             />
+            </div>
+            {/* Nouvelle génération badge */}
+            <div className="absolute -left-6 top-12 bg-white text-navy p-5 rounded-2xl shadow-elevate max-w-[240px] transform -rotate-2 z-10">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-crimson rounded-full flex items-center justify-center text-white font-bold text-lg">
+                  22
+                </div>
+                <div className="font-bold leading-tight">Nouvelle<br/>génération</div>
+              </div>
+              <p className="text-xs text-navy/70 font-medium">L'énergie et les stratégies d'aujourd'hui au service de vos projets.</p>
+            </div>
           </div>
-        </div>
 
         <div className="order-1 lg:order-2 space-y-8">
           <div>
@@ -44,6 +54,28 @@ export function About() {
               une écoute attentive et une stratégie adaptée à votre projet, que ce soit votre première propriété, un condo
               ou votre prochain investissement locatif dans l'Outaouais.
             </p>
+          </div>
+
+          <ul className="space-y-3 pt-2">
+            {[
+              "Une transaction de A à Z — vous n'avez qu'un seul interlocuteur",
+              "Négociation agressive en votre faveur — pas juste ouvrir des portes",
+              "Vos intérêts passent avant les miens — toujours",
+              "Un investissement dont vous serez fier dans 10 ans"
+            ].map((phrase, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-crimson/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-2 h-2 rounded-full bg-crimson" />
+                </div>
+                <span className="font-medium text-[15px]">{phrase}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex flex-wrap gap-2 pt-2">
+            <span className="px-3 py-1 bg-navy text-foreground text-xs font-bold rounded border border-border">Connaissance du marché</span>
+            <span className="px-3 py-1 bg-navy text-foreground text-xs font-bold rounded border border-border">Expert Marketing</span>
+            <span className="px-3 py-1 bg-navy text-foreground text-xs font-bold rounded border border-border">Disponible 7j/7</span>
           </div>
 
           <div className="grid grid-cols-3 gap-2 sm:gap-3">

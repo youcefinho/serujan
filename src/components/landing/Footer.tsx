@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, Facebook, Instagram } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
 import logoEquipe from "@/assets/logo-equipe-white.png";
 
 function TikTokIcon({ className }: { className?: string }) {
@@ -16,8 +16,8 @@ export function Footer() {
         <div className="grid md:grid-cols-3 gap-12 pb-12 border-b border-border">
           <div className="space-y-4">
             <img src={logoEquipe} alt="L'Équipe Xavier Charron & Ali Al" className="h-20 w-auto" loading="lazy" decoding="async" />
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Mathis Guimont · Courtier immobilier résidentiel à Gatineau. Spécialisé pour les premiers acheteurs et investisseurs.
+            <p className="text-sm text-muted-foreground leading-relaxed mt-2">
+              Mathis Guimont · Courtier immobilier résidentiel en Outaouais. Spécialisé pour les premiers acheteurs et investisseurs.
             </p>
           </div>
 
@@ -38,7 +38,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3 text-muted-foreground">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>225 boul. de la Gappe, suite 102<br />Gatineau, QC</span>
+                <span>225 boul. de la Gappe, suite 102<br />Gatineau, Outaouais</span>
               </li>
             </ul>
           </div>
@@ -47,10 +47,9 @@ export function Footer() {
             <h4 className="text-sm font-bold uppercase tracking-widest text-crimson">Suivez-moi</h4>
             <div className="flex gap-3">
               {[
-                { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/profile.php?id=mathisguimont" },
-                { icon: Instagram, label: "Instagram", href: "https://instagram.com/mathis_guimont" },
-                // TODO: ajouter le vrai lien TikTok de Mathis quand disponible
-                // { icon: TikTokIcon, label: "TikTok", href: "https://tiktok.com/@mathis_guimont" },
+                { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/mathis.guimont/reels/" },
+                { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/mathis_guimont/" },
+                { icon: TikTokIcon, label: "TikTok", href: "https://www.tiktok.com/@mathisguimont" },
               ].map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
@@ -73,12 +72,6 @@ export function Footer() {
 
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} Mathis Guimont · Courtier immobilier résidentiel</p>
-          <p>
-            <a href="https://www.oaciq.com" target="_blank" rel="noopener noreferrer" className="hover:text-crimson transition" aria-label="Visiter le site de l'OACIQ">
-              Courtier immobilier résidentiel — OACIQ
-            </a>
-            {" "}· Permis nº <span className="font-semibold">XXXXXX</span>
-          </p>
           <p>Conçu avec passion à Gatineau</p>
         </div>
       </div>

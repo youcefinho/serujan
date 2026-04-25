@@ -58,9 +58,28 @@ export function Testimonials() {
           <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold">
             Ils ont fait confiance à Mathis.
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
             Plus de 50 avis 5 étoiles de premiers acheteurs, vendeurs et investisseurs de l'Outaouais.
           </p>
+          
+          <a
+            href="https://g.page/r/mathisguimont/review"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 px-6 py-3 bg-white text-black rounded-full font-bold shadow-elevate hover:scale-105 transition-transform"
+          >
+            <div className="flex text-[#FFC107]">
+              <Star className="w-5 h-5 fill-current" />
+              <Star className="w-5 h-5 fill-current" />
+              <Star className="w-5 h-5 fill-current" />
+              <Star className="w-5 h-5 fill-current" />
+              <Star className="w-5 h-5 fill-current" />
+            </div>
+            <div className="text-left">
+              <span className="block text-sm">50+ avis 5 étoiles Google</span>
+              <span className="block text-[10px] text-gray-500 font-medium">Vérifiez par vous-même</span>
+            </div>
+          </a>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
