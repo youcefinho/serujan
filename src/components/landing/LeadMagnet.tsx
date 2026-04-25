@@ -22,18 +22,9 @@ export function LeadMagnet() {
       });
 
       if (response.ok) {
-        toast.success("Succès ! L'email contenant votre guide a été envoyé.", {
+        toast.success("Merci ! Vérifiez votre boîte email.", {
           icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
         });
-        
-        // Ouvrir le guide dans un nouvel onglet
-        const link = document.createElement("a");
-        link.href = "https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link";
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
 
         form.reset();
       } else {
