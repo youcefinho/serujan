@@ -5,17 +5,36 @@ import { toast } from "sonner";
 export function LeadMagnet() {
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate form submission
-    setTimeout(() => {
-      setLoading(false);
-      toast.success("Guide envoyé ! Vérifiez votre boîte de réception dans quelques minutes.", {
-        icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData as any).toString(),
       });
-      (e.target as HTMLFormElement).reset();
-    }, 1200);
+
+      if (response.ok) {
+        toast.success("Succès ! Le guide s'ouvre dans un nouvel onglet.", {
+          icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
+        });
+        
+        // Ouvre le lien Drive directement après la soumission
+        window.open("https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link", "_blank");
+        
+        form.reset();
+      } else {
+        throw new Error("Erreur réseau");
+      }
+    } catch (error) {
+      toast.error("Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,7 +59,13 @@ export function LeadMagnet() {
             </div>
 
             <div className="md:w-1/2 w-full">
-              <form onSubmit={handleSubmit} className="space-y-4 bg-navy p-6 rounded-2xl border border-border shadow-elevate">
+              <form 
+                onSubmit={handleSubmit} 
+                name="guide-premier-acheteur" 
+                data-netlify="true" 
+                className="space-y-4 bg-navy p-6 rounded-2xl border border-border shadow-elevate"
+              >
+                <input type="hidden" name="form-name" value="guide-premier-acheteur" />
                 <div>
                   <label htmlFor="magnet-name" className="block text-sm font-semibold mb-1.5">
                     Prénom
@@ -48,6 +73,7 @@ export function LeadMagnet() {
                   <input
                     type="text"
                     id="magnet-name"
+                    name="prenom"
                     required
                     className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-crimson focus:ring-1 focus:ring-crimson transition-all"
                     placeholder="Votre prénom"
@@ -60,6 +86,7 @@ export function LeadMagnet() {
                   <input
                     type="email"
                     id="magnet-email"
+                    name="email"
                     required
                     className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-crimson focus:ring-1 focus:ring-crimson transition-all"
                     placeholder="votre@courriel.com"
