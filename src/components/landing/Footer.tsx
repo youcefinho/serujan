@@ -55,6 +55,8 @@ export function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-11 h-11 flex items-center justify-center border border-border rounded-md hover:bg-crimson hover:border-crimson transition"
                 >
                   <Icon className="w-5 h-5" />
@@ -62,7 +64,7 @@ export function Footer() {
               ))}
             </div>
             <p className="text-xs text-muted-foreground pt-2">
-              <a href="https://instagram.com/mathis_guimont" className="hover:text-crimson transition" aria-label="Voir le profil Instagram de Mathis Guimont">@mathis_guimont</a>
+              <a href="https://www.instagram.com/mathis_guimont/" target="_blank" rel="noopener noreferrer" className="hover:text-crimson transition" aria-label="Voir le profil Instagram de Mathis Guimont">@mathis_guimont</a>
             </p>
             <p className="text-xs text-muted-foreground">
               Disponible 7j/7 pour répondre à vos questions.

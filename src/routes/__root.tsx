@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Outlet, Link, createRootRoute } from "@tanstack/react-router";
 
 function NotFoundComponent() {
@@ -22,7 +23,19 @@ function NotFoundComponent() {
   );
 }
 
+function RootComponent() {
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    // Force le scroll en haut au chargement
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
+  return <Outlet />;
+}
+
 export const Route = createRootRoute({
-  component: () => <Outlet />,
+  component: RootComponent,
   notFoundComponent: NotFoundComponent,
 });
