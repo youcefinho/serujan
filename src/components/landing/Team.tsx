@@ -27,11 +27,8 @@ export function Team() {
                 loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/20 to-transparent opacity-80" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl">
-                  <img src={logoEquipeColor} alt="L'Équipe" className="h-8 object-contain mb-2 brightness-0 invert" />
-                </div>
+              <div className="absolute bottom-4 left-4">
+                <img src={logoEquipeColor} alt="L'Équipe" className="h-6 object-contain opacity-70 brightness-0 invert drop-shadow-md" />
               </div>
             </div>
           </div>
