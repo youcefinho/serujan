@@ -35,6 +35,7 @@ function Index() {
       <Faq />
       <Footer />
       <WhatsAppButton />
+      <MobileStickyBar />
       <Toaster />
     </main>
   );
