@@ -13,6 +13,7 @@ import { LeadForm } from "@/components/landing/LeadForm";
 import { Faq } from "@/components/landing/Faq";
 import { Footer } from "@/components/landing/Footer";
 import { WhatsAppButton } from "@/components/landing/WhatsAppButton";
+import { MobileStickyBar } from "@/components/landing/MobileStickyBar";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -34,6 +35,7 @@ function Index() {
       <Faq />
       <Footer />
       <WhatsAppButton />
+      <MobileStickyBar />
       <Toaster />
     </main>
   );

@@ -99,6 +99,18 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Prevent horizontal overflow on mobile */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Reserve space for the mobile sticky CTA bar */
+  @media (max-width: 767px) {
+    body {
+      padding-bottom: 5rem;
+    }
+  }
+
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;

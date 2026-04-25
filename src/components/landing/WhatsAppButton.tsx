@@ -12,7 +12,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contacter Mathis sur WhatsApp"
-      className="fixed bottom-6 right-6 z-50 group flex items-center gap-3"
+      className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-50 group flex items-center gap-3"
     >
       <span className="hidden md:inline-flex opacity-0 group-hover:opacity-100 transition-opacity bg-navy-deep border border-border text-foreground text-sm px-4 py-2 rounded-lg shadow-elevate whitespace-nowrap pointer-events-none">
         Écrivez-moi sur WhatsApp
