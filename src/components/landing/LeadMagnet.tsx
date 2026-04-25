@@ -12,19 +12,19 @@ export function LeadMagnet() {
     const formData = new FormData(form);
 
     try {
-      const response = await fetch("/", {
+      const response = await fetch("/.netlify/functions/send-guide", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(formData as any).toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prenom: formData.get("prenom"),
+          email: formData.get("email")
+        }),
       });
 
       if (response.ok) {
-        toast.success("Succès ! Le guide s'ouvre dans un nouvel onglet.", {
+        toast.success("Succès ! L'email contenant votre guide a été envoyé.", {
           icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
         });
-        
-        // Ouvre le lien Drive directement après la soumission
-        window.open("https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link", "_blank");
         
         form.reset();
       } else {
@@ -61,11 +61,8 @@ export function LeadMagnet() {
             <div className="md:w-1/2 w-full">
               <form 
                 onSubmit={handleSubmit} 
-                name="guide-premier-acheteur" 
-                data-netlify="true" 
                 className="space-y-4 bg-navy p-6 rounded-2xl border border-border shadow-elevate"
               >
-                <input type="hidden" name="form-name" value="guide-premier-acheteur" />
                 <div>
                   <label htmlFor="magnet-name" className="block text-sm font-semibold mb-1.5">
                     Prénom
