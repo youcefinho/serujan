@@ -16,7 +16,7 @@ export const handler: Handler = async (event) => {
     }
 
     const { data, error } = await resend.emails.send({
-      from: 'Mathis Guimont <info@mathisguimont.com>',
+      from: 'Mathis Guimont <onboarding@resend.dev>',
       to: [email],
       subject: '🏠 Votre Guide Gratuit du Premier Acheteur à Gatineau est prêt !',
       html: `
