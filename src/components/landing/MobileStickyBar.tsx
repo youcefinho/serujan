@@ -8,6 +8,7 @@ export function MobileStickyBar() {
         <a
           href="tel:8199183409"
           className="flex items-center justify-center gap-2 py-3 border-2 border-foreground/40 text-foreground font-bold rounded-md text-sm"
+          aria-label="Appeler le 819-918-3409"
         >
           <Phone className="w-4 h-4" />
           Appeler
@@ -15,6 +16,7 @@ export function MobileStickyBar() {
         <button
           onClick={openCalendly}
           className="flex items-center justify-center gap-2 py-3 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson text-sm"
+          aria-label="Prendre rendez-vous"
         >
           <Calendar className="w-4 h-4" />
           Rendez-vous

@@ -14,6 +14,9 @@ import { Faq } from "@/components/landing/Faq";
 import { Footer } from "@/components/landing/Footer";
 import { WhatsAppButton } from "@/components/landing/WhatsAppButton";
 import { MobileStickyBar } from "@/components/landing/MobileStickyBar";
+import { ScrollProgressBar } from "@/components/landing/ScrollProgressBar";
+import { ScrollReveal } from "@/components/landing/ScrollReveal";
+import { ExitIntentPopup } from "@/components/landing/ExitIntentPopup";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -22,20 +25,38 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <main className="bg-navy text-foreground">
+      <ScrollProgressBar />
       <Navbar />
       <Hero />
       <StatsBar />
-      <About />
-      <Services />
-      <Manifesto />
-      <Testimonials />
-      <Process />
-      <Calculator />
-      <LeadForm />
-      <Faq />
+      <ScrollReveal>
+        <About />
+      </ScrollReveal>
+      <ScrollReveal>
+        <Services />
+      </ScrollReveal>
+      <ScrollReveal>
+        <Manifesto />
+      </ScrollReveal>
+      <ScrollReveal>
+        <Testimonials />
+      </ScrollReveal>
+      <ScrollReveal>
+        <Process />
+      </ScrollReveal>
+      <ScrollReveal>
+        <Calculator />
+      </ScrollReveal>
+      <ScrollReveal>
+        <LeadForm />
+      </ScrollReveal>
+      <ScrollReveal>
+        <Faq />
+      </ScrollReveal>
       <Footer />
       <WhatsAppButton />
       <MobileStickyBar />
+      <ExitIntentPopup />
       <Toaster />
     </main>
   );

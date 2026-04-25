@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Search, Phone, Mail, X, Home, ShoppingCart } from "lucide-react";
+import { Loader2, Search, Phone, Mail, X, Home, ShoppingCart, Download } from "lucide-react";
 
 interface Lead {
   id: string;
@@ -20,6 +20,39 @@ interface Lead {
 export const Route = createFileRoute("/admin/leads")({
   component: AdminLeadsPage,
 });
+
+function exportCSV(leads: Lead[]) {
+  if (leads.length === 0) return;
+
+  const headers = ["Date", "Type", "Nom", "Téléphone", "Courriel", "Budget", "Échéancier", "Adresse", "Type propriété", "Message"];
+  const escape = (v: string | null) => {
+    if (!v) return "";
+    const s = v.replace(/"/g, '""');
+    return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s}"` : s;
+  };
+
+  const rows = leads.map((l) => [
+    new Date(l.created_at).toLocaleString("fr-CA"),
+    l.type === "buy" ? "Acheteur" : "Vendeur",
+    escape(l.name),
+    escape(l.phone),
+    escape(l.email),
+    escape(l.budget),
+    escape(l.timeline),
+    escape(l.address),
+    escape(l.property_type),
+    escape(l.message),
+  ].join(","));
+
+  const csv = [headers.join(","), ...rows].join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `leads_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 function AdminLeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -80,11 +113,22 @@ function AdminLeadsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Leads</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Toutes les demandes reçues via le formulaire
-        </p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Leads</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Toutes les demandes reçues via le formulaire
+          </p>
+        </div>
+        <button
+          onClick={() => exportCSV(leads)}
+          disabled={leads.length === 0}
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-card border border-border rounded-md text-sm font-semibold hover:border-crimson transition disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label="Exporter les leads en CSV"
+        >
+          <Download className="w-4 h-4" />
+          Exporter CSV
+        </button>
       </div>
 
       {/* Stats */}

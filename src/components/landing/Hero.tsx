@@ -1,5 +1,6 @@
 import { Phone, Calendar, Mail, Clock } from "lucide-react";
 import { openCalendly } from "@/lib/calendly";
+import { TypingAnimation } from "@/components/landing/TypingAnimation";
 import heroBanner from "@/assets/hero-banner.jpg";
 import mathisRed from "@/assets/mathis-red.jpg";
 
@@ -33,8 +34,14 @@ export function Hero() {
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
             Votre premier achat à Gatineau.
-            <span className="block text-crimson mt-2">Sans stress.</span>
-            <span className="block">Sans mauvaise surprise.</span>
+            <span className="block text-crimson mt-2">
+              <TypingAnimation
+                phrases={["Sans stress.", "Sans mauvaise surprise."]}
+                typingSpeed={70}
+                deletingSpeed={35}
+                pauseAfterPhrase={1500}
+              />
+            </span>
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
