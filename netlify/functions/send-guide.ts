@@ -15,8 +15,10 @@ export const handler: Handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: 'Email requis' }) };
     }
 
+    const fromEmail = 'onboarding@resend.dev'; // Fallback safer for unverified domains
+    
     const { data, error } = await resend.emails.send({
-      from: 'Mathis Guimont <info@mathisguimont.com>',
+      from: `Mathis Guimont <${fromEmail}>`,
       to: [email],
       subject: 'Votre Guide Gratuit du Premier Acheteur à Gatineau',
       html: `Bonjour ${prenom || ''}, voici votre guide gratuit : <a href="https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link">https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link</a>`,

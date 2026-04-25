@@ -20,11 +20,13 @@ export function LeadMagnet() {
           email: formData.get("email")
         }),
       });
-
       if (response.ok) {
         toast.success("Succès ! L'email contenant votre guide a été envoyé.", {
           icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
         });
+        
+        // Redirection immédiate comme garantie supplémentaire
+        window.open("https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link", "_blank");
         
         form.reset();
       } else {
