@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   // SWAP: Remplacer par le nom du worker du client
-  "name": "gatineau-premier-achat-ventee",
+  "name": "gatineau",
   "main": "src/worker.ts",
   "compatibility_date": "2025-04-01",
   "assets": {

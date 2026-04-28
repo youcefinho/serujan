@@ -71,7 +71,7 @@ export const clientConfig = {
   centrisUrl: "https://www.centris.ca/fr",
   googleReviewUrl: "https://g.page/r/mathisguimont/review",
   guideUrl: "https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link",
-  siteUrl: "https://gatineau-premier-achat-ventee.dahmanimohamedrouchdi.workers.dev",
+  siteUrl: "https://gatineau.dahmanimohamedrouchdi.workers.dev",
 
   // ── Page Merci ────────────────────────────────────────
   merci: {
