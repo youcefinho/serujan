@@ -1,14 +1,14 @@
 // ═══════════════════════════════════════════════════════════
 // Configuration client — FICHIER UNIQUE À MODIFIER PAR CLIENT
 // ═══════════════════════════════════════════════════════════
-// Ce fichier centralise TOUTES les informations spécifiques
-// au courtier. Pour un nouveau client, modifier uniquement
-// ce fichier + translations.ts + les assets photos/logos.
+// SWAP: Pour un nouveau client, modifier TOUTES les valeurs
+// ci-dessous + translations.ts + les assets photos/logos.
+// Chercher "SWAP" pour trouver les zones à modifier.
 // ═══════════════════════════════════════════════════════════
 
 export const clientConfig = {
-  // ── Identité ──────────────────────────────────────────
-  name: "Mathis Guimont",
+  // SWAP: Nom complet du courtier
+  name: "NOM DU COURTIER",
   title: {
     fr: "Courtier immobilier résidentiel",
     en: "Residential Real Estate Broker",
@@ -29,7 +29,8 @@ export const clientConfig = {
     raw: "8199183409",          // Format pour tel: et WhatsApp
     international: "18199183409", // Format WhatsApp international
   },
-  email: "info@mathisguimont.com",
+  // SWAP: Email professionnel du courtier
+  email: "info@courtier.com",
 
   // ── Adresse ───────────────────────────────────────────
   address: {
@@ -45,17 +46,17 @@ export const clientConfig = {
   territory: "GATINEAU | OTTAWA",
   territoryLabel: "Outaouais",
 
-  // ── Réseaux sociaux ───────────────────────────────────
+  // SWAP: Réseaux sociaux du courtier (null = ne pas afficher)
   socials: {
     instagram: {
-      url: "https://www.instagram.com/mathis_guimont/",
-      handle: "@mathis_guimont",
+      url: "https://www.instagram.com/COURTIER/",
+      handle: "@COURTIER",
     },
     facebook: {
-      url: "https://www.facebook.com/mathis.guimont/reels/",
+      url: "https://www.facebook.com/COURTIER/",
     },
     tiktok: {
-      url: "https://www.tiktok.com/@mathisguimont",
+      url: "https://www.tiktok.com/@COURTIER",
     },
     linkedin: null as string | null, // null = ne pas afficher
   },
@@ -113,11 +114,11 @@ export const clientConfig = {
     },
   ],
 
-  // ── URLs ──────────────────────────────────────────────
+  // SWAP: URLs du courtier
   centrisUrl: "https://www.centris.ca/fr",
-  googleReviewUrl: "https://g.page/r/mathisguimont/review",
-  guideUrl: "https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link",
-  siteUrl: "https://gatineau.intralysqc.workers.dev",
+  googleReviewUrl: "https://g.page/r/COURTIER/review",
+  guideUrl: "https://drive.google.com/file/d/VOTRE-GUIDE-PDF/view",
+  siteUrl: "https://NOM-CLIENT.intralysqc.workers.dev",
 
   // ── Page Merci ────────────────────────────────────────
   merci: {
@@ -132,11 +133,12 @@ export const clientConfig = {
   },
 
   // ── Email Lead Magnet (worker.ts) ─────────────────────
-  // Ces valeurs sont utilisées dans le worker — à synchroniser
-  emailFrom: "Mathis Guimont <onboarding@resend.dev>",
+  // SWAP: Nom du courtier dans l'email + domaine Resend
+  emailFrom: "NOM DU COURTIER <onboarding@resend.dev>",
+  // SWAP: Adapter le sujet avec la ville du courtier
   emailSubject: {
-    fr: "🏠 Votre Guide Gratuit du Premier Acheteur à Gatineau est prêt !",
-    en: "🏠 Your Free First-Time Buyer Guide for Gatineau is ready!",
+    fr: "🏠 Votre Guide Gratuit du Premier Acheteur est prêt !",
+    en: "🏠 Your Free First-Time Buyer Guide is ready!",
   },
 } as const;
 

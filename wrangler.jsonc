@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  // SWAP: Remplacer par le nom du worker du client
-  "name": "gatineau",
+  // SWAP: Remplacer par le nom du worker du client (ex: "gatineau", "montreal", etc.)
+  "name": "NOM-CLIENT",
   "main": "src/worker.ts",
   "compatibility_date": "2025-04-01",
   "assets": {
@@ -12,8 +12,9 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "mathis-guimont-leads",
-      "database_id": "40c79857-653f-4577-8982-2605df6ef1d5"
+      "database_name": "NOM-CLIENT-leads",
+      "database_id": "REMPLACER-PAR-LE-VRAI-ID-DEPUIS-CLOUDFLARE-DASHBOARD"
     }
   ]
 }
+
