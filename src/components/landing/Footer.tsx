@@ -115,7 +115,10 @@ export function Footer() {
 
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} {t(translations.footer.copyright)}</p>
-          <p>{t(translations.footer.madeIn)}</p>
+          <div className="flex items-center gap-4">
+            <a href="/admin/login" className="hover:text-crimson transition" aria-label="Admin">Admin</a>
+            <p>{t(translations.footer.madeIn)}</p>
+          </div>
         </div>
       </div>
     </footer>
