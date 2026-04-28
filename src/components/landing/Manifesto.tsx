@@ -1,22 +1,10 @@
-const blocks = [
-  {
-    num: "01",
-    title: "URGENCE",
-    desc: "Le marché bouge vite. Les bonnes occasions ne reviennent pas. Agir maintenant, c'est sécuriser votre avenir.",
-  },
-  {
-    num: "02",
-    title: "RÉBELLION",
-    desc: "Refuser les compromis. Casser les règles dépassées de l'immobilier traditionnel. Vous méritez mieux que le statu quo.",
-  },
-  {
-    num: "03",
-    title: "FACILITÉ",
-    desc: "Un processus clair, des étapes simples, un courtier qui répond. L'achat d'une maison ne devrait jamais être un casse-tête.",
-  },
-];
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export function Manifesto() {
+  const { ta } = useLanguage();
+  const blocks = ta(translations.manifesto) as { num: string; title: string; desc: string }[];
+
   return (
     <section className="bg-navy-deep">
       <div className="grid md:grid-cols-3">

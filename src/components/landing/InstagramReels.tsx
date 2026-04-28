@@ -1,26 +1,18 @@
 import { Play, Instagram } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
+
+const thumbnails = [
+  "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600",
+];
+
+const views = ["12.4k", "8.2k", "15.1k"];
 
 export function InstagramReels() {
-  const reels = [
-    {
-      id: 1,
-      thumbnail: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=600",
-      views: "12.4k",
-      caption: "3 erreurs fatales lors de la première visite 🏠❌",
-    },
-    {
-      id: 2,
-      thumbnail: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600",
-      views: "8.2k",
-      caption: "Le marché à Gatineau ce mois-ci : ce qu'il faut savoir 📊",
-    },
-    {
-      id: 3,
-      thumbnail: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600",
-      views: "15.1k",
-      caption: "Pourquoi l'inspection pré-achat est non négociable 🔍",
-    },
-  ];
+  const { t, ta } = useLanguage();
+  const reels = ta(translations.instagram.reels) as { caption: string }[];
 
   return (
     <section className="py-24 bg-navy-deep overflow-hidden border-t border-border/50">
@@ -30,24 +22,24 @@ export function InstagramReels() {
             <Instagram className="w-6 h-6 text-white" />
           </div>
           <h2 className="text-3xl md:text-5xl font-bold mb-4 text-balance uppercase tracking-widest">
-            Suivez mon actualité immobilière sur Instagram
+            {t(translations.instagram.title)}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Conseils, analyses de marché et coulisses de l'immobilier en Outaouais.
+            {t(translations.instagram.subtitle)}
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto mb-16">
-          {reels.map((reel) => (
+          {reels.map((reel, i) => (
             <a
-              key={reel.id}
+              key={i}
               href="https://www.instagram.com/mathis_guimont/"
               target="_blank"
               rel="noopener noreferrer"
               className="relative aspect-[9/16] rounded-2xl overflow-hidden group bg-navy shadow-elevate block"
             >
               <img
-                src={reel.thumbnail}
+                src={thumbnails[i]}
                 alt={reel.caption}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
@@ -63,7 +55,7 @@ export function InstagramReels() {
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <div className="flex items-center gap-2 text-sm font-semibold mb-2">
                   <Play className="w-4 h-4" />
-                  {reel.views}
+                  {views[i]}
                 </div>
                 <p className="font-medium text-sm leading-snug line-clamp-2 text-white/90">
                   {reel.caption}
@@ -81,7 +73,7 @@ export function InstagramReels() {
             className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform shadow-elevate"
           >
             <Instagram className="w-5 h-5" />
-            Voir tous mes Reels
+            {t(translations.instagram.cta)}
           </a>
         </div>
       </div>

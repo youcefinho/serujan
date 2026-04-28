@@ -1,4 +1,9 @@
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
+
 export function Enemy() {
+  const { t } = useLanguage();
+
   return (
     <section className="py-24 bg-navy-deep relative overflow-hidden">
       {/* Decorative background elements */}
@@ -8,15 +13,15 @@ export function Enemy() {
 
       <div className="max-w-5xl mx-auto px-6 lg:px-12 text-center relative z-10">
         <h2 className="text-sm font-bold uppercase tracking-widest text-crimson mb-8">
-          L'ennemi commun
+          {t(translations.enemy.label)}
         </h2>
         
         <div className="space-y-6 text-2xl md:text-4xl lg:text-5xl font-bold leading-tight md:leading-tight lg:leading-tight text-balance">
           <p className="text-foreground/50 text-xl md:text-3xl lg:text-4xl">
-            Pas un intermédiaire passif. Pas un ouvreur de portes.
+            {t(translations.enemy.line1)}
           </p>
           <p className="text-foreground pt-4">
-            Un accompagnateur de A à Z, disponible, objectif, qui met vos intérêts avant les siens — <span className="text-crimson">et qui vous prépare à défendre votre choix même face à la tante Carole du dimanche.</span>
+            {t(translations.enemy.line2)} <span className="text-crimson">{t(translations.enemy.accent)}</span>
           </p>
         </div>
       </div>

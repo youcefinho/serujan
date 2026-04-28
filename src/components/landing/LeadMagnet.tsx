@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Download, Book, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export function LeadMagnet() {
   const [loading, setLoading] = useState(false);
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,10 +25,9 @@ export function LeadMagnet() {
       });
 
       if (response.ok) {
-        toast.success("Merci ! Vérifiez votre boîte email.", {
+        toast.success(t(translations.leadMagnet.success), {
           icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
         });
-
         form.reset();
       } else {
         const errorData = await response.json().catch(() => ({}));
@@ -53,10 +55,10 @@ export function LeadMagnet() {
                 <Book className="w-6 h-6 text-crimson" />
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance uppercase tracking-widest">
-                Guide Gratuit du Premier Acheteur à Gatineau
+                {t(translations.leadMagnet.title)}
               </h2>
               <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
-                Les 5 erreurs les plus courantes, le vrai coût d'achat, et le processus étape par étape — offert gratuitement.
+                {t(translations.leadMagnet.subtitle)}
               </p>
             </div>
 
@@ -67,7 +69,7 @@ export function LeadMagnet() {
               >
                 <div>
                   <label htmlFor="magnet-name" className="block text-sm font-semibold mb-1.5">
-                    Prénom
+                    {t(translations.leadMagnet.firstName)}
                   </label>
                   <input
                     type="text"
@@ -75,12 +77,12 @@ export function LeadMagnet() {
                     name="prenom"
                     required
                     className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-crimson focus:ring-1 focus:ring-crimson transition-all"
-                    placeholder="Votre prénom"
+                    placeholder={t(translations.leadMagnet.firstNamePlaceholder)}
                   />
                 </div>
                 <div>
                   <label htmlFor="magnet-email" className="block text-sm font-semibold mb-1.5">
-                    Courriel
+                    {t(translations.leadMagnet.email)}
                   </label>
                   <input
                     type="email"
@@ -88,7 +90,7 @@ export function LeadMagnet() {
                     name="email"
                     required
                     className="w-full bg-card border border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-crimson focus:ring-1 focus:ring-crimson transition-all"
-                    placeholder="votre@courriel.com"
+                    placeholder={t(translations.leadMagnet.emailPlaceholder)}
                   />
                 </div>
                 <button
@@ -101,7 +103,7 @@ export function LeadMagnet() {
                   ) : (
                     <>
                       <Download className="w-5 h-5" />
-                      Recevoir le guide gratuitement
+                      {t(translations.leadMagnet.cta)}
                     </>
                   )}
                 </button>

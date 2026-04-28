@@ -1,5 +1,7 @@
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
 import logoEquipe from "@/assets/logo-equipe-white.png";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -10,6 +12,8 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 export function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-navy-deep border-t border-border pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
@@ -17,21 +21,21 @@ export function Footer() {
           <div className="space-y-4">
             <img src={logoEquipe} alt="L'Équipe Xavier Charron & Ali Al" className="h-20 w-auto" loading="lazy" decoding="async" />
             <p className="text-sm text-muted-foreground leading-relaxed mt-2">
-              Mathis Guimont · Courtier immobilier résidentiel en Outaouais. Spécialisé pour les premiers acheteurs et investisseurs.
+              {t(translations.footer.desc)}
             </p>
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-sm font-bold uppercase tracking-widest text-crimson">Contact</h4>
+            <h4 className="text-sm font-bold uppercase tracking-widest text-crimson">{t(translations.footer.contact)}</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="tel:8199183409" className="flex items-center gap-3 hover:text-crimson transition" aria-label="Appeler le 819-918-3409">
+                <a href="tel:8199183409" className="flex items-center gap-3 hover:text-crimson transition" aria-label="819-918-3409">
                   <Phone className="w-4 h-4" />
                   <span>819-918-3409</span>
                 </a>
               </li>
               <li>
-                <a href="mailto:info@mathisguimont.com" className="flex items-center gap-3 hover:text-crimson transition" aria-label="Envoyer un courriel à info@mathisguimont.com">
+                <a href="mailto:info@mathisguimont.com" className="flex items-center gap-3 hover:text-crimson transition" aria-label="info@mathisguimont.com">
                   <Mail className="w-4 h-4" />
                   <span className="truncate">info@mathisguimont.com</span>
                 </a>
@@ -44,7 +48,7 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-sm font-bold uppercase tracking-widest text-crimson">Suivez-moi</h4>
+            <h4 className="text-sm font-bold uppercase tracking-widest text-crimson">{t(translations.footer.followMe)}</h4>
             <div className="flex gap-3">
               {[
                 { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/mathis.guimont/reels/" },
@@ -64,17 +68,17 @@ export function Footer() {
               ))}
             </div>
             <p className="text-xs text-muted-foreground pt-2">
-              <a href="https://www.instagram.com/mathis_guimont/" target="_blank" rel="noopener noreferrer" className="hover:text-crimson transition" aria-label="Voir le profil Instagram de Mathis Guimont">@mathis_guimont</a>
+              <a href="https://www.instagram.com/mathis_guimont/" target="_blank" rel="noopener noreferrer" className="hover:text-crimson transition" aria-label="Instagram">@mathis_guimont</a>
             </p>
             <p className="text-xs text-muted-foreground">
-              Disponible 7j/7 pour répondre à vos questions.
+              {t(translations.footer.available)}
             </p>
           </div>
         </div>
 
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} Mathis Guimont · Courtier immobilier résidentiel</p>
-          <p>Conçu avec passion à Gatineau</p>
+          <p>© {new Date().getFullYear()} {t(translations.footer.copyright)}</p>
+          <p>{t(translations.footer.madeIn)}</p>
         </div>
       </div>
     </footer>

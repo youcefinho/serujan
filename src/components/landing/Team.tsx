@@ -1,18 +1,22 @@
 import { Building2, Award, ArrowRight } from "lucide-react";
 import mathisWhite from "@/assets/mathis-white.jpg";
 import logoEquipeColor from "@/assets/logo-equipe-color.png";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export function Team() {
+  const { t } = useLanguage();
+
   return (
     <section id="equipe" className="py-24 bg-card">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="mb-16 md:text-center">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-crimson mb-3">Notre Équipe</h2>
+          <h2 className="text-sm font-bold uppercase tracking-widest text-crimson mb-3">{t(translations.team.label)}</h2>
           <h3 className="text-3xl md:text-5xl font-bold mb-6 text-balance">
-            Des experts dédiés à votre succès.
+            {t(translations.team.title)}
           </h3>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Une expertise pointue combinée à une approche humaine pour vous accompagner à chaque étape.
+            {t(translations.team.subtitle)}
           </p>
         </div>
 
@@ -37,9 +41,9 @@ export function Team() {
           <div className="space-y-8">
             <div>
               <h3 className="text-3xl font-bold mb-2">Mathis Guimont</h3>
-              <p className="text-crimson font-bold text-lg mb-6">Courtier immobilier résidentiel</p>
+              <p className="text-crimson font-bold text-lg mb-6">{t(translations.team.role)}</p>
               <p className="text-muted-foreground leading-relaxed text-lg">
-                Passionné par l'immobilier et dévoué à la réussite de vos projets, je mets mon expertise du marché de l'Outaouais à votre service. Mon objectif : rendre votre transaction aussi simple, transparente et profitable que possible.
+                {t(translations.team.bio)}
               </p>
             </div>
 
@@ -49,9 +53,9 @@ export function Team() {
                   <Building2 className="w-5 h-5 text-crimson" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-foreground">Accompagnement personnalisé</h4>
+                  <h4 className="font-bold text-foreground">{t(translations.team.feature1Title)}</h4>
                   <p className="text-sm text-muted-foreground mt-1">
-                    De la première visite à la signature chez le notaire, je suis à vos côtés.
+                    {t(translations.team.feature1Desc)}
                   </p>
                 </div>
               </div>
@@ -60,9 +64,9 @@ export function Team() {
                   <Award className="w-5 h-5 text-crimson" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-foreground">Soutien d'une équipe performante</h4>
+                  <h4 className="font-bold text-foreground">{t(translations.team.feature2Title)}</h4>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Je vous fais bénéficier d'un réseau étendu et d'une force de frappe exceptionnelle.
+                    {t(translations.team.feature2Desc)}
                   </p>
                 </div>
               </div>
@@ -73,7 +77,7 @@ export function Team() {
                 href="#contact"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-foreground text-navy font-bold rounded-md hover:bg-crimson hover:text-primary-foreground transition-colors group"
               >
-                Parler avec Mathis
+                {t(translations.team.cta)}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
             </div>
