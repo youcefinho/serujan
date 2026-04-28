@@ -56,6 +56,7 @@ function exportCSV(leads: Lead[]) {
 function AdminLeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "buy" | "sell">("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Lead | null>(null);
@@ -64,14 +65,31 @@ function AdminLeadsPage() {
     const load = async () => {
       try {
         const token = localStorage.getItem("intralys-admin-token");
+        if (!token) {
+          // Pas de token → redirection directe
+          localStorage.removeItem("intralys-admin-token");
+          window.location.href = "/admin/login";
+          return;
+        }
+
         const response = await fetch("/api/admin/leads", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!response.ok) throw new Error("Erreur chargement");
+
+        // Session expirée ou token invalide → déconnecter et rediriger
+        if (response.status === 401) {
+          localStorage.removeItem("intralys-admin-token");
+          window.location.href = "/admin/login";
+          return;
+        }
+
+        if (!response.ok) throw new Error(`Erreur serveur (${response.status})`);
+
         const { data } = await response.json() as { data: Lead[] };
         setLeads(data ?? []);
       } catch (err) {
         console.error("Erreur chargement leads:", err);
+        setError(err instanceof Error ? err.message : "Erreur de connexion au serveur");
       }
       setLoading(false);
     };
@@ -108,6 +126,21 @@ function AdminLeadsPage() {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="w-6 h-6 animate-spin text-crimson" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <div className="text-crimson text-lg font-bold">Erreur</div>
+        <p className="text-sm text-muted-foreground">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-crimson text-primary-foreground rounded-md text-sm font-bold hover:bg-crimson/90 transition"
+        >
+          Réessayer
+        </button>
       </div>
     );
   }
