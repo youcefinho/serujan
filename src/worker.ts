@@ -64,6 +64,15 @@ async function handleSendGuide(request: Request, env: Env): Promise<Response> {
       return json({ error: 'Email requis' }, 400);
     }
 
+    // Diagnostic : vérifier les bindings
+    const diagnostics: string[] = [];
+    if (!env.DB) diagnostics.push('DB binding manquant');
+    if (!env.RESEND_API_KEY) diagnostics.push('RESEND_API_KEY manquant');
+
+    if (diagnostics.length > 0) {
+      return json({ error: `Configuration manquante: ${diagnostics.join(', ')}` }, 500);
+    }
+
     // Sauvegarder le lead dans D1 (best-effort)
     try {
       const id = crypto.randomUUID();
@@ -108,14 +117,13 @@ async function handleSendGuide(request: Request, env: Env): Promise<Response> {
     });
 
     if (error) {
-      console.error('Erreur Resend:', error);
-      return json({ error }, 500);
+      return json({ error: `Resend: ${JSON.stringify(error)}` }, 500);
     }
 
     return json({ success: true, data });
   } catch (error) {
-    console.error('Erreur fonction:', error);
-    return json({ error: 'Internal Server Error' }, 500);
+    const msg = error instanceof Error ? error.message : String(error);
+    return json({ error: `Erreur: ${msg}` }, 500);
   }
 }
 
