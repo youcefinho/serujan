@@ -310,16 +310,61 @@ Avant toute modification, lire :
 
 ---
 
-## 12. Leçons apprises — Standards de sécurité
+## 12. 🚨 LEÇONS APPRISES — NE JAMAIS RÉPÉTER
 
-### ❌ ERREUR : Validation de token par longueur
-**Avant (faille critique)** : Le endpoint `/api/admin/leads` vérifiait seulement que le token faisait plus de 10 caractères. N'importe qui pouvait accéder à tous les leads avec un faux token.
+> ⚠️ **AU DÉMARRAGE DE CHAQUE NOUVEAU PROJET, LIRE CETTE SECTION EN PREMIER.**
+> Chaque point a été découvert lors de l'audit du template Mathis Guimont (2026-04-28).
+> Ces erreurs ne doivent **JAMAIS** être reproduites sur un nouveau client.
 
-**Après (corrigé)** : Le token est un `crypto.randomUUID()` stocké dans la table `admin_sessions` de D1 avec une expiration de 24h. Chaque requête admin vérifie l'existence ET la validité du token dans D1.
+### 12.1 — Centralisation des données client
+- **❌** Téléphone, email, nom, réseaux sociaux hardcodés dans 14+ fichiers `.tsx`.
+- **✅** Tout dans `src/lib/config.ts`. Zéro donnée client dans les composants.
 
-### ✅ Pattern sécurité obligatoire pour tout projet Intralys
-1. **Login** → `crypto.randomUUID()` → stocké dans D1 avec `expires_at`
-2. **Requêtes protégées** → vérifier token dans D1 + `expires_at > datetime('now')`
-3. **Logout** → supprimer le token de D1
-4. **Rate limiting** → table `login_attempts`, max 5/h par IP
-5. **Nettoyage** → supprimer sessions et tentatives expirées à chaque login réussi
+### 12.2 — Schéma D1 complet dès le départ
+- **❌** Formulaire frontend collectait des champs absents du schéma D1 et de l'API.
+- **✅** Pour chaque champ : Frontend (Zod) → API body → Worker → D1 → Admin. Tous alignés.
+
+### 12.3 — Authentification admin sécurisée
+- **❌** Token validé par longueur seule. Accès libre à tous les leads.
+- **✅** `crypto.randomUUID()` stocké en D1 avec `expires_at` 24h + rate limiting 5/h/IP.
+
+### 12.4 — Gestion des erreurs API côté frontend
+- **❌** Page blanche sur token expiré (401). Pas de message 429 (rate limit).
+- **✅** 401 → redirection login. 429 → message clair. Erreur → bouton Réessayer.
+
+### 12.5 — Sanitisation des inputs serveur
+- **❌** `${prenom}` injecté dans le HTML d'email sans échappement (XSS).
+- **✅** `sanitizeHtml()` pour le HTML + `sanitizeInput()` (trim+maxLen) + whitelist pour `type`.
+
+### 12.6 — Marqueurs SWAP dans les fichiers statiques
+- **❌** `index.html` avec 15+ éléments client sans marqueur.
+- **✅** `<!-- SWAP: -->` dans HTML, `# SWAP:` dans robots/sitemap, `_comment_SWAP` dans JSON.
+
+### 12.7 — i18n complet sans exception
+- **❌** Boutons, texte de confiance, messages d'erreur hardcodés en français.
+- **✅** TOUS les textes visibles via `useLanguage()` + `translations.ts`. Toggle = 100% change.
+
+### 12.8 — Notification email au courtier
+- **❌** Lead soumis → stocké en D1 seulement. Courtier devait checker l'admin manuellement.
+- **✅** Email instantané au courtier avec nom, téléphone, email, type, budget/adresse.
+
+### 12.9 — CSP headers à jour
+- **❌** `connect-src` contenait `supabase.co` alors que le projet utilise D1.
+- **✅** CSP doit refléter les services réellement utilisés. Nettoyer à chaque migration.
+
+### 12.10 — Schéma SQL complet pour base neuve
+- **✅** `schema.sql` contient TOUTES les tables. `migrations/` pour les DB existantes.
+
+### 12.11 — Checklist nouveau projet
+- [ ] `config.ts` contient toutes les données client
+- [ ] Zéro hardcoded dans les `.tsx`
+- [ ] Schema D1 = API = Frontend = Admin (alignés)
+- [ ] Auth admin : token D1 + expiration + rate limiting + logout
+- [ ] Sanitisation serveur (HTML escape + trim + maxLen + whitelist)
+- [ ] Marqueurs SWAP dans tous les fichiers statiques
+- [ ] CSP headers correspond aux services utilisés
+- [ ] Admin gère 401 + 429 + erreurs (jamais page blanche)
+- [ ] Notification email courtier à chaque lead
+- [ ] i18n complet (toggle = 100% change)
+- [ ] `bun run build` = 0 erreurs + `bun run test` = tous tests passent
+
