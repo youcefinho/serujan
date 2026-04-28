@@ -29,7 +29,7 @@ export function InstagramReels() {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888] mb-6">
             <Instagram className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-balance">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-balance uppercase tracking-widest">
             Suivez mon actualité immobilière sur Instagram
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">

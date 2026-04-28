@@ -37,7 +37,7 @@ export function About() {
         <div className="order-1 lg:order-2 space-y-8">
           <div>
             <span className="text-crimson text-sm font-bold uppercase tracking-widest">À propos</span>
-            <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
+            <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold leading-tight uppercase tracking-widest">
               Un courtier immobilier à Gatineau qui comprend vos enjeux.
             </h2>
           </div>

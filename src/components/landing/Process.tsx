@@ -12,7 +12,7 @@ export function Process() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-16 max-w-2xl mx-auto">
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">Le processus</span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold">5 étapes vers votre propriété.</h2>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">5 étapes vers votre propriété.</h2>
         </div>
 
         <div className="relative grid sm:grid-cols-2 lg:grid-cols-5 gap-6">

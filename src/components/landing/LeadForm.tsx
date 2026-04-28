@@ -93,7 +93,7 @@ export function LeadForm() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-12">
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">Contact</span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold">Démarrons votre projet.</h2>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">Démarrons votre projet.</h2>
         </div>
 
         <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-elevate" suppressHydrationWarning>

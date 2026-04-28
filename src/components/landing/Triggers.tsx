@@ -28,7 +28,7 @@ export function Triggers() {
     <section className="py-24 bg-card border-b border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="mb-16 md:text-center">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance">
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance uppercase tracking-widest">
             Vous vous reconnaissez ?
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">

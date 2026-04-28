@@ -55,7 +55,7 @@ export function Testimonials() {
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">
             Témoignages
           </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold">
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">
             Ils ont fait confiance à Mathis.
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto mb-8">

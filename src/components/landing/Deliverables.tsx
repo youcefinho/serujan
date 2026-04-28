@@ -35,7 +35,7 @@ export function Deliverables() {
 
         {/* Content / Right */}
         <div className="w-full lg:w-1/2 text-center lg:text-left">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance">
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance uppercase tracking-widest">
             La Transaction <span className="text-crimson">Sans Stress</span>
           </h2>
           <p className="text-xl text-muted-foreground mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0">

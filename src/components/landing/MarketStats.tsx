@@ -13,7 +13,7 @@ export function MarketStats() {
     <section className="py-24 bg-card border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="mb-12 md:text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-widest">
             Le marché de Gatineau en chiffres
           </h2>
           <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-crimson">

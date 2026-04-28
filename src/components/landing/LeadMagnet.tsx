@@ -52,7 +52,7 @@ export function LeadMagnet() {
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-crimson/10 mb-6">
                 <Book className="w-6 h-6 text-crimson" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance uppercase tracking-widest">
                 Guide Gratuit du Premier Acheteur à Gatineau
               </h2>
               <p className="text-muted-foreground text-lg mb-6 leading-relaxed">

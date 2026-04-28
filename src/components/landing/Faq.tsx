@@ -26,7 +26,7 @@ export function Faq() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-12">
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">FAQ</span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold">Questions fréquentes</h2>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">Questions fréquentes</h2>
         </div>
 
         <Accordion type="single" collapsible className="space-y-4">
