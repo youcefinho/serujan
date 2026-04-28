@@ -31,9 +31,9 @@ export function LeadMagnet() {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error?.message || errorData.error || "Erreur réseau");
       }
-    } catch (error: any) {
-      console.error("Form error:", error);
-      toast.error(`Erreur: ${error.message || "Une erreur est survenue. Veuillez réessayer."}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Une erreur est survenue. Veuillez réessayer.";
+      toast.error(`Erreur: ${msg}`);
     } finally {
       setLoading(false);
     }
