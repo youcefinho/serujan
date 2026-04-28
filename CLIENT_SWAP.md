@@ -6,24 +6,59 @@
 
 ---
 
+## ⚡ ÉTAPE 0 : Configuration client (`src/lib/config.ts`)
+
+**C'est LE FICHIER PRINCIPAL.** Modifier ce seul fichier met à jour automatiquement :
+- Navbar, Hero, Footer, WhatsApp, MobileStickyBar, ExitIntentPopup
+- Page Merci, Panel Admin, LeadForm (erreur), Testimonials (Google Review)
+- Worker email template (nom, ville, titre, guide URL)
+
+```ts
+export const clientConfig = {
+  name: "NOM DU COURTIER",
+  title: { fr: "Courtier immobilier résidentiel", en: "..." },
+  phone: {
+    display: "514-123-4567",
+    raw: "5141234567",
+    international: "15141234567",
+  },
+  email: "info@courtier.com",
+  address: { street: "...", city: "Montréal", region: "...", province: "QC", postalCode: "...", country: "CA" },
+  territory: "MONTRÉAL | LAVAL",
+  territoryLabel: "Montréal",
+  socials: {
+    instagram: { url: "...", handle: "@courtier" },
+    facebook: { url: "..." },
+    tiktok: { url: "..." },
+    linkedin: null,
+  },
+  banner: { name: "Nom de l'équipe", team: "RE/MAX" },
+  centrisUrl: "...",
+  googleReviewUrl: "...",
+  guideUrl: "...",
+  siteUrl: "...",
+  emailFrom: "NOM <onboarding@resend.dev>",
+  emailSubject: { fr: "...", en: "..." },
+  ageBadge: { value: "X ans", label: { fr: "...", en: "..." } },
+  merci: { callbackDelay: { fr: "...", en: "..." }, followText: { fr: "...", en: "..." } },
+};
+```
+
+---
+
 ## Étape 1 : Traductions (`src/lib/translations.ts`)
 
-C'est le fichier **le plus important** — il contient TOUS les textes du site.
+Textes spécifiques au courtier (biographie, témoignages, FAQ, statistiques du marché).
 
-### Sections à modifier :
-
-| Clé | Contenu | Exemple |
-|---|---|---|
-| `hero.title` | Nom du courtier | "MATHIS GUIMONT" → "MARIE DUPONT" |
-| `hero.subtitle` | Sous-titre | "Courtier immobilier résidentiel" |
-| `hero.territory` | Zone de service | "GATINEAU \| OTTAWA" → "MONTRÉAL \| LAVAL" |
-| `hero.phone` | Téléphone | "819-918-3409" → "514-123-4567" |
-| `about.*` | Biographie | Paragraphes sur le courtier |
-| `testimonials.items` | Avis clients | 3-5 témoignages |
-| `faq.items` | Questions fréquentes | Adapter à la ville/zone |
-| `marketStats.*` | Statistiques du marché | Adapter à la ville |
-| `team.*` | Infos équipe/bannière | Nom de l'équipe, bannière |
-| `footer.*` | Contact complet | Adresse, tel, email, réseaux |
+| Clé | Contenu |
+|---|---|
+| `hero.description`, `hero.descriptionBold` | Accroche du Hero |
+| `about.*` | Biographie complète |
+| `testimonials.cards` | Témoignages clients |
+| `faq.items` | FAQ adaptées à la ville |
+| `marketStats.*` | Statistiques du marché local |
+| `team.bio`, `team.role` | Bio et rôle |
+| `footer.desc`, `footer.copyright` | Pied de page |
 
 ---
 
@@ -59,40 +94,33 @@ Voir `COLOR_PALETTES.md` pour les palettes pré-définies par bannière.
 
 ## Étape 4 : SEO (`index.html`)
 
-| Élément | Ligne | Quoi modifier |
-|---|---|---|
-| `<title>` | 6 | Nom du courtier + ville |
-| `<link canonical>` | 9 | URL du nouveau site |
-| `<meta description>` | 13 | Description adaptée |
-| `og:url`, `og:title` | 18-20 | URL et titre |
-| `og:image` | 21 | Screenshot du nouveau site |
-| Schema.org JSON-LD | 49-76 | Nom, tel, email, adresse, réseaux sociaux |
-| GA4 ID | 30-35 | Remplacer `G-XXXXXXXXXX` |
+Tous les éléments à modifier sont marqués avec `<!-- SWAP: ... -->` dans le HTML.
 
----
-
-## Étape 5 : Worker — Email (`src/worker.ts`)
-
-Modifier la fonction `handleSendGuide()` :
-
-| Ligne | Quoi modifier |
+| Marqueur | Quoi modifier |
 |---|---|
-| `from:` | `'NOM_COURTIER <onboarding@resend.dev>'` |
-| `subject:` | Adapter le titre de l'email |
-| HTML `<strong>` | Nom du courtier en signature |
-| `<p>` métier | Titre professionnel + ville |
-| `href` du bouton | Lien vers le nouveau guide PDF |
+| `<!-- SWAP: Titre du site -->` | `<title>` |
+| `<!-- SWAP: URL du site -->` | `<link canonical>` + `<link hreflang>` |
+| `<!-- SWAP: Description SEO -->` | `<meta description>` |
+| `<!-- SWAP: Mots-clés SEO -->` | `<meta keywords>` |
+| `<!-- SWAP: Open Graph -->` | `og:url`, `og:title`, `og:description`, `og:image` |
+| `<!-- SWAP: Twitter Card -->` | `twitter:title`, `twitter:description`, `twitter:image` |
+| `<!-- SWAP: Google Analytics 4 ID -->` | `G-XXXXXXXXXX` (2 occurrences) |
+| `<!-- SWAP: Nom de l'app mobile -->` | `apple-mobile-web-app-title` |
+| `<!-- SWAP: JSON-LD Schema.org -->` | Tout le bloc JSON-LD |
+
+> 💡 Astuce : chercher `SWAP:` dans le fichier pour trouver toutes les zones en 5 secondes.
 
 ---
 
-## Étape 6 : PWA (`public/manifest.json`)
+## Étape 5 : PWA (`public/manifest.json`)
+
+Modifier les 3 champs marqués `_comment_SWAP` :
 
 ```json
 {
   "name": "NOM_COURTIER · Courtier immobilier à VILLE",
   "short_name": "NOM_COURTIER",
-  "description": "Courtier immobilier résidentiel à VILLE",
-  "lang": "fr-CA"
+  "description": "Courtier immobilier résidentiel à VILLE"
 }
 ```
 
@@ -103,7 +131,7 @@ Remplacer aussi les icônes dans `public/` :
 
 ---
 
-## Étape 7 : Fichiers de config
+## Étape 6 : Fichiers de config
 
 | Fichier | Quoi modifier |
 |---|---|
@@ -114,18 +142,35 @@ Remplacer aussi les icônes dans `public/` :
 
 ---
 
+## Étape 7 : Base de données D1
+
+```bash
+# Créer la base
+npx wrangler d1 create NOM-COURTIER-leads
+
+# Copier le database_id dans wrangler.jsonc
+
+# Exécuter le schéma complet (inclut leads + admin_sessions + login_attempts)
+npx wrangler d1 execute NOM-COURTIER-leads --file=./schema.sql
+```
+
+---
+
 ## Étape 8 : Vérification finale
 
 ```bash
 # 1. Build
 bun run build   # 0 erreurs obligatoire
 
-# 2. Test local
+# 2. Tests
+bun run test    # 14 tests doivent passer
+
+# 3. Test local
 bun run dev     # Vérifier visuellement
 
-# 3. Checklist visuelle :
+# 4. Checklist visuelle :
 # [ ] Hero : bon nom, bonne photo, bon territoire
-# [ ] Navbar : logo, toggle FR/EN, CTA
+# [ ] Navbar : logo, toggle FR/EN, CTA, bon téléphone
 # [ ] About : bonne bio, bonne photo
 # [ ] Témoignages : vrais avis du client
 # [ ] Footer : bon tel, email, adresse, réseaux
@@ -134,15 +179,16 @@ bun run dev     # Vérifier visuellement
 # [ ] Mobile : sticky bar, WhatsApp, responsive
 # [ ] Formulaire : soumission → lead dans D1
 # [ ] Lead Magnet : email reçu avec bon guide
+# [ ] Admin : login → leads → export CSV → logout
 
-# 4. Deploy
+# 5. Deploy
 npx wrangler deploy
 
-# 5. Secrets dans Cloudflare Dashboard
+# 6. Secrets dans Cloudflare Dashboard
 # → Settings → Variables et secrets
 # → RESEND_API_KEY + ADMIN_PASSWORD
 
-# 6. Push
+# 7. Push
 git add -A
 git commit -m "feat: nouveau client — NOM_COURTIER"
 git push -u origin main
@@ -162,15 +208,16 @@ git push -u origin main
 | 6 | Zone de service | Texte (ex: GATINEAU \| OTTAWA) |
 | 7 | URL Calendly | URL |
 | 8 | URL Centris | URL |
-| 9 | Réseaux sociaux | URLs (Facebook, Instagram, TikTok) |
-| 10 | Bannière immobilière | Nom + Logo |
-| 11 | Photo portrait (2 poses) | JPG haute résolution |
-| 12 | Photo bannière hero | JPG 1920×1080 |
-| 13 | Logo couleur + blanc | PNG transparent |
-| 14 | 3-5 témoignages clients | Textes |
-| 15 | Biographie | 2-3 paragraphes |
-| 16 | Guide PDF (Lead Magnet) | URL hébergée (Google Drive) |
-| 17 | ID Google Analytics 4 | G-XXXXXXXX |
+| 9 | URL Google Review | URL |
+| 10 | Réseaux sociaux | URLs (Facebook, Instagram, TikTok) |
+| 11 | Bannière immobilière | Nom + Logo |
+| 12 | Photo portrait (2 poses) | JPG haute résolution |
+| 13 | Photo bannière hero | JPG 1920×1080 |
+| 14 | Logo couleur + blanc | PNG transparent |
+| 15 | 3-5 témoignages clients | Textes |
+| 16 | Biographie | 2-3 paragraphes |
+| 17 | Guide PDF (Lead Magnet) | URL hébergée (Google Drive) |
+| 18 | ID Google Analytics 4 | G-XXXXXXXX |
 
 ---
 
