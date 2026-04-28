@@ -365,6 +365,14 @@ npx wrangler deploy
 - Bon pour le SEO local : Google indexe les noms de villes.
 - Données dans `translations.ts` → `footer.sectors` + `footer.sectorsTitle`.
 
+### 10.21 — Favicon personnalisé (icône onglet navigateur)
+- **OBLIGATOIRE** : chaque site client doit avoir un favicon personnalisé.
+- Design : fond navy (`#0D1B2A`) + initiale(s) du courtier en crimson (`#C41230`).
+- 3 fichiers dans `public/` : `favicon.ico`, `icon-192.png`, `icon-512.png`.
+- Marqueur `<!-- SWAP: Favicon -->` dans `index.html`.
+- Le manifest PWA (`manifest.json`) référence `icon-192.png` et `icon-512.png`.
+- Générer avec Antigravity (`generate_image`) ou un outil de design.
+
 ---
 
 ## 11. Documentation obligatoire
