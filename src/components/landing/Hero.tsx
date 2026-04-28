@@ -1,10 +1,14 @@
 import { Phone, Calendar, Mail, Clock } from "lucide-react";
 import { openCalendly } from "@/lib/calendly";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 import { TypingAnimation } from "@/components/landing/TypingAnimation";
 import heroBanner from "@/assets/hero-banner.jpg";
 import mathisRed from "@/assets/mathis-red.jpg";
 
 export function Hero() {
+  const { t, ta } = useLanguage();
+
   return (
     <section className="relative min-h-screen overflow-hidden">
       {/* Banner background with navy overlay */}
@@ -29,14 +33,14 @@ export function Hero() {
         <div className="space-y-8">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-white/5 backdrop-blur">
             <span className="w-2 h-2 rounded-full bg-crimson animate-pulse" />
-            <span className="text-[10px] sm:text-xs uppercase tracking-widest font-semibold">La Transaction Sans Stress · Gatineau</span>
+            <span className="text-[10px] sm:text-xs uppercase tracking-widest font-semibold">{t(translations.hero.badge)}</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
-            Votre premier achat à Gatineau.
+            {t(translations.hero.title)}
             <span className="block text-crimson mt-2">
               <TypingAnimation
-                phrases={["Sans stress.", "Sans mauvaise surprise."]}
+                phrases={ta(translations.hero.phrases)}
                 typingSpeed={70}
                 deletingSpeed={35}
                 pauseAfterPhrase={1500}
@@ -45,34 +49,34 @@ export function Hero() {
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-            "Et si on se trompe de quartier ? Et si la maison a des problèmes cachés ? Et si on n'est pas vraiment prêts financièrement ?"<br/><br/>
-            <span className="text-foreground font-semibold">Mathis Guimont</span> est le seul courtier de Gatineau qui répond à ces questions avant même que vous les posiez.
+            {t(translations.hero.description)}<br/><br/>
+            <span className="text-foreground font-semibold">Mathis Guimont</span> {t(translations.hero.descriptionBold)}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={openCalendly}
               className="group inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 bg-gradient-crimson text-primary-foreground text-sm sm:text-base font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
-              aria-label="Prendre rendez-vous avec Mathis Guimont"
+              aria-label={t(translations.hero.ctaPrimary)}
             >
               <Calendar className="w-5 h-5" />
-              RENCONTRE STRATÉGIQUE GRATUITE
+              {t(translations.hero.ctaPrimary)}
             </button>
             <a
               href="tel:8199183409"
               className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 border-2 border-foreground/80 text-foreground text-sm sm:text-base font-bold rounded-md hover:bg-foreground hover:text-navy transition"
-              aria-label="Appeler Mathis Guimont au 819-918-3409"
+              aria-label={t(translations.hero.ctaCall)}
             >
               <Phone className="w-5 h-5" />
-              Appeler maintenant
+              {t(translations.hero.ctaCall)}
             </a>
             <a
               href="#contact"
               className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 border-2 border-foreground/30 text-foreground/90 text-sm sm:text-base font-bold rounded-md hover:border-foreground transition"
-              aria-label="Envoyer un message à Mathis Guimont"
+              aria-label={t(translations.hero.ctaMessage)}
             >
               <Mail className="w-5 h-5" />
-              Envoyer un message
+              {t(translations.hero.ctaMessage)}
             </a>
           </div>
 
@@ -84,12 +88,12 @@ export function Hero() {
             </span>
             <Clock className="w-3.5 h-3.5 text-emerald-400" />
             <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-emerald-300">
-              Réponse en moins de 2h · 7j/7 · Outaouais
+              {t(translations.hero.trustBadge)}
             </span>
           </div>
         </div>
 
-        {/* Photo of Mathis */}
+        {/* Photo de Mathis */}
         <div className="relative">
           <div className="absolute -inset-8 bg-gradient-crimson rounded-full opacity-30 blur-3xl" />
           <div className="relative aspect-[4/5] max-w-md mx-auto lg:max-w-none overflow-hidden">
@@ -100,7 +104,7 @@ export function Hero() {
               loading="eager"
               decoding="async"
             />
-            {/* Nouvelle génération badge */}
+            {/* Badge nouvelle génération */}
             <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm border border-white/20 text-navy px-4 py-2.5 rounded-xl shadow-elevate transform rotate-2">
               <span className="block text-[10px] font-bold uppercase tracking-widest text-crimson mb-0.5">22 ans</span>
               <span className="block font-black text-sm leading-tight">Nouvelle<br/>génération</span>

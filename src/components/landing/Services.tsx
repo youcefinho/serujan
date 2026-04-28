@@ -1,34 +1,37 @@
 import { Home, TrendingUp, PiggyBank, ArrowRight } from "lucide-react";
-
-// Données des 3 piliers — ACHAT · VENTE · INVESTISSEMENT (standard Intralys §10.9)
-const services = [
-  {
-    icon: Home,
-    title: "ACHAT",
-    desc: "Trouvez la propriété parfaite. Accompagnement complet de la première visite jusqu'à la remise des clés.",
-    points: ["Recherche ciblée", "Négociation experte", "Inspection accompagnée"],
-  },
-  {
-    icon: TrendingUp,
-    title: "VENTE",
-    desc: "Maximisez la valeur de votre propriété grâce à une stratégie marketing puissante et un large réseau d'acheteurs.",
-    points: ["Évaluation gratuite", "Marketing premium", "Photos professionnelles"],
-  },
-  {
-    icon: PiggyBank,
-    title: "INVESTISSEMENT",
-    desc: "Identifiez les meilleures opportunités d'investissement immobilier. Analyse de rentabilité et accompagnement patrimonial.",
-    points: ["Analyse de marché", "Calcul de rendement", "Stratégie long terme"],
-  },
-];
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export function Services() {
+  const { t, ta } = useLanguage();
+
+  const services = [
+    {
+      icon: Home,
+      title: t(translations.services.achat.title),
+      desc: t(translations.services.achat.desc),
+      points: ta(translations.services.achat.points),
+    },
+    {
+      icon: TrendingUp,
+      title: t(translations.services.vente.title),
+      desc: t(translations.services.vente.desc),
+      points: ta(translations.services.vente.points),
+    },
+    {
+      icon: PiggyBank,
+      title: t(translations.services.investissement.title),
+      desc: t(translations.services.investissement.desc),
+      points: ta(translations.services.investissement.points),
+    },
+  ];
+
   return (
     <section id="services" className="py-24 lg:py-32 bg-navy">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-16">
-          <span className="text-crimson text-sm font-bold uppercase tracking-widest">Services</span>
-          <h2 className="mt-3 text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">Trois missions. Une expertise.</h2>
+          <span className="text-crimson text-sm font-bold uppercase tracking-widest">{t(translations.services.label)}</span>
+          <h2 className="mt-3 text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">{t(translations.services.title)}</h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
@@ -43,7 +46,7 @@ export function Services() {
                 <h3 className="text-3xl md:text-4xl font-black tracking-tight">{title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{desc}</p>
                 <ul className="space-y-2">
-                  {points.map((p) => (
+                  {(points as string[]).map((p: string) => (
                     <li key={p} className="flex items-center gap-3 text-sm">
                       <span className="w-6 h-px bg-crimson" />
                       {p}
@@ -53,9 +56,9 @@ export function Services() {
                 <a
                   href="#contact"
                   className="inline-flex items-center gap-2 text-crimson font-bold uppercase tracking-wider group-hover:gap-4 transition-all"
-                  aria-label={`En savoir plus sur le service ${title.toLowerCase()}`}
+                  aria-label={`${t(translations.services.learnMore)} — ${title.toLowerCase()}`}
                 >
-                  En savoir plus <ArrowRight className="w-4 h-4" />
+                  {t(translations.services.learnMore)} <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
             </div>

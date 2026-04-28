@@ -1,19 +1,23 @@
 import { useState, useEffect } from "react";
 import { Phone, Calendar, Menu, X } from "lucide-react";
 import { openCalendly } from "@/lib/calendly";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
+import { LanguageToggle } from "@/components/landing/LanguageToggle";
 import logoEquipe from "@/assets/logo-equipe-color.png";
 
-const links = [
-  { label: "À propos", href: "#apropos" },
-  { label: "Services", href: "#services" },
-  { label: "Témoignages", href: "#temoignages" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Contact", href: "#contact" },
-];
-
 export function Navbar() {
+  const { t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const links = [
+    { label: t(translations.nav.about), href: "#apropos" },
+    { label: t(translations.nav.services), href: "#services" },
+    { label: t(translations.nav.testimonials), href: "#temoignages" },
+    { label: t(translations.nav.faq), href: "#faq" },
+    { label: t(translations.nav.contact), href: "#contact" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -22,7 +26,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on resize to desktop
+  // Fermer le menu mobile au redimensionnement
   useEffect(() => {
     const onResize = () => {
       if (window.innerWidth >= 768) setOpen(false);
@@ -68,8 +72,9 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
+        {/* Desktop CTA + Toggle FR/EN */}
         <div className="hidden md:flex items-center gap-3">
+          <LanguageToggle />
           <a
             href="tel:8199183409"
             className="flex items-center gap-2 text-sm text-foreground/80 hover:text-foreground transition"
@@ -81,22 +86,25 @@ export function Navbar() {
           <button
             onClick={openCalendly}
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-crimson text-primary-foreground text-xs font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer uppercase tracking-wider"
-            aria-label="Rencontre stratégique gratuite"
+            aria-label={t(translations.nav.cta)}
           >
             <Calendar className="w-4 h-4" />
-            Rencontre stratégique
+            {t(translations.nav.cta)}
           </button>
         </div>
 
         {/* Mobile hamburger */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden p-2 -mr-2 text-foreground"
-          aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-          aria-expanded={open}
-        >
-          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <LanguageToggle />
+          <button
+            onClick={() => setOpen(!open)}
+            className="p-2 -mr-2 text-foreground"
+            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={open}
+          >
+            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu panel */}
@@ -129,9 +137,9 @@ export function Navbar() {
             <button
               onClick={(e) => { close(); openCalendly(e); }}
               className="block w-full text-center py-3.5 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson cursor-pointer uppercase tracking-wider"
-              aria-label="Rencontre stratégique gratuite"
+              aria-label={t(translations.nav.ctaMobile)}
             >
-              Rencontre stratégique gratuite
+              {t(translations.nav.ctaMobile)}
             </button>
           </div>
         </nav>

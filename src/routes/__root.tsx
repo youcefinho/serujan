@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, Link, createRootRoute } from "@tanstack/react-router";
+import { LanguageProvider } from "@/lib/LanguageContext";
 
 function NotFoundComponent() {
   return (
@@ -32,7 +33,11 @@ function RootComponent() {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, []);
 
-  return <Outlet />;
+  return (
+    <LanguageProvider>
+      <Outlet />
+    </LanguageProvider>
+  );
 }
 
 export const Route = createRootRoute({
