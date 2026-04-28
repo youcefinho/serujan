@@ -14,8 +14,8 @@ export function About() {
 
   return (
     <section id="apropos" className="py-24 lg:py-32 bg-navy-deep">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        {/* Photo du courtier avec badges flottants */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        {/* Photo du courtier + valeurs en dessous */}
         <div className="relative order-2 lg:order-1">
           <div className="absolute -inset-8 bg-gradient-crimson rounded-full opacity-20 blur-3xl" />
           <div className="relative aspect-[4/5] max-w-md mx-auto lg:max-w-none overflow-hidden rounded-2xl shadow-elevate">
@@ -43,6 +43,19 @@ export function About() {
                 <span className="text-sm font-semibold">{clientConfig.territoryLabel}</span>
               </div>
             </div>
+          </div>
+
+          {/* Valeurs — sous la photo, centrées */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-6 max-w-md mx-auto lg:max-w-none">
+            {values.map(({ label }, i) => {
+              const Icon = valueIcons[i];
+              return (
+                <div key={label} className="bg-card border border-border rounded-xl p-4 text-center hover:border-crimson transition">
+                  <Icon className="w-6 h-6 text-crimson mx-auto mb-2" />
+                  <div className="text-sm font-bold uppercase tracking-wide">{label}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -75,18 +88,6 @@ export function About() {
             {tags.map((tag) => (
               <span key={tag} className="px-3 py-1 bg-navy text-foreground text-xs font-bold rounded border border-border">{tag}</span>
             ))}
-          </div>
-
-          <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            {values.map(({ label }, i) => {
-              const Icon = valueIcons[i];
-              return (
-                <div key={label} className="bg-card border border-border rounded-xl p-4 text-center hover:border-crimson transition">
-                  <Icon className="w-6 h-6 text-crimson mx-auto mb-2" />
-                  <div className="text-sm font-bold uppercase tracking-wide">{label}</div>
-                </div>
-              );
-            })}
           </div>
 
           <div className="flex items-start gap-3 pt-4 border-t border-border">
