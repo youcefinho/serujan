@@ -3,12 +3,14 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 
-// SWAP: Importer les photos des membres quand disponibles
-// import xavierPhoto from "@/assets/team-xavier.jpg";
-// import aliPhoto from "@/assets/team-ali.jpg";
-// import fxPhoto from "@/assets/team-fx.jpg";
-// import flPhoto from "@/assets/team-fl.jpg";
-// Puis ajouter photo: xavierPhoto dans le tableau memberPhotos
+// SWAP: Photos des membres de l'équipe
+import xavierPhoto from "@/assets/xavier.jpg";
+import aliPhoto from "@/assets/ali.jpg";
+import fxPhoto from "@/assets/charbonneau.jpg";
+import flPhoto from "@/assets/francois.jpg";
+
+// Associer les photos aux membres dans l'ordre de config.teamMembers
+const memberPhotos: (string | null)[] = [xavierPhoto, aliPhoto, fxPhoto, flPhoto];
 
 export function ParentTeam() {
   const { t, ta } = useLanguage();
@@ -36,23 +38,35 @@ export function ParentTeam() {
 
           {/* Membres de l'équipe */}
           {clientConfig.teamMembers.length > 0 && (
-            <>
-              <div className="border-t border-border pt-10">
-                <h4 className="text-sm font-bold uppercase tracking-widest text-crimson mb-8">{t(tr.meetTeam)}</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  {clientConfig.teamMembers.map((member) => (
+            <div className="border-t border-border pt-10">
+              <h4 className="text-sm font-bold uppercase tracking-widest text-crimson mb-8">{t(tr.meetTeam)}</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {clientConfig.teamMembers.map((member, i) => {
+                  const photo = memberPhotos[i];
+                  return (
                     <div key={member.name} className="group text-center">
-                      {/* Avatar avec initiales — remplacer par <img> quand les photos sont disponibles */}
-                      <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-crimson/30 to-crimson/10 border-2 border-crimson/40 flex items-center justify-center group-hover:border-crimson group-hover:scale-105 transition-all duration-300">
-                        <span className="text-2xl font-black text-crimson/80">{member.initials}</span>
-                      </div>
+                      {photo ? (
+                        <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-crimson/40 group-hover:border-crimson group-hover:scale-105 transition-all duration-300">
+                          <img
+                            src={photo}
+                            alt={member.name}
+                            className="w-full h-full object-cover object-top"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-crimson/30 to-crimson/10 border-2 border-crimson/40 flex items-center justify-center group-hover:border-crimson group-hover:scale-105 transition-all duration-300">
+                          <span className="text-2xl font-black text-crimson/80">{member.initials}</span>
+                        </div>
+                      )}
                       <h5 className="text-sm font-bold leading-tight">{member.name}</h5>
                       <p className="text-xs text-muted-foreground mt-1">{t(member.role)}</p>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
