@@ -13,7 +13,7 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 export function Footer() {
-  const { t } = useLanguage();
+  const { t, ta } = useLanguage();
 
   // Construction dynamique des réseaux sociaux depuis config
   const socialLinks = [
@@ -37,7 +37,7 @@ export function Footer() {
   return (
     <footer className="bg-navy-deep border-t border-border pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="grid md:grid-cols-3 gap-12 pb-12 border-b border-border">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 border-b border-border">
           <div className="space-y-4">
             <img src={logoEquipe} alt={clientConfig.banner.name} className="h-20 w-auto" loading="lazy" decoding="async" />
             <p className="text-sm text-muted-foreground leading-relaxed mt-2">
@@ -65,6 +65,25 @@ export function Footer() {
                 <span>{clientConfig.address.street}<br />{clientConfig.address.city}, {clientConfig.address.region}</span>
               </li>
             </ul>
+          </div>
+
+          {/* Secteurs — SEO local */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold uppercase tracking-widest text-crimson">{t(translations.footer.sectorsTitle)}</h4>
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
+              {(ta(translations.footer.sectors) as string[]).map((sector) => (
+                <li key={sector} className="hover:text-foreground transition">{sector}</li>
+              ))}
+            </ul>
+            {/* Lien Google Reviews */}
+            <a
+              href={clientConfig.googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-crimson transition mt-2"
+            >
+              ★★★★★ Laisser un avis Google
+            </a>
           </div>
 
           <div className="space-y-4">

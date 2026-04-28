@@ -344,6 +344,27 @@ npx wrangler deploy
 - Vérifier dans le Dashboard Cloudflare → D1 → copier le vrai ID.
 - Ajouter cette vérification dans la checklist de déploiement.
 
+### 10.17 — Section Alertes Propriétés (PropertyAlerts)
+- Composant email-only après la section Properties.
+- Le visiteur s'inscrit pour recevoir les exclusivités AVANT publication.
+- Lead stocké en D1 via `/api/leads` avec type "buy" et message "Inscription alertes propriétés".
+- Capture de leads sans engagement — low friction = taux de conversion élevé.
+
+### 10.18 — Piliers enrichis (descriptions concrètes)
+- Chaque pilier doit avoir 2-3 phrases de description concrète.
+- Mauvais : "Je coordonne inspecteur, notaire..." (1 phrase vague).
+- Bon : "...Vous n'avez qu'un seul interlocuteur — moi. Je gère toute la complexité..." (concret + bénéfice client).
+
+### 10.19 — Google Reviews dans le footer + "Laisser un avis"
+- Lien ★★★★★ "Laisser un avis Google" dans le footer (colonne Secteurs).
+- `config.ts` contient `googleReviewUrl` — utilisé dans Testimonials ET Footer.
+- Double exposition : badge Google en haut (Testimonials) + lien en bas (Footer).
+
+### 10.20 — Secteurs desservis dans le footer (SEO local)
+- Colonne dédiée dans le footer avec 6-8 villes/quartiers du courtier.
+- Bon pour le SEO local : Google indexe les noms de villes.
+- Données dans `translations.ts` → `footer.sectors` + `footer.sectorsTitle`.
+
 ---
 
 ## 11. Documentation obligatoire
@@ -460,4 +481,7 @@ Avant toute modification, lire :
 - [ ] **wrangler.jsonc database_id = VRAI ID** (pas placeholder)
 - [ ] **Process titres percutants** (pas génériques)
 - [ ] **Calculator CTA personnalisé** avec nom du courtier
-
+- [ ] **PropertyAlerts** section email après Properties
+- [ ] **Piliers enrichis** 2-3 phrases concrètes par pilier
+- [ ] **Google Reviews** lien "Laisser un avis" dans Testimonials + Footer
+- [ ] **Secteurs** 6-8 villes dans le footer (SEO local)

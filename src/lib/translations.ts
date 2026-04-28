@@ -285,16 +285,16 @@ export const translations = {
     subtitle: { fr: "Mon approche est structurée pour vous offrir le maximum de protection et de résultats, sans compromis.", en: "My approach is structured to offer you maximum protection and results, no compromises." },
     items: {
       fr: [
-        { title: "Service de A à Z", text: "Je coordonne inspecteur, notaire, courtier hypothécaire et évaluateur." },
-        { title: "Négociation agressive en votre faveur", text: "Je me bats pour le meilleur prix possible." },
-        { title: "Éducation avant la transaction", text: "Vous comprendrez ce que vous achetez avant de signer." },
-        { title: "Ancrage communautaire Gatineau", text: "Je connais chaque quartier, chaque rue, chaque dynamique locale." },
+        { title: "Service de A à Z", text: "Je coordonne inspecteur, notaire, courtier hypothécaire et évaluateur. Vous n'avez qu'un seul interlocuteur — moi. Je gère toute la complexité pour que vous n'ayez qu'à choisir votre maison." },
+        { title: "Négociation agressive en votre faveur", text: "Je me bats pour le meilleur prix possible. Chaque offre est analysée, chiffrée et stratégiquement positionnée. Mon objectif : vous faire économiser des milliers de dollars." },
+        { title: "Éducation avant la transaction", text: "Vous comprendrez ce que vous achetez avant de signer. Je vous explique chaque clause du contrat, chaque étape du processus. Aucune zone grise, aucune mauvaise surprise." },
+        { title: "Ancrage communautaire Gatineau", text: "Je connais chaque quartier, chaque rue, chaque dynamique locale. Des écoles aux commerces, de la valeur foncière aux projets de développement — je vous donne l'heure juste." },
       ],
       en: [
-        { title: "A-to-Z Service", text: "I coordinate inspector, notary, mortgage broker, and appraiser." },
-        { title: "Aggressive negotiation in your favor", text: "I fight for the best possible price." },
-        { title: "Education before the transaction", text: "You'll understand what you're buying before signing." },
-        { title: "Gatineau community roots", text: "I know every neighborhood, every street, every local dynamic." },
+        { title: "A-to-Z Service", text: "I coordinate inspector, notary, mortgage broker, and appraiser. You have one single contact — me. I handle all the complexity so you just have to choose your home." },
+        { title: "Aggressive negotiation in your favor", text: "I fight for the best possible price. Every offer is analyzed, calculated, and strategically positioned. My goal: save you thousands of dollars." },
+        { title: "Education before the transaction", text: "You'll understand what you're buying before signing. I explain every contract clause, every step of the process. No gray areas, no bad surprises." },
+        { title: "Gatineau community roots", text: "I know every neighborhood, every street, every local dynamic. From schools to shops, from property values to development projects — I give you the real picture." },
       ],
     },
   },
@@ -442,6 +442,11 @@ export const translations = {
     available: { fr: "Disponible 7j/7 pour répondre à vos questions.", en: "Available 7/7 to answer your questions." },
     copyright: { fr: "Mathis Guimont · Courtier immobilier résidentiel", en: "Mathis Guimont · Residential real estate broker" },
     madeIn: { fr: "Conçu avec passion à Gatineau", en: "Crafted with passion in Gatineau" },
+    sectorsTitle: { fr: "Secteurs desservis", en: "Areas served" },
+    sectors: {
+      fr: ["Gatineau", "Hull", "Aylmer", "Buckingham", "Masson-Angers", "Chelsea", "Val-des-Monts", "Cantley"],
+      en: ["Gatineau", "Hull", "Aylmer", "Buckingham", "Masson-Angers", "Chelsea", "Val-des-Monts", "Cantley"],
+    },
   },
 
   // --- StatsBar ---
@@ -490,6 +495,16 @@ export const translations = {
   whatsapp: {
     tooltip: { fr: "Écrivez-moi sur WhatsApp", en: "Message me on WhatsApp" },
     message: { fr: "Bonjour Mathis ! J'aimerais en savoir plus sur vos services de courtier immobilier.", en: "Hello Mathis! I'd like to learn more about your real estate brokerage services." },
+  },
+
+  // --- PropertyAlerts ---
+  propertyAlerts: {
+    label: { fr: "Alertes exclusives", en: "Exclusive alerts" },
+    title: { fr: "Soyez les premiers à découvrir nos nouvelles propriétés.", en: "Be the first to discover our new properties." },
+    subtitle: { fr: "Recevez les exclusivités avant qu'elles soient publiquement affichées.", en: "Receive exclusives before they're publicly listed." },
+    placeholder: { fr: "votre@courriel.com", en: "your@email.com" },
+    cta: { fr: "M'inscrire", en: "Subscribe" },
+    success: { fr: "Inscrit ! Vous recevrez les alertes.", en: "Subscribed! You'll receive alerts." },
   },
 } as const;
 

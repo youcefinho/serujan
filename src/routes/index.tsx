@@ -25,6 +25,7 @@ import { MobileStickyBar } from "@/components/landing/MobileStickyBar";
 import { ScrollProgressBar } from "@/components/landing/ScrollProgressBar";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import { ExitIntentPopup } from "@/components/landing/ExitIntentPopup";
+import { PropertyAlerts } from "@/components/landing/PropertyAlerts";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -67,6 +68,7 @@ function Index() {
       <ScrollReveal>
         <Properties />
       </ScrollReveal>
+      <PropertyAlerts />
       <ScrollReveal>
         <InstagramReels />
       </ScrollReveal>
