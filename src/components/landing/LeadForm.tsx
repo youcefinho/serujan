@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { trackLeadFormSubmit } from "@/lib/analytics";
 import { clientConfig } from "@/lib/config";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 const baseSchema = {
   name: z.string().trim().min(2, "Nom requis (min. 2 caractères)").max(100),
@@ -35,6 +37,8 @@ export function LeadForm() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const tr = translations.leadForm;
 
   useEffect(() => {
     setMounted(true);
@@ -205,10 +209,10 @@ export function LeadForm() {
               className="w-full py-4 bg-gradient-crimson text-primary-foreground font-bold uppercase tracking-widest rounded-md shadow-crimson hover:scale-[1.01] transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-              {loading ? "Envoi en cours..." : "Envoyer ma demande"}
+              {loading ? t(tr.sending) : t(tr.submit)}
             </button>
             <p className="text-xs text-muted-foreground text-center">
-              Réponse personnelle de {clientConfig.name} en moins de 2h. Vos informations restent confidentielles.
+              {t(tr.trustBold)} {clientConfig.name} {t(tr.trustText)}
             </p>
           </form>
           </>

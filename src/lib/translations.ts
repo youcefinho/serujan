@@ -164,6 +164,8 @@ export const translations = {
     sending: { fr: "Envoi en cours...", en: "Sending..." },
     success: { fr: "Message envoyé avec succès !", en: "Message sent successfully!" },
     error: { fr: "Erreur lors de l'envoi. Veuillez réessayer.", en: "Error sending. Please try again." },
+    trustText: { fr: "en moins de 2h. Vos informations restent confidentielles.", en: "within 2 hours. Your information remains confidential." },
+    trustBold: { fr: "Réponse personnelle de", en: "Personal response from" },
   },
 
   // --- FAQ ---
