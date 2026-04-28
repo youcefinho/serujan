@@ -175,3 +175,29 @@ node post-deploy.cjs
 - **Coder pour la lisibilité**, pas pour l'intelligence.
 - **Un composant = un fichier = une responsabilité.**
 - **Tester avant de push.** Toujours.
+
+---
+
+## 9. WORKFLOW NOUVEAU CLIENT — 2 Phases
+
+### Phase 1 : Claude Code (terminal) — 2-3h
+1. Cloner le template : `git clone ... nom-du-client`
+2. `bash setup-client.sh` → configure wrangler, D1, .env, post-deploy
+3. Ouvrir `PROMPT_CLAUDE_CODE.md` → remplir les `{{VARIABLES}}` du client
+4. Coller le prompt dans Claude Code → swap complet automatique
+5. `bun run build` → 0 erreurs
+
+### Phase 2 : Antigravity (VS Code) — 1h
+1. Ouvrir `PROMPT_ANTIGRAVITY.md` → coller dans Antigravity
+2. Audit visuel (navigateur) + corrections
+3. `npx wrangler deploy` → `node post-deploy.cjs`
+4. Tests production (login, formulaires, newsletter)
+
+### Fichiers de prompts
+| Fichier | Usage |
+|---|---|
+| `PROMPT_CLAUDE_CODE.md` | Prompt à coller dans Claude Code (Phase 1) |
+| `PROMPT_ANTIGRAVITY.md` | Prompt à coller dans Antigravity (Phase 2) |
+
+> **Temps total : ~3h** si les infos client sont prêtes.
+

@@ -22,25 +22,20 @@
 
 ---
 
-## 🚀 Workflow Nouveau Client — 3 Phases
+## 🚀 Workflow Nouveau Client — 2 Phases
 
-### Phase 1 : DESIGN (Lovable ou Zoer.ai) — 2-3h
-1. Prompter avec le PDF du client (identité, photos, couleurs, style unique)
-2. Itérer visuellement jusqu'à validation
-3. Exporter le code → push sur GitHub
+### Phase 1 : PERSONNALISATION (Claude Code terminal) — 2-3h
+1. Cloner le template → `bash setup-client.sh`
+2. Ouvrir `PROMPT_CLAUDE_CODE.md` → remplir les `{{VARIABLES}}` du client
+3. Coller le prompt dans Claude Code (terminal) → il fait le swap complet
+4. `bun run build` → 0 erreurs
+5. Vérifier : `grep -ri "mathis" src/` → 0 résultats
 
-> ⚠️ Le code exporté = maquette fonctionnelle, PAS du code de production.
-
-### Phase 2 : INGÉNIERIE (Claude Code) — 3-5h
-1. Restructurer selon les standards `intralys-template`
-2. Implémenter : config.ts, translations.ts, worker.ts, schema.sql
-3. Appliquer TOUTES les leçons de `CLAUDE.md` §12
-
-### Phase 3 : POLISH & DEPLOY (Antigravity) — 1-2h
-1. `bun run build` → 0 erreurs
-2. Toggle FR/EN → 100% du texte change
+### Phase 2 : POLISH & DEPLOY (Antigravity) — 1h
+1. Ouvrir `PROMPT_ANTIGRAVITY.md` → coller dans Antigravity
+2. Audit visuel dans le navigateur (toggle FR/EN, responsive, formulaires)
 3. `npx wrangler deploy` → `node post-deploy.cjs`
-4. Tester : login admin, formulaires, newsletter, emails
+4. Tester en production : login admin, formulaires, newsletter, emails
 
 ---
 
