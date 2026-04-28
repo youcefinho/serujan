@@ -83,7 +83,7 @@ echo "   ✅ wrangler.jsonc mis à jour"
 # ── Étape 5 : Exécuter le schéma D1 ──────────────────────────
 echo ""
 echo "🗄️  Exécution du schéma SQL..."
-npx wrangler d1 execute "$DB_NOM" --file=schema.sql
+npx wrangler d1 execute "$DB_NOM" --file=schema.sql --remote
 echo "   ✅ Table leads créée"
 
 # ── Étape 6 : Configurer .env.local ──────────────────────────

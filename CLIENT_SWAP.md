@@ -151,7 +151,7 @@ npx wrangler d1 create NOM-COURTIER-leads
 # Copier le database_id dans wrangler.jsonc
 
 # Exécuter le schéma complet (inclut leads + admin_sessions + login_attempts)
-npx wrangler d1 execute NOM-COURTIER-leads --file=./schema.sql
+npx wrangler d1 execute NOM-COURTIER-leads --file=./schema.sql --remote
 ```
 
 ---
