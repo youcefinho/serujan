@@ -1,84 +1,130 @@
 #!/bin/bash
-# ============================================================================
-# setup-client.sh — Script d'onboarding Intralys
-# Usage : ./setup-client.sh <nom-du-client> <nom-du-repo>
-# Exemple : ./setup-client.sh "Jean Dupont" "jean-dupont-courtier"
-# ============================================================================
+# ═══════════════════════════════════════════════════════════════
+# INTRALYS — Script d'installation pour nouveau client
+# ═══════════════════════════════════════════════════════════════
+# Usage : bash setup-client.sh
+# Ce script guide la configuration d'un nouveau projet client.
+# ═══════════════════════════════════════════════════════════════
 
 set -e
 
-# --- Validation des arguments ---
-if [ -z "$1" ] || [ -z "$2" ]; then
-  echo "❌ Usage : ./setup-client.sh \"Nom du Client\" \"nom-du-repo\""
-  echo "   Exemple : ./setup-client.sh \"Jean Dupont\" \"jean-dupont-courtier\""
+echo ""
+echo "╔══════════════════════════════════════════════════════════╗"
+echo "║         INTRALYS — Configuration Nouveau Client         ║"
+echo "╚══════════════════════════════════════════════════════════╝"
+echo ""
+
+# ── Étape 1 : Informations du client ──────────────────────────
+read -p "📝 Nom du courtier (ex: Marie Dupont) : " COURTIER_NOM
+read -p "📝 Nom du repo GitHub (ex: montreal-premier-achat) : " REPO_NOM
+read -p "📝 Nom de la DB D1 (ex: marie-dupont-leads) : " DB_NOM
+read -p "📝 Téléphone (ex: 5141234567) : " TEL
+read -p "📝 Email (ex: info@mariedupont.com) : " EMAIL
+read -p "📝 Ville principale (ex: Montréal) : " VILLE
+read -p "📝 URL Calendly : " CALENDLY_URL
+
+echo ""
+echo "═══════════════════════════════════════════════════════════"
+echo "  Récapitulatif :"
+echo "  Courtier    : $COURTIER_NOM"
+echo "  Repo        : $REPO_NOM"
+echo "  Base D1     : $DB_NOM"
+echo "  Téléphone   : $TEL"
+echo "  Email       : $EMAIL"
+echo "  Ville       : $VILLE"
+echo "  Calendly    : $CALENDLY_URL"
+echo "═══════════════════════════════════════════════════════════"
+echo ""
+read -p "✅ Confirmer ? (o/n) : " CONFIRM
+if [ "$CONFIRM" != "o" ]; then
+  echo "❌ Annulé."
   exit 1
 fi
 
-CLIENT_NAME="$1"
-REPO_NAME="$2"
-GITHUB_USER="youcefinho"
-TEMPLATE_URL="https://github.com/${GITHUB_USER}/intralys-template.git"
-CLIENT_URL="https://github.com/${GITHUB_USER}/${REPO_NAME}.git"
+# ── Étape 2 : Remote GitHub ───────────────────────────────────
+echo ""
+echo "🔗 Configuration du remote GitHub..."
+git remote remove origin 2>/dev/null || true
+git remote add origin "https://github.com/youcefinho/$REPO_NOM.git"
+echo "   ✅ Remote configuré : youcefinho/$REPO_NOM"
 
+# ── Étape 3 : Créer la base D1 ───────────────────────────────
 echo ""
-echo "🏗️  INTRALYS — Onboarding nouveau client"
-echo "========================================="
-echo "👤 Client     : ${CLIENT_NAME}"
-echo "📦 Repo       : ${CLIENT_URL}"
-echo "📋 Template   : ${TEMPLATE_URL}"
+echo "🗄️  Création de la base D1..."
+echo "   Exécutez manuellement :"
+echo "   npx wrangler d1 create $DB_NOM"
 echo ""
+read -p "📝 Collez le database_id généré : " DB_ID
 
-# --- Étape 1 : Cloner le template ---
-echo "1️⃣  Clonage du template master..."
-git clone "${TEMPLATE_URL}" "${REPO_NAME}"
-cd "${REPO_NAME}"
-echo "   ✅ Template cloné dans ./${REPO_NAME}"
+# ── Étape 4 : Mettre à jour wrangler.jsonc ───────────────────
+echo ""
+echo "📝 Mise à jour de wrangler.jsonc..."
+cat > wrangler.jsonc << EOF
+{
+  "\$schema": "node_modules/wrangler/config-schema.json",
+  "name": "$REPO_NOM",
+  "main": "src/worker.ts",
+  "compatibility_date": "2025-04-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "$DB_NOM",
+      "database_id": "$DB_ID"
+    }
+  ]
+}
+EOF
+echo "   ✅ wrangler.jsonc mis à jour"
 
-# --- Étape 2 : Changer le remote ---
+# ── Étape 5 : Exécuter le schéma D1 ──────────────────────────
 echo ""
-echo "2️⃣  Configuration du remote Git..."
-git remote remove origin
-git remote add origin "${CLIENT_URL}"
-echo "   ✅ Remote configuré vers ${CLIENT_URL}"
+echo "🗄️  Exécution du schéma SQL..."
+npx wrangler d1 execute "$DB_NOM" --file=schema.sql
+echo "   ✅ Table leads créée"
 
-# --- Étape 3 : Créer .env.local à partir de .env.example ---
+# ── Étape 6 : Configurer .env.local ──────────────────────────
 echo ""
-echo "3️⃣  Création de .env.local..."
-if [ -f ".env.example" ]; then
-  cp .env.example .env.local
-  echo "   ✅ .env.local créé à partir de .env.example"
-  echo "   ⚠️  IMPORTANT : Remplissez les variables dans .env.local avant de continuer !"
-else
-  echo "   ⚠️  .env.example introuvable. Créez manuellement .env.local."
-fi
+echo "📝 Configuration de .env.local..."
+cat > .env.local << EOF
+# Variables client — $COURTIER_NOM
+VITE_CALENDLY_URL=$CALENDLY_URL
+VITE_GA4_ID=G-XXXXXXXXXX
+EOF
+echo "   ✅ .env.local créé"
 
-# --- Étape 4 : Installer les dépendances ---
+# ── Étape 7 : Rappels ────────────────────────────────────────
 echo ""
-echo "4️⃣  Installation des dépendances..."
-if command -v bun &> /dev/null; then
-  bun install
-  echo "   ✅ Dépendances installées avec bun"
-else
-  echo "   ⚠️  bun non trouvé. Installez bun puis exécutez 'bun install'."
-fi
-
-# --- Résumé ---
-echo ""
-echo "========================================="
-echo "🎉 Projet initialisé avec succès !"
-echo "========================================="
-echo ""
-echo "📝 Prochaines étapes :"
-echo "   1. Ouvrir .env.local et remplir les clés (Supabase, Resend, Calendly, GA4)"
-echo "   2. Créer le projet Supabase du client et la table 'leads'"
-echo "   3. Suivre CLIENT_SWAP.md pour le rebranding complet"
-echo "   4. Exécuter : bun run build"
-echo "   5. Commiter : git add . && git commit -m \"Nouveau client : ${CLIENT_NAME}\""
-echo "   6. Pousser  : git push -u origin main"
-echo ""
-echo "📖 Documentation :"
-echo "   - CLAUDE.md              → Règles du projet"
-echo "   - CLIENT_SWAP.md         → Checklist des standards Intralys"
-echo "   - REPRODUCTION_CHECKLIST → Numéros de lignes exacts pour le swap"
-echo "   - INTRALYS_MASTER.md     → Architecture technique complète"
+echo "╔══════════════════════════════════════════════════════════╗"
+echo "║                    ✅ CONFIGURATION OK                  ║"
+echo "╠══════════════════════════════════════════════════════════╣"
+echo "║                                                        ║"
+echo "║  Prochaines étapes manuelles :                         ║"
+echo "║                                                        ║"
+echo "║  1. Modifier src/lib/translations.ts                   ║"
+echo "║     → Remplacer les textes de Mathis par $COURTIER_NOM ║"
+echo "║                                                        ║"
+echo "║  2. Remplacer les photos dans src/assets/              ║"
+echo "║     → hero-banner.jpg, mathis-red.jpg, mathis-white.jpg║"
+echo "║     → logo-equipe-color.png, logo-equipe-white.png     ║"
+echo "║                                                        ║"
+echo "║  3. Modifier index.html                                ║"
+echo "║     → title, meta description, Schema.org, GA4 ID      ║"
+echo "║                                                        ║"
+echo "║  4. Modifier src/worker.ts                             ║"
+echo "║     → Nom courtier dans l'email, lien guide PDF        ║"
+echo "║                                                        ║"
+echo "║  5. Build + Deploy :                                   ║"
+echo "║     bun install                                        ║"
+echo "║     bun run build                                      ║"
+echo "║     npx wrangler deploy                                ║"
+echo "║                                                        ║"
+echo "║  6. Configurer dans Cloudflare Dashboard :             ║"
+echo "║     → Settings → Variables et secrets                  ║"
+echo "║     → RESEND_API_KEY + ADMIN_PASSWORD                  ║"
+echo "║                                                        ║"
+echo "╚══════════════════════════════════════════════════════════╝"
 echo ""
