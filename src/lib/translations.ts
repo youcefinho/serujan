@@ -506,6 +506,47 @@ export const translations = {
     cta: { fr: "M'inscrire", en: "Subscribe" },
     success: { fr: "Inscrit ! Vous recevrez les alertes.", en: "Subscribed! You'll receive alerts." },
   },
+
+  // --- LeadForm champs/options ---
+  leadFormFields: {
+    tabBuyLabel: { fr: "Formulaire acheteur", en: "Buyer form" },
+    tabSellLabel: { fr: "Formulaire vendeur", en: "Seller form" },
+    tabBuy: { fr: "J'achète", en: "I'm buying" },
+    tabSell: { fr: "Je vends", en: "I'm selling" },
+    name: { fr: "Nom complet", en: "Full name" },
+    phone: { fr: "Téléphone", en: "Phone" },
+    email: { fr: "Courriel", en: "Email" },
+    budget: { fr: "Budget", en: "Budget" },
+    timeline: { fr: "Échéancier", en: "Timeline" },
+    address: { fr: "Adresse de la propriété", en: "Property address" },
+    propertyType: { fr: "Type de propriété", en: "Property type" },
+    messageBuy: { fr: "Quel type de propriété cherchez-vous ?", en: "What type of property are you looking for?" },
+    messageSell: { fr: "Parlez-nous de votre propriété", en: "Tell us about your property" },
+    honeypot: { fr: "Ne pas remplir", en: "Do not fill" },
+    budgetOptions: {
+      fr: ["Moins de 300 000 $", "300 000 – 500 000 $", "500 000 – 750 000 $", "750 000 $ et plus"],
+      en: ["Under $300,000", "$300,000 – $500,000", "$500,000 – $750,000", "$750,000+"],
+    },
+    timelineOptions: {
+      fr: ["0–3 mois", "3–6 mois", "6–12 mois", "Je m'informe"],
+      en: ["0–3 months", "3–6 months", "6–12 months", "Just exploring"],
+    },
+    propertyTypeOptions: {
+      fr: ["Maison unifamiliale", "Condo", "Plex", "Terrain", "Autre"],
+      en: ["Single family home", "Condo", "Plex", "Land", "Other"],
+    },
+    // Validation
+    nameRequired: { fr: "Nom requis (min. 2 caractères)", en: "Name required (min. 2 characters)" },
+    phoneInvalid: { fr: "Numéro de téléphone invalide", en: "Invalid phone number" },
+    emailInvalid: { fr: "Courriel invalide", en: "Email invalid" },
+    addressRequired: { fr: "Adresse requise", en: "Address required" },
+    serverError: { fr: "Erreur serveur", en: "Server error" },
+    validationError: { fr: "Veuillez vérifier les champs.", en: "Please check the fields." },
+    genericError: { fr: "Une erreur est survenue. Veuillez réessayer ou appeler", en: "An error occurred. Please try again or call" },
+  },
+
+  // --- Footer Google Reviews ---
+  footerReview: { fr: "Laisser un avis Google", en: "Leave a Google review" },
 } as const;
 
 // Type utilitaire pour accéder aux traductions

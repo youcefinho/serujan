@@ -8,37 +8,39 @@ import { clientConfig } from "@/lib/config";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 
-const baseSchema = {
-  name: z.string().trim().min(2, "Nom requis (min. 2 caractères)").max(100),
-  phone: z
-    .string()
-    .trim()
-    .min(7, "Numéro de téléphone invalide")
-    .max(20)
-    .regex(/^[0-9+()\-.\s]+$/, "Numéro de téléphone invalide"),
-  email: z.string().trim().email("Courriel invalide").max(255),
-  message: z.string().trim().max(1000).optional(),
-};
-
-const buySchema = z.object({
-  ...baseSchema,
-  budget: z.string().min(1).max(100),
-  timeline: z.string().min(1).max(100),
-});
-
-const sellSchema = z.object({
-  ...baseSchema,
-  address: z.string().trim().min(3, "Adresse requise").max(200),
-  property_type: z.string().min(1).max(100),
-});
-
 export function LeadForm() {
   const [tab, setTab] = useState<"buy" | "sell">("buy");
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, ta } = useLanguage();
   const tr = translations.leadForm;
+  const fields = translations.leadFormFields;
+
+  // Schémas de validation dynamiques (utilisant les traductions courantes)
+  const baseSchema = {
+    name: z.string().trim().min(2, t(fields.nameRequired)).max(100),
+    phone: z
+      .string()
+      .trim()
+      .min(7, t(fields.phoneInvalid))
+      .max(20)
+      .regex(/^[0-9+()\-.s]+$/, t(fields.phoneInvalid)),
+    email: z.string().trim().email(t(fields.emailInvalid)).max(255),
+    message: z.string().trim().max(1000).optional(),
+  };
+
+  const buySchema = z.object({
+    ...baseSchema,
+    budget: z.string().min(1).max(100),
+    timeline: z.string().min(1).max(100),
+  });
+
+  const sellSchema = z.object({
+    ...baseSchema,
+    address: z.string().trim().min(3, t(fields.addressRequired)).max(200),
+    property_type: z.string().min(1).max(100),
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -81,29 +83,34 @@ export function LeadForm() {
         }),
       });
 
-      if (!response.ok) throw new Error("Erreur serveur");
+      if (!response.ok) throw new Error(t(fields.serverError));
 
       trackLeadFormSubmit(tab);
       form.reset();
       navigate({ to: "/merci" });
     } catch (err) {
       if (err instanceof z.ZodError) {
-        toast.error(err.issues[0]?.message ?? "Veuillez vérifier les champs.");
+        toast.error(err.issues[0]?.message ?? t(fields.validationError));
       } else {
         console.error("Lead submission failed:", err);
-        toast.error(`Une erreur est survenue. Veuillez réessayer ou appeler ${clientConfig.phone.display}.`);
+        toast.error(`${t(fields.genericError)} ${clientConfig.phone.display}.`);
       }
     } finally {
       setLoading(false);
     }
   };
 
+  // Options traduits
+  const budgetOptions = ta(fields.budgetOptions) as string[];
+  const timelineOptions = ta(fields.timelineOptions) as string[];
+  const propertyTypeOptions = ta(fields.propertyTypeOptions) as string[];
+
   return (
     <section id="contact" className="py-24 lg:py-32 bg-navy">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-12">
-          <span className="text-crimson text-sm font-bold uppercase tracking-widest">Contact</span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">Démarrons votre projet.</h2>
+          <span className="text-crimson text-sm font-bold uppercase tracking-widest">{t(tr.label)}</span>
+          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">{t(tr.title)}</h2>
         </div>
 
         <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-elevate" suppressHydrationWarning>
@@ -114,18 +121,18 @@ export function LeadForm() {
           ) : (
           <>
           <div className="grid grid-cols-2">
-            {(["buy", "sell"] as const).map((t) => (
+            {(["buy", "sell"] as const).map((tabValue) => (
               <button
-                key={t}
+                key={tabValue}
                 type="button"
-                onClick={() => setTab(t)}
+                onClick={() => setTab(tabValue)}
                 className={`py-5 font-bold uppercase tracking-widest text-sm transition relative ${
-                  tab === t ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                  tab === tabValue ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
-                aria-label={t === "buy" ? "Formulaire acheteur" : "Formulaire vendeur"}
+                aria-label={tabValue === "buy" ? t(fields.tabBuyLabel) : t(fields.tabSellLabel)}
               >
-                {t === "buy" ? "J'achète" : "Je vends"}
-                {tab === t && <span className="absolute bottom-0 left-0 right-0 h-1 bg-crimson" />}
+                {tabValue === "buy" ? t(fields.tabBuy) : t(fields.tabSell)}
+                {tab === tabValue && <span className="absolute bottom-0 left-0 right-0 h-1 bg-crimson" />}
               </button>
             ))}
           </div>
@@ -133,7 +140,7 @@ export function LeadForm() {
           <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-10 space-y-5" noValidate>
             {/* Honeypot — invisible to humans, filled by bots */}
             <div style={{ display: "none" }} aria-hidden="true">
-              <label htmlFor="website">Ne pas remplir</label>
+              <label htmlFor="website">{t(fields.honeypot)}</label>
               <input
                 type="text"
                 id="website"
@@ -143,10 +150,10 @@ export function LeadForm() {
               />
             </div>
             <div className="grid md:grid-cols-2 gap-4">
-              <Input name="name" label="Nom complet" required maxLength={100} autoComplete="name" />
+              <Input name="name" label={t(fields.name)} required maxLength={100} autoComplete="name" />
               <Input
                 name="phone"
-                label="Téléphone"
+                label={t(fields.phone)}
                 type="tel"
                 required
                 maxLength={20}
@@ -155,7 +162,7 @@ export function LeadForm() {
             </div>
             <Input
               name="email"
-              label="Courriel"
+              label={t(fields.email)}
               type="email"
               required
               maxLength={255}
@@ -167,39 +174,34 @@ export function LeadForm() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <Select
                     name="budget"
-                    label="Budget"
-                    options={[
-                      "Moins de 300 000 $",
-                      "300 000 – 500 000 $",
-                      "500 000 – 750 000 $",
-                      "750 000 $ et plus",
-                    ]}
+                    label={t(fields.budget)}
+                    options={budgetOptions}
                   />
                   <Select
                     name="timeline"
-                    label="Échéancier"
-                    options={["0–3 mois", "3–6 mois", "6–12 mois", "Je m'informe"]}
+                    label={t(fields.timeline)}
+                    options={timelineOptions}
                   />
                 </div>
-                <Textarea name="message" label="Quel type de propriété cherchez-vous ?" />
+                <Textarea name="message" label={t(fields.messageBuy)} />
               </>
             ) : (
               <>
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
                     name="address"
-                    label="Adresse de la propriété"
+                    label={t(fields.address)}
                     required
                     maxLength={200}
                     autoComplete="street-address"
                   />
                   <Select
                     name="property_type"
-                    label="Type de propriété"
-                    options={["Maison unifamiliale", "Condo", "Plex", "Terrain", "Autre"]}
+                    label={t(fields.propertyType)}
+                    options={propertyTypeOptions}
                   />
                 </div>
-                <Textarea name="message" label="Parlez-nous de votre propriété" />
+                <Textarea name="message" label={t(fields.messageSell)} />
               </>
             )}
 

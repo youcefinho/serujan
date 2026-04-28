@@ -82,7 +82,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-crimson transition mt-2"
             >
-              ★★★★★ Laisser un avis Google
+              ★★★★★ {t(translations.footerReview)}
             </a>
           </div>
 
