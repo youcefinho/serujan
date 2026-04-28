@@ -276,8 +276,11 @@ npx wrangler deploy
 ### 10.3 — Calculatrice enrichie
 - Hypothèque + taxe foncière + assurance habitation = coût mensuel total.
 
-### 10.4 — Section Propriétés avec lien Centris
-- Cartes placeholder + CTA vers Centris.
+### 10.4 — Section Propriétés avec vraies données
+- Vraies photos de maisons (Unsplash ou photos client), JAMAIS de placeholder vide.
+- Badges de statut : NOUVELLE (vert), EXCLUSIVE (crimson), VENDU (gris + grayscale).
+- Données complètes : prix, localisation précise (quartier), chambres, salles de bain, superficie (pi²).
+- CTA vers Centris du courtier.
 
 ### 10.5 — Territoire Hero en MAJUSCULES
 - Format : `GATINEAU | OTTAWA` (pipe séparateur).
@@ -289,11 +292,57 @@ npx wrangler deploy
 - `<h2>` : `uppercase tracking-widest`
 - Boutons CTA : `uppercase tracking-widest`
 
-### 10.8 — Section « Première rencontre gratuite »
+### 10.8 — Section « Première rencontre gratuite » + photo courtier
 - Juste avant `LeadForm`. Badges ✅ Gratuit · ✅ Sans engagement · ✅ Confidentiel.
+- **Layout split** : texte + badges à gauche, photo courtier (fond couleur forte) à droite.
 
 ### 10.9 — Services — 3 piliers
 - ACHAT · VENTE · INVESTISSEMENT — toujours 3.
+- Boutons CTA honnêtes : `"Me contacter →"` (pas "En savoir plus" sans destination).
+
+### 10.10 — Hero : titre inclusif ACHAT + VENTE
+- Le titre hero doit couvrir ACHAT et VENTE (pas juste "premier achat").
+- Un vendeur qui arrive doit se sentir ciblé aussi.
+- Mauvais : "Votre premier achat à Gatineau" → exclut les vendeurs.
+- Bon : "Achetez. Vendez. Sans stress." → couvre les 2 cas.
+
+### 10.11 — Réseaux sociaux : haut ET bas de page
+- **OBLIGATOIRE** : liens sociaux dans le Hero (haut) ET dans le Footer (bas).
+- Hero : boutons pills discrets avec backdrop-blur.
+- Footer : icônes carrées "SUIVEZ-MOI".
+- Doublon intentionnel — le visiteur doit pouvoir suivre à tout moment.
+
+### 10.12 — Photos courtier : 3 placements stratégiques
+- **About** (haut) : photo fond neutre/blanc + badges flottants (étoiles + ancienneté).
+- **Milieu** : section équipe ou Instagram — photo contextuelle.
+- **FreeConsultation** (bas) : photo percutante fond rouge/couleur forte.
+- JAMAIS la même photo à 2 endroits.
+
+### 10.13 — Flow des sections : funnel de conversion logique
+- Maximum **15 sections**. Pas 20+.
+- Ordre obligatoire :
+  ```
+  QUI : About → ParentTeam
+  APPROCHE : Fears → Services → Process → Pillars
+  PREUVES : Testimonials → Properties → Instagram
+  OUTILS : Calculator → MarketStats
+  CONVERSION : Deliverables → LeadMagnet → FreeConsultation → LeadForm → FAQ
+  ```
+- About AVANT les peurs (le visiteur doit savoir QUI parle avant d'avoir peur).
+- Process AVANT Testimonials (comprendre le service avant les avis).
+
+### 10.14 — CTA dans la section About
+- Toujours un bouton CTA dans About. Le visiteur convaincu ne doit pas scroller pour convertir.
+
+### 10.15 — Copywriting percutant
+- Process : titres agressifs ("L'Audit Stratégique", "Radar Exclusif", pas "Consultation").
+- Calculator CTA : personnalisé avec le nom du courtier.
+- Instagram : titre émotionnel ("Dans les tranchées", pas "Suivez-nous").
+
+### 10.16 — wrangler.jsonc : database_id RÉEL avant deploy
+- **JAMAIS** déployer avec un `database_id` placeholder.
+- Vérifier dans le Dashboard Cloudflare → D1 → copier le vrai ID.
+- Ajouter cette vérification dans la checklist de déploiement.
 
 ---
 
@@ -355,7 +404,41 @@ Avant toute modification, lire :
 ### 12.10 — Schéma SQL complet pour base neuve
 - **✅** `schema.sql` contient TOUTES les tables. `migrations/` pour les DB existantes.
 
-### 12.11 — Checklist nouveau projet
+### 12.11 — Titre Hero exclusif (un seul public)
+- **❌** Hero dit "Votre premier achat" mais formulaire propose aussi "Je vends".
+- **✅** Titre couvre ACHAT + VENTE. Ex: "Achetez. Vendez. Sans stress."
+
+### 12.12 — Boutons CTA trompeurs
+- **❌** "En savoir plus" qui mène au formulaire de contact.
+- **✅** "Me contacter →" — label honnête = confiance = meilleure conversion.
+
+### 12.13 — Trop de sections (20+)
+- **❌** 20 sections dont des doublons (Pillars ≈ Services, Enemy ≈ About).
+- **✅** Max 15 sections dans un funnel logique. Fusionner les doublons.
+
+### 12.14 — Propriétés sans photos
+- **❌** Cartes avec gradient vide — aucune photo de maison.
+- **✅** Vraies photos + badges (NOUVELLE/EXCLUSIVE/VENDU) + superficie.
+
+### 12.15 — Section About sans CTA
+- **❌** Le visiteur convaincu par About devait scroller 10 sections pour trouver le formulaire.
+- **✅** CTA "RENCONTRE STRATÉGIQUE GRATUITE" directement dans About.
+
+### 12.16 — Photos courtier mal placées
+- **❌** Photo fond rouge dans le hero (trop agressif), photo fond blanc en bas (peu visible).
+- **✅** Blanc/neutre en haut (About), rouge/fort en bas (FreeConsultation).
+
+### 12.17 — wrangler.jsonc avec faux database_id
+- **❌** `database_id` placeholder `8d67c8e5-...` → deploy échoue.
+- **✅** Vérifier le vrai ID dans le Dashboard Cloudflare AVANT le premier deploy.
+
+### 12.18 — Réseaux sociaux en bas seulement
+- **❌** Socials uniquement dans le footer — le visiteur ne les voit que s'il scroll tout en bas.
+- **✅** Socials en HAUT (Hero) ET en BAS (Footer). Double exposition.
+
+---
+
+### 12.99 — Checklist nouveau projet (MISE À JOUR)
 - [ ] `config.ts` contient toutes les données client
 - [ ] Zéro hardcoded dans les `.tsx`
 - [ ] Schema D1 = API = Frontend = Admin (alignés)
@@ -367,4 +450,14 @@ Avant toute modification, lire :
 - [ ] Notification email courtier à chaque lead
 - [ ] i18n complet (toggle = 100% change)
 - [ ] `bun run build` = 0 erreurs + `bun run test` = tous tests passent
+- [ ] **Hero titre couvre ACHAT + VENTE** (pas juste "premier achat")
+- [ ] **Socials en haut (Hero) ET en bas (Footer)**
+- [ ] **3 photos courtier : blanc haut, contextuelle milieu, rouge bas**
+- [ ] **Flow 15 sections max — funnel logique**
+- [ ] **CTA dans About** (pas seulement en bas)
+- [ ] **Propriétés avec vraies photos + badges + superficie**
+- [ ] **Boutons CTA honnêtes** ("Me contacter" pas "En savoir plus")
+- [ ] **wrangler.jsonc database_id = VRAI ID** (pas placeholder)
+- [ ] **Process titres percutants** (pas génériques)
+- [ ] **Calculator CTA personnalisé** avec nom du courtier
 
