@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 
 const baseSchema = {
@@ -59,20 +58,19 @@ export function LeadForm() {
 
       const parsed = tab === "buy" ? buySchema.parse(raw) : sellSchema.parse(raw);
 
-      const { error } = await supabase.from("leads").insert({
-        type: tab,
-        name: parsed.name,
-        phone: parsed.phone,
-        email: parsed.email,
-        message: parsed.message || null,
-        budget: tab === "buy" ? (parsed as z.infer<typeof buySchema>).budget : null,
-        timeline: tab === "buy" ? (parsed as z.infer<typeof buySchema>).timeline : null,
-        address: tab === "sell" ? (parsed as z.infer<typeof sellSchema>).address : null,
-        property_type:
-          tab === "sell" ? (parsed as z.infer<typeof sellSchema>).property_type : null,
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: tab,
+          name: parsed.name,
+          phone: parsed.phone,
+          email: parsed.email,
+          message: parsed.message || "",
+        }),
       });
 
-      if (error) throw error;
+      if (!response.ok) throw new Error("Erreur serveur");
 
       form.reset();
       navigate({ to: "/merci" });

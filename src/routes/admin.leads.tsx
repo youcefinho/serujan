@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Search, Phone, Mail, X, Home, ShoppingCart, Download } from "lucide-react";
 
 interface Lead {
@@ -63,14 +62,16 @@ function AdminLeadsPage() {
 
   useEffect(() => {
     const load = async () => {
-      const { data, error } = await supabase
-        .from("leads")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) {
-        console.error(error);
-      } else {
+      try {
+        const token = localStorage.getItem("intralys-admin-token");
+        const response = await fetch("/api/admin/leads", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) throw new Error("Erreur chargement");
+        const { data } = await response.json();
         setLeads((data as Lead[]) ?? []);
+      } catch (err) {
+        console.error("Erreur chargement leads:", err);
       }
       setLoading(false);
     };

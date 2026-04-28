@@ -1,16 +1,12 @@
 // Cloudflare Pages Function — API pour envoyer le guide gratuit
 // Route : POST /api/send-guide
-// Remplace l'ancienne Netlify Function (netlify/functions/send-guide.ts)
-// Variables d'environnement via context.env (pas process.env)
+// Utilise Cloudflare D1 pour sauvegarder le lead + Resend pour l'email
 
 import { Resend } from 'resend';
-import { createClient } from '@supabase/supabase-js';
 
 interface Env {
+  DB: D1Database;
   RESEND_API_KEY: string;
-  SUPABASE_URL: string;
-  SUPABASE_SERVICE_ROLE_KEY: string;
-  SUPABASE_ANON_KEY: string;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -24,22 +20,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       });
     }
 
-    // Sauvegarder le lead dans Supabase (best-effort — ne bloque pas l'envoi d'email)
+    // Sauvegarder le lead dans D1 (best-effort — ne bloque pas l'envoi d'email)
     try {
-      const supabaseUrl = context.env.SUPABASE_URL;
-      const supabaseKey = context.env.SUPABASE_SERVICE_ROLE_KEY || context.env.SUPABASE_ANON_KEY;
-      if (supabaseUrl && supabaseKey) {
-        const supabase = createClient(supabaseUrl, supabaseKey);
-        await supabase.from('leads').insert({
-          type: 'buy' as const,
-          name: prenom || 'Lead Magnet',
-          email,
-          phone: '',
-          message: 'Guide Gratuit du Premier Acheteur — téléchargé via Lead Magnet',
-        });
-      }
+      const id = crypto.randomUUID();
+      await context.env.DB.prepare(
+        'INSERT INTO leads (id, name, email, phone, message, type) VALUES (?, ?, ?, ?, ?, ?)'
+      ).bind(id, prenom || 'Lead Magnet', email, '', 'Guide Gratuit du Premier Acheteur — téléchargé via Lead Magnet', 'buy').run();
     } catch (dbErr) {
-      console.warn('Échec sauvegarde lead Supabase:', dbErr);
+      console.warn('Échec sauvegarde lead D1:', dbErr);
     }
 
     // Envoyer l'email via Resend

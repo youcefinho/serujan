@@ -1,81 +1,63 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, FormEvent } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import { Loader2, Lock } from "lucide-react";
-import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
+
+// Login admin simplifié — mot de passe unique via API Cloudflare
 
 export const Route = createFileRoute("/admin/login")({
   component: AdminLogin,
 });
 
 function AdminLogin() {
-  const [mode, setMode] = useState<"login" | "signup">("login");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
-    setLoading(true);
+    if (loading || !password) return;
 
     try {
-      if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast.success("Connecté !");
-        navigate({ to: "/admin/leads" });
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/admin/leads`,
-          },
-        });
-        if (error) throw error;
-        toast.success("Compte créé. Vérifiez votre courriel pour confirmer.");
-        setMode("login");
+      setLoading(true);
+      setError("");
+
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.token) {
+        setError("Mot de passe incorrect");
+        return;
       }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Erreur inconnue";
-      toast.error(msg);
+
+      localStorage.setItem("intralys-admin-token", data.token);
+      navigate({ to: "/admin/leads" });
+      window.location.reload();
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Erreur de connexion. Réessayez.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-6">
+    <div className="w-full max-w-sm mx-auto">
       <div className="bg-card border border-border rounded-2xl p-8 shadow-elevate">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-crimson mb-4">
-            <Lock className="w-6 h-6 text-primary-foreground" />
+          <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-gradient-to-br from-crimson/20 to-crimson/5 border border-crimson/30 flex items-center justify-center">
+            <Lock className="w-6 h-6 text-crimson" />
           </div>
-          <h1 className="text-2xl font-bold">
-            {mode === "login" ? "Connexion admin" : "Créer un compte admin"}
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Accès réservé à l'équipe Mathis Guimont
-          </p>
+          <h1 className="text-xl font-bold">Accès Administrateur</h1>
+          <p className="text-sm text-muted-foreground mt-2">Entrez le mot de passe admin</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
-              Courriel
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              className="w-full px-4 py-3 bg-input border border-border rounded-md focus:border-crimson focus:outline-none transition"
-            />
-          </div>
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
               Mot de passe
@@ -84,43 +66,26 @@ function AdminLogin() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
               className="w-full px-4 py-3 bg-input border border-border rounded-md focus:border-crimson focus:outline-none transition"
+              required
+              autoFocus
             />
           </div>
+
+          {error && (
+            <p className="text-sm text-red-400 text-center">{error}</p>
+          )}
+
           <button
             type="submit"
             disabled={loading}
             className="w-full py-3 bg-gradient-crimson text-primary-foreground font-bold uppercase tracking-widest rounded-md shadow-crimson hover:scale-[1.01] transition disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            {mode === "login" ? "Se connecter" : "Créer le compte"}
+            {loading ? "Connexion..." : "Se connecter"}
           </button>
         </form>
-
-        <div className="mt-6 text-center text-sm">
-          {mode === "login" ? (
-            <button
-              type="button"
-              onClick={() => setMode("signup")}
-              className="text-muted-foreground hover:text-foreground transition"
-            >
-              Première fois ? <span className="text-crimson font-semibold">Créer un compte</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setMode("login")}
-              className="text-muted-foreground hover:text-foreground transition"
-            >
-              Déjà un compte ? <span className="text-crimson font-semibold">Se connecter</span>
-            </button>
-          )}
-        </div>
       </div>
-      <Toaster />
     </div>
   );
 }

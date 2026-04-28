@@ -15,7 +15,6 @@
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-slot": "^1.2.4",
-    "@supabase/supabase-js": "^2.104.1",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-router": "^1.168.0",
     "@tanstack/router-plugin": "^1.167.10",
