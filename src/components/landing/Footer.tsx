@@ -1,7 +1,8 @@
-import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Instagram } from "lucide-react";
 import logoEquipe from "@/assets/logo-equipe-white.png";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
+import { clientConfig } from "@/lib/config";
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -14,12 +15,31 @@ function TikTokIcon({ className }: { className?: string }) {
 export function Footer() {
   const { t } = useLanguage();
 
+  // Construction dynamique des réseaux sociaux depuis config
+  const socialLinks = [
+    clientConfig.socials.facebook && {
+      icon: Facebook,
+      label: "Facebook",
+      href: clientConfig.socials.facebook.url,
+    },
+    clientConfig.socials.instagram && {
+      icon: Instagram,
+      label: "Instagram",
+      href: clientConfig.socials.instagram.url,
+    },
+    clientConfig.socials.tiktok && {
+      icon: TikTokIcon,
+      label: "TikTok",
+      href: clientConfig.socials.tiktok.url,
+    },
+  ].filter(Boolean) as { icon: React.ElementType; label: string; href: string }[];
+
   return (
     <footer className="bg-navy-deep border-t border-border pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="grid md:grid-cols-3 gap-12 pb-12 border-b border-border">
           <div className="space-y-4">
-            <img src={logoEquipe} alt="L'Équipe Xavier Charron & Ali Al" className="h-20 w-auto" loading="lazy" decoding="async" />
+            <img src={logoEquipe} alt={clientConfig.banner.name} className="h-20 w-auto" loading="lazy" decoding="async" />
             <p className="text-sm text-muted-foreground leading-relaxed mt-2">
               {t(translations.footer.desc)}
             </p>
@@ -29,20 +49,20 @@ export function Footer() {
             <h4 className="text-sm font-bold uppercase tracking-widest text-crimson">{t(translations.footer.contact)}</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="tel:8199183409" className="flex items-center gap-3 hover:text-crimson transition" aria-label="819-918-3409">
+                <a href={`tel:${clientConfig.phone.raw}`} className="flex items-center gap-3 hover:text-crimson transition" aria-label={clientConfig.phone.display}>
                   <Phone className="w-4 h-4" />
-                  <span>819-918-3409</span>
+                  <span>{clientConfig.phone.display}</span>
                 </a>
               </li>
               <li>
-                <a href="mailto:info@mathisguimont.com" className="flex items-center gap-3 hover:text-crimson transition" aria-label="info@mathisguimont.com">
+                <a href={`mailto:${clientConfig.email}`} className="flex items-center gap-3 hover:text-crimson transition" aria-label={clientConfig.email}>
                   <Mail className="w-4 h-4" />
-                  <span className="truncate">info@mathisguimont.com</span>
+                  <span className="truncate">{clientConfig.email}</span>
                 </a>
               </li>
               <li className="flex items-start gap-3 text-muted-foreground">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>225 boul. de la Gappe, suite 102<br />Gatineau, Outaouais</span>
+                <span>{clientConfig.address.street}<br />{clientConfig.address.city}, {clientConfig.address.region}</span>
               </li>
             </ul>
           </div>
@@ -50,11 +70,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="text-sm font-bold uppercase tracking-widest text-crimson">{t(translations.footer.followMe)}</h4>
             <div className="flex gap-3">
-              {[
-                { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/mathis.guimont/reels/" },
-                { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/mathis_guimont/" },
-                { icon: TikTokIcon, label: "TikTok", href: "https://www.tiktok.com/@mathisguimont" },
-              ].map(({ icon: Icon, label, href }) => (
+              {socialLinks.map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
                   href={href}
@@ -67,9 +83,11 @@ export function Footer() {
                 </a>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground pt-2">
-              <a href="https://www.instagram.com/mathis_guimont/" target="_blank" rel="noopener noreferrer" className="hover:text-crimson transition" aria-label="Instagram">@mathis_guimont</a>
-            </p>
+            {clientConfig.socials.instagram && (
+              <p className="text-xs text-muted-foreground pt-2">
+                <a href={clientConfig.socials.instagram.url} target="_blank" rel="noopener noreferrer" className="hover:text-crimson transition" aria-label="Instagram">{clientConfig.socials.instagram.handle}</a>
+              </p>
+            )}
             <p className="text-xs text-muted-foreground">
               {t(translations.footer.available)}
             </p>

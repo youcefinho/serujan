@@ -3,6 +3,7 @@ import { Calendar, X } from "lucide-react";
 import { openCalendly } from "@/lib/calendly";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
+import { clientConfig } from "@/lib/config";
 
 const DELAY_SECONDS = 30;
 const STORAGE_KEY = "exit_popup_dismissed";
@@ -43,7 +44,7 @@ export function ExitIntentPopup() {
           <button onClick={(e) => { dismiss(); openCalendly(e); }} className="w-full py-4 bg-gradient-crimson text-primary-foreground font-bold uppercase tracking-widest rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer">
             {t(tr.cta)}
           </button>
-          <a href="tel:8199183409" className="block text-sm text-muted-foreground hover:text-crimson transition">{t(tr.callAlt)} 819-918-3409</a>
+          <a href={`tel:${clientConfig.phone.raw}`} className="block text-sm text-muted-foreground hover:text-crimson transition">{t(tr.callAlt)} {clientConfig.phone.display}</a>
         </div>
       </div>
     </div>

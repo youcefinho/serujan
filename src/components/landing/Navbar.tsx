@@ -4,6 +4,7 @@ import { openCalendly } from "@/lib/calendly";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { LanguageToggle } from "@/components/landing/LanguageToggle";
+import { clientConfig } from "@/lib/config";
 import logoEquipe from "@/assets/logo-equipe-color.png";
 
 export function Navbar() {
@@ -47,11 +48,11 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 md:h-[72px] flex items-center justify-between">
         {/* Logo */}
-        <a href="/" className="shrink-0" aria-label="Accueil — Mathis Guimont">
+        <a href="/" className="shrink-0" aria-label={`Accueil — ${clientConfig.name}`}>
           <div className="bg-white rounded-md p-1.5 shadow-lg">
             <img
               src={logoEquipe}
-              alt="L'Équipe Xavier Charron & Ali Al"
+              alt={clientConfig.banner.name}
               className="h-8 md:h-10 w-auto"
               loading="eager"
               decoding="async"
@@ -76,12 +77,12 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <LanguageToggle />
           <a
-            href="tel:8199183409"
+            href={`tel:${clientConfig.phone.raw}`}
             className="flex items-center gap-2 text-sm text-foreground/80 hover:text-foreground transition"
-            aria-label="Appeler le 819-918-3409"
+            aria-label={`Appeler le ${clientConfig.phone.display}`}
           >
             <Phone className="w-4 h-4" />
-            819-918-3409
+            {clientConfig.phone.display}
           </a>
           <button
             onClick={openCalendly}
@@ -127,12 +128,12 @@ export function Navbar() {
 
           <div className="pt-4 mt-2 border-t border-white/10 space-y-3">
             <a
-              href="tel:8199183409"
+              href={`tel:${clientConfig.phone.raw}`}
               className="flex items-center gap-3 px-4 py-3 text-foreground hover:text-crimson transition"
-              aria-label="Appeler le 819-918-3409"
+              aria-label={`Appeler le ${clientConfig.phone.display}`}
             >
               <Phone className="w-5 h-5 text-crimson" />
-              <span className="font-semibold">819-918-3409</span>
+              <span className="font-semibold">{clientConfig.phone.display}</span>
             </a>
             <button
               onClick={(e) => { close(); openCalendly(e); }}

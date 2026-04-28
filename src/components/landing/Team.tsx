@@ -3,6 +3,7 @@ import mathisWhite from "@/assets/mathis-white.jpg";
 import logoEquipeColor from "@/assets/logo-equipe-color.png";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
+import { clientConfig } from "@/lib/config";
 
 export function Team() {
   const { t } = useLanguage();
@@ -27,7 +28,7 @@ export function Team() {
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-border/50 shadow-elevate">
               <img
                 src={mathisWhite}
-                alt="Mathis Guimont, Courtier immobilier résidentiel"
+                alt={`${clientConfig.name}, ${t(clientConfig.title)}`}
                 loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
@@ -40,7 +41,7 @@ export function Team() {
           {/* Details */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-3xl font-bold mb-2">Mathis Guimont</h3>
+              <h3 className="text-3xl font-bold mb-2">{clientConfig.name}</h3>
               <p className="text-crimson font-bold text-lg mb-6">{t(translations.team.role)}</p>
               <p className="text-muted-foreground leading-relaxed text-lg">
                 {t(translations.team.bio)}

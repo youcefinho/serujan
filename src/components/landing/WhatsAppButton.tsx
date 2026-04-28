@@ -2,15 +2,15 @@ import { MessageCircle } from "lucide-react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { trackWhatsAppClick } from "@/lib/analytics";
+import { clientConfig } from "@/lib/config";
 
 export function WhatsAppButton() {
   const { t } = useLanguage();
-  const phone = "18199183409";
   const message = encodeURIComponent(t(translations.whatsapp.message));
 
   return (
     <a
-      href={`https://wa.me/${phone}?text=${message}`}
+      href={`https://wa.me/${clientConfig.phone.international}?text=${message}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="WhatsApp"

@@ -2,6 +2,7 @@ import { Heart, Eye, Zap, MapPin } from "lucide-react";
 import mathisWhite from "@/assets/mathis-white.jpg";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
+import { clientConfig } from "@/lib/config";
 
 const valueIcons = [Heart, Eye, Zap];
 
@@ -19,7 +20,7 @@ export function About() {
           <div className="relative aspect-[4/5] bg-cream rounded-2xl overflow-hidden shadow-elevate">
             <img
               src={mathisWhite}
-              alt="Portrait de Mathis Guimont"
+              alt={`Portrait de ${clientConfig.name}`}
               className="w-full h-full object-cover object-top"
               loading="lazy"
               decoding="async"

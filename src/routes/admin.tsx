@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { LogOut, LayoutDashboard } from "lucide-react";
+import { clientConfig } from "@/lib/config";
 
 // Admin simplifié — Authentification par token localStorage
 // Le token est obtenu via POST /api/admin/login (mot de passe unique)
@@ -47,7 +48,7 @@ function AdminLayout() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/admin/leads" className="flex items-center gap-2 font-bold">
             <LayoutDashboard className="w-5 h-5 text-crimson" />
-            Admin · Mathis Guimont
+            Admin · {clientConfig.name}
           </Link>
           <button
             onClick={handleSignOut}
