@@ -1,13 +1,18 @@
 // Calendly URL — set VITE_CALENDLY_URL in .env.local
 const CALENDLY_URL = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/dahmanimohamedrouchdi";
 
+import { trackCalendlyClick } from "@/lib/analytics";
+
 /**
  * Opens the Calendly popup widget.
  * Listens for the `calendly.event_scheduled` postMessage event
  * and saves the lead data via l'API Cloudflare (/api/leads).
  */
-export function openCalendly(e?: React.MouseEvent) {
+export function openCalendly(e?: React.MouseEvent, location = "unknown") {
   e?.preventDefault();
+
+  // Tracking GA4
+  trackCalendlyClick(location);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- API Calendly externe
   const Calendly = (window as any).Calendly;

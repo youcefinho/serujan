@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { trackLeadFormSubmit } from "@/lib/analytics";
 
 const baseSchema = {
   name: z.string().trim().min(2, "Nom requis (min. 2 caractères)").max(100),
@@ -72,6 +73,7 @@ export function LeadForm() {
 
       if (!response.ok) throw new Error("Erreur serveur");
 
+      trackLeadFormSubmit(tab);
       form.reset();
       navigate({ to: "/merci" });
     } catch (err) {

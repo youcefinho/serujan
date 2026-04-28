@@ -3,6 +3,7 @@ import { Download, Book, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
+import { trackLeadMagnetDownload } from "@/lib/analytics";
 
 export function LeadMagnet() {
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ export function LeadMagnet() {
       });
 
       if (response.ok) {
+        trackLeadMagnetDownload();
         toast.success(t(translations.leadMagnet.success), {
           icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
         });
