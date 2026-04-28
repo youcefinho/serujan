@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // SWAP: Remplacer par le nom du worker du client
   "name": "gatineau-premier-achat-ventee",
   "main": "src/worker.ts",
   "compatibility_date": "2025-04-01",
@@ -7,6 +8,7 @@
     "directory": "./dist",
     "not_found_handling": "single-page-application"
   },
+  // SWAP: Remplacer database_name et database_id après `npx wrangler d1 create NOM-CLIENT-leads`
   "d1_databases": [
     {
       "binding": "DB",
