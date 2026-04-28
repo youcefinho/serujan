@@ -14,6 +14,24 @@ interface Env {
 const SESSION_DURATION_HOURS = 24;
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOGIN_WINDOW_HOURS = 1;
+const MAX_INPUT_LENGTH = 500;
+
+// ── Sanitization ────────────────────────────────────────────
+// Échappe les caractères HTML dangereux (protection XSS pour les emails)
+function sanitizeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Nettoie un input utilisateur : trim + limite de longueur
+function sanitizeInput(str: string | undefined, maxLen = MAX_INPUT_LENGTH): string {
+  if (!str) return '';
+  return str.trim().slice(0, maxLen);
+}
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -53,20 +71,31 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
       return json({ error: 'Nom et email requis' }, 400);
     }
 
+    // Sanitisation des inputs
+    const cleanName = sanitizeInput(name, 100);
+    const cleanEmail = sanitizeInput(email, 200);
+    const cleanPhone = sanitizeInput(phone, 30);
+    const cleanMessage = sanitizeInput(message, 1000);
+    const cleanType = type === 'sell' ? 'sell' : 'buy';
+    const cleanBudget = sanitizeInput(budget, 100);
+    const cleanTimeline = sanitizeInput(timeline, 100);
+    const cleanAddress = sanitizeInput(address, 300);
+    const cleanPropertyType = sanitizeInput(property_type, 100);
+
     const id = crypto.randomUUID();
     await env.DB.prepare(
       'INSERT INTO leads (id, name, email, phone, message, type, budget, timeline, address, property_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     ).bind(
       id,
-      name,
-      email,
-      phone || '',
-      message || '',
-      type || 'buy',
-      budget || '',
-      timeline || '',
-      address || '',
-      property_type || '',
+      cleanName,
+      cleanEmail,
+      cleanPhone,
+      cleanMessage,
+      cleanType,
+      cleanBudget,
+      cleanTimeline,
+      cleanAddress,
+      cleanPropertyType,
     ).run();
 
     return json({ success: true, id });
@@ -94,12 +123,18 @@ async function handleSendGuide(request: Request, env: Env): Promise<Response> {
       return json({ error: `Configuration manquante: ${diagnostics.join(', ')}` }, 500);
     }
 
+    // Sanitisation des inputs
+    const cleanPrenom = sanitizeInput(prenom, 100);
+    const cleanEmail = sanitizeInput(email, 200);
+    // Version HTML-safe pour injection dans le template email
+    const safePrenom = sanitizeHtml(cleanPrenom);
+
     // Sauvegarder le lead dans D1 (best-effort)
     try {
       const id = crypto.randomUUID();
       await env.DB.prepare(
         'INSERT INTO leads (id, name, email, phone, message, type) VALUES (?, ?, ?, ?, ?, ?)'
-      ).bind(id, prenom || 'Lead Magnet', email, '', 'Guide Gratuit du Premier Acheteur — téléchargé via Lead Magnet', 'buy').run();
+      ).bind(id, cleanPrenom || 'Lead Magnet', cleanEmail, '', 'Guide Gratuit du Premier Acheteur — téléchargé via Lead Magnet', 'buy').run();
     } catch (dbErr) {
       console.warn('Échec sauvegarde lead D1:', dbErr);
     }
@@ -108,11 +143,11 @@ async function handleSendGuide(request: Request, env: Env): Promise<Response> {
     const resend = new Resend(env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
       from: CLIENT.emailFrom,
-      to: [email],
+      to: [cleanEmail],
       subject: CLIENT.emailSubject.fr,
       html: `
         <div style="background-color:#ffffff;color:#1a1a1a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:40px 20px;max-width:600px;margin:0 auto;line-height:1.6;border:1px solid #f0f0f0;border-radius:12px;">
-          <h2 style="color:#1a1a1a;font-size:22px;margin-bottom:24px;font-weight:bold;">Bonjour ${prenom || ''},</h2>
+          <h2 style="color:#1a1a1a;font-size:22px;margin-bottom:24px;font-weight:bold;">Bonjour ${safePrenom || ''},</h2>
           <p style="margin-bottom:24px;font-size:16px;">Merci de votre intérêt ! Votre guide gratuit est prêt à être consulté.</p>
           <div style="background-color:#f9f9f9;padding:24px;border-radius:8px;margin-bottom:32px;">
             <p style="margin:0 0 12px;font-weight:bold;color:#1a1a1a;">À l'intérieur vous trouverez :</p>
