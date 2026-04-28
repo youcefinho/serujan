@@ -124,6 +124,7 @@ export const translations = {
       fr: ["Réseau provincial", "Marketing avancé", "Formation continue"],
       en: ["Provincial network", "Advanced marketing", "Continuous training"],
     },
+    meetTeam: { fr: "Rencontrez l'équipe", en: "Meet the team" },
   },
 
   // --- FreeConsultation ---

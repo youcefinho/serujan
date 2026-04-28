@@ -67,6 +67,16 @@ export const clientConfig = {
     team: "Royal LePage" as string | null,
   },
 
+  // ── Membres de l'équipe ──────────────────────────────
+  // SWAP: Ajouter/retirer les membres selon le client
+  // Pour les photos : importer dans le composant ParentTeam.tsx
+  teamMembers: [
+    { name: "Xavier Charron", role: { fr: "Courtier immobilier", en: "Real Estate Broker" }, initials: "XC" },
+    { name: "Ali Al", role: { fr: "Courtier immobilier", en: "Real Estate Broker" }, initials: "AA" },
+    { name: "François-Xavier Charbonneau", role: { fr: "Courtier immobilier", en: "Real Estate Broker" }, initials: "FX" },
+    { name: "François-Luc Charron", role: { fr: "Courtier immobilier", en: "Real Estate Broker" }, initials: "FL" },
+  ],
+
   // ── URLs ──────────────────────────────────────────────
   centrisUrl: "https://www.centris.ca/fr",
   googleReviewUrl: "https://g.page/r/mathisguimont/review",
