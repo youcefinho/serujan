@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// Calendly URL — replace with Mathis's real Calendly link
-const CALENDLY_URL = "https://calendly.com/dahmanimohamedrouchdi";
+// Calendly URL — set VITE_CALENDLY_URL in .env.local
+const CALENDLY_URL = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/dahmanimohamedrouchdi";
 
 /**
  * Opens the Calendly popup widget.
@@ -50,7 +50,7 @@ export function attachCalendlyListener() {
         }`,
       });
 
-      console.log("Calendly lead saved to Supabase");
+      // Lead saved successfully
     } catch (err) {
       console.error("Failed to save Calendly lead:", err);
     }

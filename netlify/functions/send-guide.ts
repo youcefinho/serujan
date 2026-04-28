@@ -1,7 +1,8 @@
 import type { Handler } from '@netlify/functions';
 import { Resend } from 'resend';
+import { createClient } from '@supabase/supabase-js';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_9PGVvdq6_KshLe9eo16U8sZHKr4MUUjAf');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -13,6 +14,24 @@ export const handler: Handler = async (event) => {
 
     if (!email) {
       return { statusCode: 400, body: JSON.stringify({ error: 'Email requis' }) };
+    }
+
+    // Save lead to Supabase (best-effort — don't block email delivery)
+    try {
+      const supabaseUrl = process.env.SUPABASE_URL;
+      const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+      if (supabaseUrl && supabaseKey) {
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        await supabase.from('leads').insert({
+          type: 'buy' as const,
+          name: prenom || 'Lead Magnet',
+          email,
+          phone: '',
+          message: 'Guide Gratuit du Premier Acheteur — téléchargé via Lead Magnet',
+        });
+      }
+    } catch (dbErr) {
+      console.warn('Failed to save Lead Magnet lead to Supabase:', dbErr);
     }
 
     const { data, error } = await resend.emails.send({
