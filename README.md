@@ -1,7 +1,7 @@
-# 🏠 Landing Page Courtier Immobilier — Template Intralys
+# 🏠 Template Intralys — Landing Page Courtier Immobilier
 
-> Template de site web haute conversion pour courtier immobilier au Québec.
-> Conçu pour être reproduit en moins de 1 heure pour chaque nouveau client.
+> Template universel de site web haute conversion pour courtiers immobiliers au Québec.
+> Chaque site = design unique + même architecture de production.
 
 ---
 
@@ -9,220 +9,117 @@
 
 | Outil | Rôle |
 |---|---|
-| **Vite** | Build & dev server |
-| **React 19** | Interface utilisateur |
-| **TypeScript** | Typage strict |
-| **Tailwind CSS v4** | Styles utilitaires |
-| **TanStack Router** | Routing type-safe |
-| **Supabase** | Base de données + authentification |
-| **Resend** | Envoi d'emails automatisé |
-| **Netlify** | Hébergement + Functions serverless |
-| **Calendly** | Prise de rendez-vous |
+| **React 19** | Interface utilisateur (composants fonctionnels) |
+| **TypeScript 5.8+** | Typage strict obligatoire |
+| **Vite 7** | Build tool et dev server |
+| **Tailwind CSS v4** | Styles utilitaires (`@theme inline`, couleurs `oklch`) |
+| **TanStack Router** | Routing type-safe basé sur les fichiers |
+| **Cloudflare Workers** | Worker unifié : API + assets statiques |
+| **Cloudflare D1** | Base de données SQLite serverless (1 DB par client) |
+| **Resend** | Envoi d'emails transactionnels |
+| **Bun** | Runtime et gestionnaire de paquets (jamais npm) |
+| **Calendly** | Prise de rendez-vous en popup |
 
 ---
 
-## 📋 Guide de Reproduction — Nouveau Client
+## 🚀 Workflow Nouveau Client — 3 Phases
 
-### Étape 1 : Cloner le repo
+### Phase 1 : DESIGN (Lovable ou Zoer.ai) — 2-3h
+1. Prompter avec le PDF du client (identité, photos, couleurs, style unique)
+2. Itérer visuellement jusqu'à validation
+3. Exporter le code → push sur GitHub
 
-```bash
-git clone https://github.com/youcefinho/gatineau-premier-achat-vente.git nom-du-nouveau-client
-cd nom-du-nouveau-client
-```
+> ⚠️ Le code exporté = maquette fonctionnelle, PAS du code de production.
 
-### Étape 2 : Configurer les variables d'environnement
+### Phase 2 : INGÉNIERIE (Claude Code) — 3-5h
+1. Restructurer selon les standards `intralys-template`
+2. Implémenter : config.ts, translations.ts, worker.ts, schema.sql
+3. Appliquer TOUTES les leçons de `CLAUDE.md` §12
 
-```bash
-cp .env.example .env.local
-```
+### Phase 3 : POLISH & DEPLOY (Antigravity) — 1-2h
+1. `bun run build` → 0 erreurs
+2. Toggle FR/EN → 100% du texte change
+3. `npx wrangler deploy` → `node post-deploy.cjs`
+4. Tester : login admin, formulaires, newsletter, emails
 
-Ouvrez `.env.local` et remplissez **toutes** les valeurs :
+---
 
-| Variable | Où la trouver |
-|---|---|
-| `VITE_SUPABASE_URL` | Supabase Dashboard → Settings → API → Project URL |
-| `VITE_SUPABASE_ANON_KEY` | Supabase Dashboard → Settings → API → anon (public) key |
-| `SUPABASE_URL` | Même valeur que `VITE_SUPABASE_URL` |
-| `SUPABASE_ANON_KEY` | Même valeur que `VITE_SUPABASE_ANON_KEY` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase Dashboard → Settings → API → service_role key |
-| `RESEND_API_KEY` | [resend.com](https://resend.com) → API Keys |
-| `VITE_GA4_ID` | Google Analytics 4 → Admin → Data Streams |
-| `VITE_CALENDLY_URL` | URL de la page Calendly du courtier |
-
-> ⚠️ **Important :** `VITE_GA4_ID` doit aussi être collé manuellement dans `index.html` lignes 30 et 35 (remplacer `G-XXXXXXXXXX`).
-
-### Étape 3 : Créer le projet Supabase
-
-1. Créer un nouveau projet sur [supabase.com](https://supabase.com)
-2. Aller dans **SQL Editor** et exécuter les 3 fichiers de migration dans l'ordre :
-   ```
-   supabase/migrations/20260424213511_*.sql  ← Table leads + RLS
-   supabase/migrations/20260424213530_*.sql  ← Comment policy
-   supabase/migrations/20260424214820_*.sql  ← Table user_roles + admin policies
-   ```
-3. Créer un compte admin dans **Authentication → Users**
-4. Ajouter le rôle admin en SQL :
-   ```sql
-   INSERT INTO public.user_roles (user_id, role)
-   VALUES ('UUID-DU-USER-ADMIN', 'admin');
-   ```
-
-### Étape 4 : Remplacer le contenu client (CLIENT_SWAP)
-
-Remplacer les éléments suivants pour le nouveau client :
-
-#### A. Identité & SEO → `index.html`
-- Titre, meta description, keywords, URLs canonical/OG
-- Schema.org JSON-LD (nom, téléphone, email, adresse, villes)
-- ID Google Analytics (`G-XXXXXXXXXX` → votre ID)
-
-#### B. Photos & Logos → `src/assets/`
-- `hero-banner.jpg` — Image de fond hero
-- `mathis-red.jpg` — Portrait du courtier (Hero)
-- `mathis-white.jpg` — Portrait du courtier (About, Team)
-- `logo-equipe-color.png` — Logo couleur (Navbar)
-- `logo-equipe-white.png` — Logo blanc (Footer)
-
-#### C. Contenu des sections → `src/components/landing/`
-- `Hero.tsx` — Nom, titre, numéro de téléphone, badge âge
-- `About.tsx` — Biographie, adresse du bureau
-- `Footer.tsx` — Téléphone, email, adresse, réseaux sociaux
-- `Testimonials.tsx` — Avis clients + ventes récentes
-- `Team.tsx` — Nom, titre, biographie
-- `WhatsAppButton.tsx` — Numéro WhatsApp
-- `MobileStickyBar.tsx` — Numéro de téléphone
-- `ExitIntentPopup.tsx` — Numéro de téléphone
-- `InstagramReels.tsx` — URLs Instagram + thumbnails
-- `MarketStats.tsx` — Statistiques marché local
-
-#### D. Lead Magnet → `netlify/functions/send-guide.ts`
-- Lien du PDF (Google Drive ou hébergé)
-- Nom et signature dans l'email
-
-#### E. SEO → `public/`
-- `robots.txt` — URL du sitemap
-- `sitemap.xml` — URL du site
-
-> 📖 Voir `REPRODUCTION_CHECKLIST.md` pour la liste complète avec numéros de lignes exacts.
-
-### Étape 5 : Installer les dépendances
+## 📋 Déploiement Rapide
 
 ```bash
+# 1. Cloner le template
+git clone https://github.com/youcefinho/intralys-template.git nom-du-client
+cd nom-du-client
+git remote set-url origin https://github.com/youcefinho/nom-du-client.git
+
+# 2. Installer
 bun install
-# ou
-npm install
+
+# 3. Créer la base D1
+npx wrangler d1 create nom-du-client-leads
+# → Copier le database_id dans wrangler.jsonc
+
+# 4. Exécuter le schéma
+npx wrangler d1 execute nom-du-client-leads --file=schema.sql --remote
+
+# 5. Configurer
+cp .env.example .env.local    # Remplir VITE_CALENDLY_URL, VITE_GA4_ID
+cp post-deploy.example.cjs post-deploy.cjs  # Mettre les vrais secrets
+
+# 6. Swap client — suivre CLIENT_SWAP.md
+
+# 7. Build + Deploy
+bun run build                 # 0 erreurs obligatoire
+npx wrangler deploy
+node post-deploy.cjs          # ⚠️ OBLIGATOIRE — remet les secrets
+
+# 8. Vérifications post-deploy
+# → Login admin, formulaires, newsletter, emails
 ```
-
-### Étape 6 : Vérifier le build
-
-```bash
-bun run build
-# ou
-npm run build
-```
-
-✅ Doit afficher **0 errors, 0 warnings**.
-
-### Étape 7 : Tester localement
-
-```bash
-bun run dev
-# ou
-npm run dev
-```
-
-Vérifier :
-- [ ] Page d'accueil charge correctement
-- [ ] Formulaire de contact fonctionne
-- [ ] Popup Calendly s'ouvre
-- [ ] Dashboard admin accessible à `/admin/login`
-
-### Étape 8 : Déployer sur Netlify
-
-```bash
-git add -A
-git commit -m "Nouveau client : [Nom du courtier]"
-git push origin main
-```
-
-Netlify détecte le push et déploie automatiquement via `netlify.toml`.
-
-**Variables à configurer dans Netlify UI** (Site Settings → Environment Variables) :
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `RESEND_API_KEY`
-
-### Étape 9 : Vérification post-déploiement
-
-- [ ] Homepage affiche le bon branding
-- [ ] Formulaire lead enregistre dans Supabase
-- [ ] Lead Magnet envoie l'email
-- [ ] Calendly popup fonctionne
-- [ ] WhatsApp ouvre le bon numéro
-- [ ] Admin dashboard accessible
-- [ ] Export CSV fonctionne
-- [ ] Mobile responsive (375px)
-- [ ] `robots.txt` et `sitemap.xml` accessibles
 
 ---
 
-## 📁 Structure du projet
+## 📁 Structure du Projet
 
 ```
-├── index.html                  # Point d'entrée + SEO + Schema.org
-├── netlify.toml                # Config Netlify (headers, redirects, caching)
-├── .env.example                # Template des variables d'environnement
-├── public/
-│   ├── robots.txt              # Directives crawlers
-│   └── sitemap.xml             # Plan du site
-├── netlify/functions/
-│   └── send-guide.ts           # Netlify Function — envoi email Lead Magnet
-├── supabase/migrations/        # SQL — tables leads + user_roles + RLS
 ├── src/
-│   ├── main.tsx                # Point d'entrée React
-│   ├── styles.css              # Variables de couleurs + Tailwind config
-│   ├── lib/calendly.ts         # Helper Calendly popup + sync Supabase
-│   ├── hooks/                  # useScrollReveal, useMobile
-│   ├── integrations/supabase/  # Client Supabase + types
+│   ├── assets/              # Photos et logos du courtier
 │   ├── components/
-│   │   ├── landing/            # 27 composants de la landing page
-│   │   └── ui/                 # Composants UI réutilisables
-│   └── routes/                 # Pages TanStack Router
-│       ├── index.tsx           # Page d'accueil (assemblage)
-│       ├── merci.tsx           # Page de remerciement
-│       ├── admin.tsx           # Layout admin (auth guard)
-│       ├── admin.login.tsx     # Connexion admin
-│       └── admin.leads.tsx     # Dashboard leads + export CSV
-└── src/assets/                 # Photos et logos du courtier
+│   │   ├── landing/         # 1 composant = 1 section de page
+│   │   └── ui/              # Composants UI réutilisables
+│   ├── hooks/               # Hooks custom (useScrollReveal, etc.)
+│   ├── lib/
+│   │   ├── config.ts        # ⭐ Données client centralisées
+│   │   ├── translations.ts  # Toutes les traductions FR/EN
+│   │   ├── LanguageContext.tsx  # Provider i18n
+│   │   └── calendly.ts      # Helper Calendly
+│   ├── routes/              # TanStack Router (file-based)
+│   └── worker.ts            # ⭐ Worker Cloudflare (API routes)
+├── public/
+│   ├── _headers             # Headers de sécurité (CSP)
+│   ├── _redirects           # Redirects SPA
+│   ├── robots.txt / sitemap.xml
+│   └── manifest.json        # PWA
+├── wrangler.jsonc            # Config Worker + D1
+├── schema.sql               # Schéma complet D1
+├── migration-leads.sql      # ALTER TABLE pour bases existantes
+├── post-deploy.example.cjs  # Template script secrets
+└── .vscode/settings.json    # CSS validate off (Tailwind v4)
 ```
 
 ---
 
-## 🎨 Personnalisation des couleurs
-
-Les couleurs sont dans `src/styles.css` (`:root`, lignes 44-49) :
-
-```css
---navy: oklch(0.21 0.04 260);       /* Fond principal */
---navy-deep: oklch(0.16 0.035 260); /* Sections sombres */
---crimson: oklch(0.56 0.22 25);     /* Couleur d'accent */
---crimson-glow: oklch(0.63 0.24 25);/* Accent hover */
---cream: oklch(0.97 0.01 80);       /* Variante claire */
-```
-
----
-
-## 📚 Documentation complète
+## 📚 Documentation
 
 | Fichier | Contenu |
 |---|---|
-| `INTRALYS_MASTER.md` | Documentation technique complète du template |
-| `REPRODUCTION_CHECKLIST.md` | Audit des fonctionnalités + checklist de reproduction avec numéros de lignes |
-| `.env.example` | Toutes les variables d'environnement requises |
+| `CLAUDE.md` | Instructions IA + standards + 27 leçons apprises |
+| `INTRALYS_MASTER.md` | Architecture technique complète |
+| `CLIENT_SWAP.md` | Guide pas-à-pas pour adapter à un nouveau client |
+| `COLOR_PALETTES.md` | Palettes couleurs par bannière immobilière |
+| `LESSONS_LEARNED.md` | Erreurs documentées et solutions |
+| `.env.example` | Variables d'environnement requises |
 
 ---
 
-*Créé par Intralys · Template courtier immobilier haute conversion*
+*Créé par Intralys · Template universel courtier immobilier haute conversion*

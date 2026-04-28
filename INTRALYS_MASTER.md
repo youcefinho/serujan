@@ -133,7 +133,7 @@ wrangler.jsonc
 
 > ⚠️ Les secrets doivent être dans la section **"Variables et secrets"** du Dashboard (runtime), pas seulement dans les variables de build.
 
-### Table `leads` (schéma D1)
+### Table `leads` (schéma D1 complet)
 
 ```sql
 CREATE TABLE IF NOT EXISTS leads (
@@ -142,10 +142,18 @@ CREATE TABLE IF NOT EXISTS leads (
   email TEXT NOT NULL,
   phone TEXT DEFAULT '',
   message TEXT DEFAULT '',
-  type TEXT DEFAULT 'buy',
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  type TEXT CHECK (type IN ('buy', 'sell')) DEFAULT 'buy',
+  budget TEXT DEFAULT '',
+  timeline TEXT DEFAULT '',
+  address TEXT DEFAULT '',
+  property_type TEXT DEFAULT '',
+  created_at TEXT DEFAULT (datetime('now'))
 );
 ```
+
+> ⚠️ `CREATE TABLE IF NOT EXISTS` ne modifie PAS les tables existantes.
+> Utiliser `migration-leads.sql` (ALTER TABLE) pour ajouter des colonnes.
+> Le worker utilise un INSERT résilient (try/catch + auto-migration + fallback).
 
 ---
 
@@ -196,10 +204,13 @@ export function MonComposant() {
 
 ## 6. Sécurité
 
-- **Headers CSP** : Configurés dans `public/_headers`
+- **Headers CSP** : Configurés dans `public/_headers` — doivent refléter les services utilisés
 - **Honeypot anti-spam** : Champ caché `website` dans `LeadForm.tsx`
-- **Variables serveur** : Jamais dans le code source, toujours dans le Dashboard Cloudflare
-- **Token admin** : Hash SHA-256 généré côté worker, stocké en `localStorage`
+- **Variables serveur** : Jamais dans le code source, toujours via `post-deploy.cjs` ou Dashboard Cloudflare
+- **Token admin** : `crypto.randomUUID()` stocké en D1 (`admin_sessions`) avec expiration 24h
+- **Rate limiting** : 5 tentatives/heure par IP sur `/api/admin/login`
+- **Sanitisation** : `sanitizeHtml()` sur tout input dans du HTML, `sanitizeInput()` (trim+maxLen) sur tout input
+- **Secrets** : Effacés par `npx wrangler deploy` → `node post-deploy.cjs` obligatoire après chaque deploy
 
 ---
 
@@ -221,31 +232,33 @@ Configuré dans `index.html` :
 # 1. Cloner le template
 git clone https://github.com/youcefinho/intralys-template.git nom-du-client
 cd nom-du-client
-git remote remove origin
-git remote add origin https://github.com/youcefinho/nom-du-client.git
+git remote set-url origin https://github.com/youcefinho/nom-du-client.git
 
-# 2. Créer la base D1
+# 2. Installer
+bun install
+
+# 3. Créer la base D1
 npx wrangler d1 create nom-du-client-leads
-
-# 3. Mettre à jour wrangler.jsonc avec le nouveau database_id et name
+# → Copier le database_id dans wrangler.jsonc
 
 # 4. Exécuter le schéma
-npx wrangler d1 execute nom-du-client-leads --file=schema.sql
+npx wrangler d1 execute nom-du-client-leads --file=schema.sql --remote
 
-# 5. Configurer .env.local
-cp .env.example .env.local
-# Remplir VITE_CALENDLY_URL, VITE_GA4_ID
+# 5. Configurer
+cp .env.example .env.local           # VITE_CALENDLY_URL, VITE_GA4_ID
+cp post-deploy.example.cjs post-deploy.cjs  # Vrais secrets
 
 # 6. Suivre CLIENT_SWAP.md pour le rebranding
 
 # 7. Build + Deploy
-bun install
 bun run build
 npx wrangler deploy
 
-# 8. Configurer les secrets dans le Dashboard
-# Cloudflare → Workers & Pages → Settings → Variables et secrets
-# Ajouter : RESEND_API_KEY, ADMIN_PASSWORD (type: Texte ou Secret)
+# 8. ⚠️ OBLIGATOIRE — Remettre les secrets
+node post-deploy.cjs
+
+# 9. Vérifications post-deploy
+# → Login admin, formulaires achat/vente, newsletter, emails
 ```
 
 ---
@@ -254,18 +267,19 @@ npx wrangler deploy
 
 | Fichier | Quoi modifier |
 |---|---|
-| `wrangler.jsonc` | `name`, `database_id` |
-| `index.html` | title, meta, Schema.org, GA4 ID |
-| `src/assets/` | Photos courtier, logos |
-| `Hero.tsx` | Nom, téléphone, territoire |
-| `About.tsx` | Biographie (via `translations.ts`) |
-| `Footer.tsx` | Tel, email, adresse, réseaux sociaux |
-| `WhatsAppButton.tsx` | Numéro de téléphone |
-| `Testimonials.tsx` | Avis clients (via `translations.ts`) |
-| `translations.ts` | Tous les textes FR/EN |
-| `worker.ts` | Nom dans l'email, lien du guide PDF |
-| `.env.local` | VITE_CALENDLY_URL, VITE_GA4_ID |
+| `src/lib/config.ts` | ⭐ TOUTES les données client (nom, tel, email, URLs, équipe) |
+| `src/lib/translations.ts` | Textes FR/EN (bio, témoignages, FAQ, stats) |
+| `src/assets/` | Photos courtier, logos, hero banner |
 | `src/styles.css` | Couleurs de marque (--crimson, --navy) |
+| `index.html` | title, meta, Schema.org, GA4 ID (chercher `SWAP:`) |
+| `wrangler.jsonc` | `name`, `database_name`, `database_id` |
+| `.env.local` | VITE_CALENDLY_URL, VITE_GA4_ID |
+| `post-deploy.cjs` | Vrais secrets (ADMIN_PASSWORD, RESEND_API_KEY) |
+| `public/manifest.json` | name, short_name, description |
+| `public/sitemap.xml` | URL du site |
+| `public/robots.txt` | URL du sitemap |
+
+> 📖 Guide détaillé : `CLIENT_SWAP.md`
 
 ---
 

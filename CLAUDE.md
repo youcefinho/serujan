@@ -10,7 +10,7 @@
 
 Ce projet est un **template de landing page haute conversion** développé par l'agence **Intralys** pour les **courtiers immobiliers au Québec**. Chaque site est une page unique de génération de leads (lead gen) optimisée pour la conversion, le SEO local et la performance mobile.
 
-Le template actuel est celui de **Mathis Guimont**, courtier immobilier résidentiel à **Gatineau (Outaouais)**. Il sert de base pour reproduire des sites identiques pour chaque nouveau client Intralys en moins de 1 heure.
+Le template sert de **référence d'architecture** (standards, sécurité, i18n, D1). Le design de chaque client est unique (créé via Lovable/Zoer), puis restructuré selon ces standards par Claude Code, et finalisé par Antigravity.
 
 ---
 
@@ -201,29 +201,30 @@ bun run build
 
 ## 8. Workflow de déploiement
 
-### Option 1 : Déploiement via GitHub (auto-deploy)
+### Déploiement CLI
 ```bash
-bun run build          # Vérifier localement
-git add -A
-git commit -m "description"
-git push origin main   # Cloudflare auto-deploy
-```
-
-Configuration dans Cloudflare Dashboard :
-- **Build command** : `bun run build`
-- **Deploy command** : `npx wrangler deploy`
-
-### Option 2 : Déploiement CLI (manuel)
-```bash
+# 1. Build
 bun run build
+
+# 2. Deploy
 npx wrangler deploy
+
+# 3. ⚠️ OBLIGATOIRE — Remettre les secrets (effacés par le deploy)
+node post-deploy.cjs
+
+# 4. Vérifier
+# → Login admin, formulaires achat/vente, newsletter emails
 ```
+
+> ⚠️ `npx wrangler deploy` EFFACE les secrets. `node post-deploy.cjs` les remet.
+> Ne jamais utiliser `echo` en PowerShell (ajoute `\r\n`).
 
 ### Configuration requise pour un nouveau déploiement
 1. Créer une base D1 : `npx wrangler d1 create nom-du-client-leads`
-2. Exécuter le schéma : `npx wrangler d1 execute nom-du-client-leads --file=schema.sql`
+2. Exécuter le schéma : `npx wrangler d1 execute nom-du-client-leads --file=schema.sql --remote`
 3. Mettre à jour `wrangler.jsonc` avec le nouveau `database_id`
-4. Configurer les variables dans le Dashboard Cloudflare (Settings → Variables et secrets)
+4. Copier `post-deploy.example.cjs` → `post-deploy.cjs` avec les vrais secrets
+5. Ajouter `post-deploy.cjs` au `.gitignore`
 
 ---
 
@@ -391,7 +392,7 @@ Avant toute modification, lire :
 ## 12. 🚨 LEÇONS APPRISES — NE JAMAIS RÉPÉTER
 
 > ⚠️ **AU DÉMARRAGE DE CHAQUE NOUVEAU PROJET, LIRE CETTE SECTION EN PREMIER.**
-> Chaque point a été découvert lors de l'audit du template Mathis Guimont (2026-04-28).
+> Chaque point a été découvert lors de l'audit et du premier déploiement du template.
 > Ces erreurs ne doivent **JAMAIS** être reproduites sur un nouveau client.
 
 ### 12.1 — Centralisation des données client
@@ -465,6 +466,41 @@ Avant toute modification, lire :
 - **❌** Socials uniquement dans le footer — le visiteur ne les voit que s'il scroll tout en bas.
 - **✅** Socials en HAUT (Hero) ET en BAS (Footer). Double exposition.
 
+### 12.19 — Secrets Cloudflare s'effacent au deploy
+- **❌** `npx wrangler deploy` efface les secrets (ADMIN_PASSWORD, RESEND_API_KEY).
+- **✅** Script `post-deploy.cjs` (dans `.gitignore`) remet les secrets via Node.js `execSync` avec `{ input: value }`.
+- **Workflow** : `npx wrangler deploy` → `node post-deploy.cjs` → vérifier login admin.
+
+### 12.20 — D1 CREATE TABLE IF NOT EXISTS ne modifie PAS les tables existantes
+- **❌** Table existante avec 7 colonnes → `CREATE TABLE IF NOT EXISTS` avec 11 colonnes ne fait RIEN.
+- **✅** `migration-leads.sql` (ALTER TABLE) + INSERT résilient dans le worker (try/catch + auto-migration + fallback).
+
+### 12.21 — Login admin : ne jamais navigate() + reload()
+- **❌** `navigate()` puis `window.location.reload()` → race condition → boucle login.
+- **✅** `window.location.href = "/admin/leads"` directement.
+
+### 12.22 — Resend plan gratuit : emails en spam
+- **❌** `onboarding@resend.dev` → emails en spam.
+- **✅** Domaine custom dans Resend pour la production. `onboarding@resend.dev` = dev/test.
+
+### 12.23 — PowerShell echo corrompt les secrets
+- **❌** `echo "value" | wrangler secret put NAME` → ajoute `\r\n`.
+- **✅** Node.js `execSync('npx wrangler secret put NAME', { input: 'value', stdio: ['pipe','inherit','inherit'] })`.
+
+### 12.24 — Pages admin : toujours un lien retour
+- **✅** `/admin/login` : "← Retour au site" sous le formulaire.
+- **✅** `/admin/leads` : "← Retour au site" à côté de "Déconnexion".
+
+### 12.25 — Section Équipe : données enrichies + modal
+- **✅** Config : `name, role, initials, phone, website, location, stars, reviews`.
+- **✅** `ParentTeam.tsx` : modal cliquable (photo agrandie + infos contact).
+
+### 12.26 — Newsletter : email de bienvenue automatique
+- **✅** Le worker détecte `cleanName === 'Alerte Propriété'` → 2 emails : notification courtier + bienvenue subscriber.
+
+### 12.27 — VS Code : désactiver le validateur CSS pour Tailwind v4
+- **✅** `.vscode/settings.json` avec `"css.validate": false`.
+
 ---
 
 ### 12.99 — Checklist nouveau projet (MISE À JOUR)
@@ -477,19 +513,21 @@ Avant toute modification, lire :
 - [ ] CSP headers correspond aux services utilisés
 - [ ] Admin gère 401 + 429 + erreurs (jamais page blanche)
 - [ ] Notification email courtier à chaque lead
+- [ ] Newsletter email de bienvenue automatique
 - [ ] i18n complet (toggle = 100% change)
-- [ ] `bun run build` = 0 erreurs + `bun run test` = tous tests passent
-- [ ] **Hero titre couvre ACHAT + VENTE** (pas juste "premier achat")
-- [ ] **Socials en haut (Hero) ET en bas (Footer)**
-- [ ] **3 photos courtier : blanc haut, contextuelle milieu, rouge bas**
-- [ ] **Flow 15 sections max — funnel logique**
-- [ ] **CTA dans About** (pas seulement en bas)
-- [ ] **Propriétés avec vraies photos + badges + superficie**
-- [ ] **Boutons CTA honnêtes** ("Me contacter" pas "En savoir plus")
-- [ ] **wrangler.jsonc database_id = VRAI ID** (pas placeholder)
-- [ ] **Process titres percutants** (pas génériques)
-- [ ] **Calculator CTA personnalisé** avec nom du courtier
-- [ ] **PropertyAlerts** section email après Properties
-- [ ] **Piliers enrichis** 2-3 phrases concrètes par pilier
-- [ ] **Google Reviews** lien "Laisser un avis" dans Testimonials + Footer
-- [ ] **Secteurs** 6-8 villes dans le footer (SEO local)
+- [ ] `bun run build` = 0 erreurs
+- [ ] Hero titre couvre ACHAT + VENTE
+- [ ] Socials en haut (Hero) ET en bas (Footer)
+- [ ] 3 photos courtier : blanc haut, contextuelle milieu, rouge bas
+- [ ] Flow 15 sections max — funnel logique
+- [ ] CTA dans About
+- [ ] Propriétés avec vraies photos + badges + superficie
+- [ ] Boutons CTA honnêtes
+- [ ] wrangler.jsonc database_id = VRAI ID
+- [ ] `post-deploy.cjs` créé avec les vrais secrets (dans .gitignore)
+- [ ] Login admin testé après chaque deploy
+- [ ] Formulaires achat + vente testés en production
+- [ ] Newsletter email de bienvenue vérifié
+- [ ] Admin pages lien "← Retour au site" présent
+- [ ] teamMembers enrichis (phone/website/stars/reviews) + modal
+- [ ] `.vscode/settings.json` CSS validate = false
