@@ -83,20 +83,33 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
     const cleanPropertyType = sanitizeInput(property_type, 100);
 
     const id = crypto.randomUUID();
-    await env.DB.prepare(
-      'INSERT INTO leads (id, name, email, phone, message, type, budget, timeline, address, property_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-    ).bind(
-      id,
-      cleanName,
-      cleanEmail,
-      cleanPhone,
-      cleanMessage,
-      cleanType,
-      cleanBudget,
-      cleanTimeline,
-      cleanAddress,
-      cleanPropertyType,
-    ).run();
+
+    // INSERT résilient — tente avec toutes les colonnes, fallback sur les colonnes de base
+    try {
+      await env.DB.prepare(
+        'INSERT INTO leads (id, name, email, phone, message, type, budget, timeline, address, property_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      ).bind(id, cleanName, cleanEmail, cleanPhone, cleanMessage, cleanType, cleanBudget, cleanTimeline, cleanAddress, cleanPropertyType).run();
+    } catch {
+      // Colonnes manquantes — auto-migration puis fallback
+      try {
+        await env.DB.prepare('ALTER TABLE leads ADD COLUMN budget TEXT DEFAULT \'\'').run();
+        await env.DB.prepare('ALTER TABLE leads ADD COLUMN timeline TEXT DEFAULT \'\'').run();
+        await env.DB.prepare('ALTER TABLE leads ADD COLUMN address TEXT DEFAULT \'\'').run();
+        await env.DB.prepare('ALTER TABLE leads ADD COLUMN property_type TEXT DEFAULT \'\'').run();
+      } catch {
+        // Colonnes déjà ajoutées ou autre erreur — ignorer
+      }
+      // Retry avec toutes les colonnes, sinon fallback basique
+      try {
+        await env.DB.prepare(
+          'INSERT INTO leads (id, name, email, phone, message, type, budget, timeline, address, property_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        ).bind(id, cleanName, cleanEmail, cleanPhone, cleanMessage, cleanType, cleanBudget, cleanTimeline, cleanAddress, cleanPropertyType).run();
+      } catch {
+        await env.DB.prepare(
+          'INSERT INTO leads (id, name, email, phone, message, type) VALUES (?, ?, ?, ?, ?, ?)'
+        ).bind(id, cleanName, cleanEmail, cleanPhone, cleanMessage, cleanType).run();
+      }
+    }
 
     // Déterminer si c'est une inscription newsletter (PropertyAlerts)
     const isNewsletter = cleanName === 'Alerte Propriété';
