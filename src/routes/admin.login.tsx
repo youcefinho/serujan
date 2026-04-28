@@ -46,8 +46,7 @@ function AdminLogin() {
       }
 
       localStorage.setItem("intralys-admin-token", data.token);
-      navigate({ to: "/admin/leads" });
-      window.location.reload();
+      window.location.href = "/admin/leads";
     } catch (err) {
       console.error("Login error:", err);
       setError("Erreur de connexion. Réessayez.");
