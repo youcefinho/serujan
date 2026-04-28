@@ -95,6 +95,9 @@ function AdminLogin() {
           </button>
         </form>
       </div>
+      <a href="/" className="block text-center text-xs text-muted-foreground hover:text-crimson transition mt-6">
+        ← Retour au site
+      </a>
     </div>
   );
 }

@@ -62,13 +62,18 @@ function AdminLayout() {
             <LayoutDashboard className="w-5 h-5 text-crimson" />
             Admin · {clientConfig.name}
           </Link>
-          <button
-            onClick={handleSignOut}
-            className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition"
-          >
-            <LogOut className="w-4 h-4" />
-            Déconnexion
-          </button>
+          <div className="flex items-center gap-4">
+            <a href="/" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-crimson transition">
+              ← Retour au site
+            </a>
+            <button
+              onClick={handleSignOut}
+              className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition"
+            >
+              <LogOut className="w-4 h-4" />
+              Déconnexion
+            </button>
+          </div>
         </div>
       </header>
       <main className="max-w-7xl mx-auto px-6 py-8">
