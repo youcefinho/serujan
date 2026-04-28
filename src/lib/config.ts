@@ -71,10 +71,46 @@ export const clientConfig = {
   // SWAP: Ajouter/retirer les membres selon le client
   // Pour les photos : importer dans le composant ParentTeam.tsx
   teamMembers: [
-    { name: "Xavier Charron", role: { fr: "Courtier immobilier", en: "Real Estate Broker" }, initials: "XC" },
-    { name: "Ali Al", role: { fr: "Courtier immobilier", en: "Real Estate Broker" }, initials: "AA" },
-    { name: "François-Xavier Charbonneau", role: { fr: "Courtier immobilier", en: "Real Estate Broker" }, initials: "FX" },
-    { name: "François-Luc Charron", role: { fr: "Courtier immobilier", en: "Real Estate Broker" }, initials: "FL" },
+    {
+      name: "Xavier Charron",
+      role: { fr: "Courtier immobilier", en: "Real Estate Broker" },
+      initials: "XC",
+      phone: "+1 819-962-7764",
+      website: "xaviercharron.com",
+      location: "Gatineau, QC",
+      stars: 5.0,
+      reviews: 108,
+    },
+    {
+      name: "Ali Al",
+      role: { fr: "Courtier immobilier", en: "Real Estate Broker" },
+      initials: "AA",
+      phone: "+1 819-923-2828",
+      website: "aliremax.com",
+      location: "Gatineau, QC",
+      stars: 5.0,
+      reviews: 124,
+    },
+    {
+      name: "François-Xavier Charbonneau",
+      role: { fr: "Courtier immobilier", en: "Real Estate Broker" },
+      initials: "FX",
+      phone: "+1 514-817-3915",
+      website: "fxcharbonneau.com",
+      location: "Gatineau, QC",
+      stars: 5.0,
+      reviews: 2,
+    },
+    {
+      name: "François-Luc Charron",
+      role: { fr: "Courtier immobilier", en: "Real Estate Broker" },
+      initials: "FL",
+      phone: "+1 514-979-8620",
+      website: "francoisluccharron.com",
+      location: "Gatineau, QC",
+      stars: 5.0,
+      reviews: 3,
+    },
   ],
 
   // ── URLs ──────────────────────────────────────────────
