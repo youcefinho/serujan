@@ -1,7 +1,8 @@
-# CLAUDE.md — Instructions pour Claude Code
+# CLAUDE.md — Instructions pour l'IA
 
-> Ce fichier est lu automatiquement par Claude Code à chaque ouverture du projet.
+> Ce fichier est lu automatiquement par l'IA à chaque ouverture du projet.
 > Respecter ces règles à la lettre.
+> Dernière mise à jour : 2026-04-28
 
 ---
 
@@ -21,13 +22,22 @@ Le template actuel est celui de **Mathis Guimont**, courtier immobilier résiden
 | **TypeScript** | 5.8+ | Typage strict obligatoire |
 | **Vite** | 7 | Build tool et dev server |
 | **TanStack Router** | 1.168+ | Routing type-safe basé sur les fichiers |
-| **Tailwind CSS** | v4 | Styles utilitaires (syntaxe v4 avec `@theme inline`) |
-| **Supabase** | 2.104+ | Base de données PostgreSQL + Auth + RLS |
-| **Bun** | Latest | Runtime et gestionnaire de paquets |
-| **Cloudflare Pages** | — | Hébergement statique + Pages Functions serverless (gratuit) |
+| **Tailwind CSS** | v4 | Styles utilitaires (syntaxe v4 avec `@theme inline`, couleurs `oklch`) |
+| **Cloudflare Workers** | — | Worker unifié : API + assets statiques |
+| **Cloudflare D1** | — | Base de données SQLite serverless (table `leads`) |
 | **Resend** | 6+ | Envoi d'emails transactionnels (Lead Magnet) |
+| **Bun** | Latest | Runtime et gestionnaire de paquets |
 | **Calendly** | Widget JS | Prise de rendez-vous en popup |
 | **Zod** | 3.24+ | Validation des formulaires |
+
+### Architecture backend : Worker natif (pas Pages Functions)
+
+Le backend est un **Cloudflare Worker unique** (`src/worker.ts`) qui :
+- Sert les assets statiques depuis `dist/` (via `assets.directory` dans `wrangler.jsonc`)
+- Route les requêtes API (`/api/*`) vers les handlers internes
+- Utilise D1 pour la persistence et Resend pour les emails
+
+> ⚠️ Il n'y a **PAS** de dossier `functions/`. Toute la logique backend est dans `src/worker.ts`.
 
 ---
 
@@ -44,230 +54,236 @@ Le template actuel est celui de **Mathis Guimont**, courtier immobilier résiden
 - Ne jamais utiliser `any` sauf en dernier recours avec un commentaire justificatif.
 - Toujours typer les props des composants.
 
-### Structure des composants
-- Tous les composants de la landing page sont dans `src/components/landing/`.
-- Un composant = un fichier = une section de la page.
-- Les composants UI réutilisables (accordion, sonner) sont dans `src/components/ui/`.
-- Les routes sont dans `src/routes/` (TanStack Router file-based).
+### Structure du projet
+```
+src/
+├── assets/          # Images du courtier, logos
+├── components/
+│   ├── landing/     # Composants de la landing page (1 par section)
+│   └── ui/          # Composants UI réutilisables (accordion, sonner)
+├── hooks/           # Hooks custom (useScrollReveal, etc.)
+├── lib/             # Utilitaires, contexte, traductions
+│   ├── calendly.ts
+│   ├── LanguageContext.tsx
+│   ├── translations.ts
+│   └── utils.ts
+├── routes/          # Routes TanStack Router (file-based)
+│   ├── __root.tsx
+│   ├── index.tsx
+│   ├── merci.tsx
+│   ├── admin.tsx
+│   ├── admin.login.tsx
+│   └── admin.leads.tsx
+└── worker.ts        # ⭐ Point d'entrée Worker Cloudflare (API)
+```
 
 ### Conventions de nommage
-- Composants : `PascalCase.tsx` (ex: `LeadForm.tsx`, `ScrollReveal.tsx`)
+- Composants : `PascalCase.tsx` (ex: `LeadForm.tsx`)
 - Hooks : `camelCase.ts` avec préfixe `use` (ex: `useScrollReveal.ts`)
 - Utilitaires : `camelCase.ts` (ex: `calendly.ts`)
-
-### Imports
-- Utiliser les alias `@/` pour tous les imports internes (configuré dans `tsconfig.json`).
-- Exemple : `import { supabase } from "@/integrations/supabase/client";`
+- Imports : alias `@/` pour tous les imports internes
 
 ---
 
-## 4. Standards de sécurité
+## 4. Système de traduction bilingue (i18n)
 
-### Clés API
-- **JAMAIS hardcoder de clé API dans le code source.** Aucune exception.
-- Toutes les clés doivent être dans `.env.local` (côté client) ou dans les variables d'environnement Cloudflare (côté serveur).
-- Le fichier `.env.example` documente toutes les variables requises avec des valeurs placeholder.
+### Architecture
+- **`src/lib/translations.ts`** : Fichier unique contenant TOUTES les chaînes FR/EN
+- **`src/lib/LanguageContext.tsx`** : Provider React + hook `useLanguage()`
+- **Français = langue par défaut**, choix persisté dans `localStorage`
 
-### Variables d'environnement
-| Variable | Côté | Usage |
-|---|---|---|
-| `VITE_SUPABASE_URL` | Client | URL du projet Supabase |
-| `VITE_SUPABASE_ANON_KEY` | Client | Clé publique Supabase |
-| `VITE_CALENDLY_URL` | Client | URL Calendly du courtier |
-| `VITE_GA4_ID` | Client | ID Google Analytics (aussi dans `index.html`) |
-| `SUPABASE_URL` | Serveur | URL Supabase pour Cloudflare Pages Functions |
-| `SUPABASE_ANON_KEY` | Serveur | Clé anon pour Cloudflare Pages Functions |
-| `SUPABASE_SERVICE_ROLE_KEY` | Serveur | Clé admin Supabase (bypasse RLS) |
-| `RESEND_API_KEY` | Serveur | Clé API Resend pour l'envoi d'emails |
+### Utilisation dans les composants
+```tsx
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
-### Honeypot anti-spam
-- Le formulaire de contact (`LeadForm.tsx`) contient un champ caché `website` invisible aux humains.
-- Si un bot le remplit, la soumission est silencieusement rejetée (faux succès).
-
-### Supabase RLS
-- Row Level Security est activé sur toutes les tables.
-- INSERT public autorisé (formulaires anonymes).
-- SELECT réservé aux utilisateurs avec le rôle `admin` dans `user_roles`.
-
----
-
-## 5. Commande de build
-
-```bash
-bun run build
+export function MonComposant() {
+  const { t, ta } = useLanguage();
+  
+  // t() — pour une chaîne simple { fr: "...", en: "..." }
+  const titre = t(translations.monSection.title);
+  
+  // ta() — pour un tableau/objet { fr: [...], en: [...] }
+  const items = ta(translations.monSection.items) as MonType[];
+  
+  return <h2>{titre}</h2>;
+}
 ```
 
-**Cette commande DOIT passer avec 0 erreurs et 0 warnings avant tout `git push`.** C'est non négociable.
-
-Si le build échoue :
-1. Corriger les erreurs TypeScript en premier.
-2. Vérifier que les imports `@/` sont corrects.
-3. Vérifier que les variables d'environnement `VITE_*` existent dans `.env.local`.
+### Règle absolue
+- **TOUS les textes visibles** par l'utilisateur doivent être dans `translations.ts`
+- **Jamais de texte hardcodé** en français ou anglais dans les composants
+- Exception : les données factuelles invariables (adresses, numéros de téléphone, noms propres)
 
 ---
 
-## 6. Structure Supabase
+## 5. Backend — Cloudflare Worker (`src/worker.ts`)
 
-### Table `leads`
+### Routes API
 
-| Colonne | Type | Nullable | Description |
-|---|---|---|---|
-| `id` | UUID | Non | Clé primaire, auto-générée |
-| `name` | TEXT | Non | Nom complet du lead |
-| `email` | TEXT | Non | Adresse courriel |
-| `phone` | TEXT | Non | Numéro de téléphone |
-| `message` | TEXT | Oui | Message libre ou note automatique |
-| `type` | ENUM (`buy`, `sell`) | Non | Type de lead : acheteur ou vendeur |
-| `budget` | TEXT | Oui | Budget (acheteur uniquement) |
-| `timeline` | TEXT | Oui | Échéancier (acheteur uniquement) |
-| `address` | TEXT | Oui | Adresse de la propriété (vendeur uniquement) |
-| `property_type` | TEXT | Oui | Type de propriété (vendeur uniquement) |
-| `created_at` | TIMESTAMPTZ | Non | Date de création, auto-générée |
+| Route | Méthode | Description |
+|---|---|---|
+| `/api/leads` | POST | Sauvegarder un lead (formulaire, Calendly) |
+| `/api/send-guide` | POST | Envoyer le guide PDF par email + sauvegarder lead |
+| `/api/admin/login` | POST | Authentification admin par mot de passe |
+| `/api/admin/leads` | GET | Récupérer tous les leads (protégé par token) |
+
+### Bindings (définis dans `wrangler.jsonc`)
+
+| Binding | Type | Description |
+|---|---|---|
+| `DB` | D1 Database | Table `leads` — stockage des leads |
+| `ADMIN_PASSWORD` | Variable/Secret | Mot de passe du panel admin |
+| `RESEND_API_KEY` | Variable/Secret | Clé API Resend pour l'envoi d'emails |
+
+### Table `leads` (D1 SQLite)
+
+```sql
+CREATE TABLE IF NOT EXISTS leads (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT DEFAULT '',
+  message TEXT DEFAULT '',
+  type TEXT DEFAULT 'buy',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
 
 ### Sources d'insertion des leads
-- **Formulaire de contact** (`LeadForm.tsx`) → type `buy` ou `sell`
-- **Lead Magnet** (`send-guide.ts`) → type `buy`, message "Guide Gratuit..."
-- **Calendly** (`calendly.ts` listener) → type `buy`, message "Rendez-vous Calendly..."
-
-### Table `user_roles`
-
-| Colonne | Type | Description |
-|---|---|---|
-| `id` | UUID | Clé primaire |
-| `user_id` | UUID | Référence vers `auth.users` |
-| `role` | ENUM (`admin`, `moderator`, `user`) | Rôle de l'utilisateur |
-| `created_at` | TIMESTAMPTZ | Date de création |
-
-Les migrations SQL sont dans `supabase/migrations/`.
+- **Formulaire de contact** (`LeadForm.tsx`) → `POST /api/leads`
+- **Lead Magnet** (`LeadMagnet.tsx`) → `POST /api/send-guide`
+- **Calendly** (`calendly.ts` listener) → `POST /api/leads`
 
 ---
 
-## 7. Workflow de déploiement
+## 6. Variables d'environnement
+
+### Variables serveur (Cloudflare Dashboard → Settings → Variables et secrets)
+
+| Variable | Description |
+|---|---|
+| `ADMIN_PASSWORD` | Mot de passe admin pour `/admin` |
+| `RESEND_API_KEY` | Clé API Resend (`re_...`) |
+
+> ⚠️ Ces variables doivent être configurées dans la section **"Variables et secrets"** du Worker (pas seulement dans le build).
+
+### Variables client (`.env.local`)
+
+| Variable | Description |
+|---|---|
+| `VITE_CALENDLY_URL` | URL Calendly du courtier |
+| `VITE_GA4_ID` | ID Google Analytics 4 |
+
+### Honeypot anti-spam
+- Le formulaire de contact (`LeadForm.tsx`) contient un champ caché `website`.
+- Si un bot le remplit, la soumission est silencieusement rejetée.
+
+---
+
+## 7. Commande de build
 
 ```bash
-# 1. Vérifier le build
 bun run build
-
-# 2. Commiter
-git add -A
-git commit -m "description concise du changement"
-
-# 3. Pousser — Cloudflare déploie automatiquement
-git push origin main
 ```
 
-Le déploiement est géré par Cloudflare Pages :
-- Build command : `npm run build`
-- Build output directory : `dist`
-- Headers de sécurité → `public/_headers`
-- Redirects SPA → `public/_redirects`
-- Fonctions serverless → `functions/` (Cloudflare Pages Functions)
-- Variables d'environnement côté serveur : `context.env.VARIABLE` (pas `process.env`)
+**Cette commande DOIT passer avec 0 erreurs et 0 warnings avant tout `git push`.** Non négociable.
 
 ---
 
-## 8. Rappel — Documentation obligatoire
+## 8. Workflow de déploiement
 
-Avant **toute modification** pour un nouveau client ou une évolution du template, lire impérativement :
+### Option 1 : Déploiement via GitHub (auto-deploy)
+```bash
+bun run build          # Vérifier localement
+git add -A
+git commit -m "description"
+git push origin main   # Cloudflare auto-deploy
+```
 
-1. **`REPRODUCTION_CHECKLIST.md`** — Audit complet de chaque fonctionnalité + checklist pas-à-pas avec numéros de lignes exacts pour le swap client.
-2. **`INTRALYS_MASTER.md`** — Documentation technique complète : stack, composants, features, sécurité, SEO, performance, déploiement.
-3. **`.env.example`** — Liste de toutes les variables d'environnement requises.
-4. **`README.md`** — Guide de reproduction en français en 9 étapes.
+Configuration dans Cloudflare Dashboard :
+- **Build command** : `bun run build`
+- **Deploy command** : `npx wrangler deploy`
 
-> ⚠️ Ne jamais modifier la structure du template sans mettre à jour ces 4 fichiers de documentation.
+### Option 2 : Déploiement CLI (manuel)
+```bash
+bun run build
+npx wrangler deploy
+```
+
+### Configuration requise pour un nouveau déploiement
+1. Créer une base D1 : `npx wrangler d1 create nom-du-client-leads`
+2. Exécuter le schéma : `npx wrangler d1 execute nom-du-client-leads --file=schema.sql`
+3. Mettre à jour `wrangler.jsonc` avec le nouveau `database_id`
+4. Configurer les variables dans le Dashboard Cloudflare (Settings → Variables et secrets)
 
 ---
 
-## 9. Règles absolues (issues de l'audit)
-
-Ces règles sont non négociables. Elles préviennent les erreurs récurrentes identifiées lors de l'audit du template.
+## 9. Règles absolues
 
 ### Règle 1 — Jamais de `console.log` en production
-- `console.error` et `console.warn` dans les blocs `catch` : ✅ accepté.
-- `console.log` pour debug : ❌ **interdit**. Supprimer avant tout commit.
-- Si un log de succès est nécessaire, utiliser un commentaire `// Lead saved successfully` à la place.
+- `console.error` dans les `catch` : ✅
+- `console.warn` pour dégradation gracieuse : ✅
+- `console.log` : ❌ **interdit**
 
-### Règle 2 — Supprimer les hooks et composants inutilisés avant le build
-- Avant chaque `bun run build`, vérifier qu'aucun fichier dans `src/hooks/` ou `src/components/` n'est exporté sans être importé.
-- Exception : `use-mobile.tsx` et `client.server.ts` sont gardés comme utilitaires prêts à l'emploi, mais ne doivent **jamais** être importés côté client sans raison.
+### Règle 2 — Pas de Supabase
+- Le projet a été migré de Supabase vers **Cloudflare D1**.
+- Ne jamais réintroduire `@supabase/supabase-js` ni les fichiers `client.ts`/`client.server.ts`.
+- La persistance se fait via D1 dans `src/worker.ts`.
 
-### Règle 3 — Ne jamais importer `client.server.ts` dans du code frontend
-- `src/integrations/supabase/client.server.ts` contient la **clé service_role** qui bypasse le Row Level Security.
-- Ce fichier est réservé **exclusivement** aux Cloudflare Pages Functions (`functions/`).
-- L'importer dans un composant React ou une route **exposerait la clé admin au navigateur**. C'est une faille de sécurité critique.
-- Côté client, toujours utiliser `client.ts` (qui utilise la clé anon publique).
+### Règle 3 — Pas de dossier `functions/`
+- L'ancien dossier `functions/` (Pages Functions) a été supprimé.
+- Toute logique backend va dans `src/worker.ts`.
 
-### Règle 4 — Toujours utiliser `VITE_SUPABASE_ANON_KEY`, jamais `PUBLISHABLE_KEY`
-- Le nom standardisé dans ce projet est `VITE_SUPABASE_ANON_KEY` et `SUPABASE_ANON_KEY`.
-- Ne jamais utiliser `VITE_SUPABASE_PUBLISHABLE_KEY` ni `SUPABASE_PUBLISHABLE_KEY` — ces noms sont obsolètes.
-- Si un outil Supabase génère du code avec `PUBLISHABLE_KEY`, le renommer immédiatement en `ANON_KEY`.
+### Règle 4 — Traduction obligatoire
+- Tout nouveau texte visible doit être ajouté dans `src/lib/translations.ts`.
+- Tout nouveau composant doit utiliser `useLanguage()` + `t()` / `ta()`.
 
-### Règle 5 — Toujours inclure les 3 variables critiques dans `.env.example`
-- `VITE_CALENDLY_URL` — URL de rendez-vous du courtier.
-- `RESEND_API_KEY` — Clé API pour l'envoi d'emails (Lead Magnet).
-- `VITE_GA4_ID` — ID Google Analytics 4 (aussi à coller dans `index.html`).
-- Si une nouvelle variable d'environnement est ajoutée au code, elle **doit** être ajoutée à `.env.example` dans le même commit.
+### Règle 5 — Variables d'environnement
+- Les variables serveur (RESEND_API_KEY, ADMIN_PASSWORD) doivent être dans le Dashboard Cloudflare → Settings → **Variables et secrets** (runtime, pas build).
+- Côté worker, accès via `env.VARIABLE` (pas `process.env`).
 
 ---
 
 ## 10. Standards de contenu et UX — Directives Intralys
 
-Ces directives définissent l'identité visuelle et le contenu standardisé pour **tous** les sites clients Intralys. Elles ne concernent pas la stack technique ni le déploiement.
-
 ### 10.1 — Toggle bilingue FR/EN dans la Navbar
-- Chaque site doit inclure un **bouton de bascule FR / EN** dans la barre de navigation.
-- Le français est la langue par défaut. Le toggle doit persister le choix dans `localStorage`.
-- Les textes traduits sont gérés via un fichier de traduction ou des constantes inline.
+- Bouton FR/EN dans la Navbar. Français par défaut, persisté dans `localStorage`.
+- Système : `LanguageContext.tsx` + `translations.ts`.
 
 ### 10.2 — CTA principal : « RENCONTRE STRATÉGIQUE GRATUITE »
-- Le call-to-action principal sur **tout le site** est toujours : **« RENCONTRE STRATÉGIQUE GRATUITE »**.
-- Ce texte remplace tous les anciens CTA comme "Prendre rendez-vous", "Parlons-en", etc.
-- Il doit apparaître dans : Hero, Navbar, MobileStickyBar, ExitIntentPopup, Deliverables.
+- Présent dans : Hero, Navbar, MobileStickyBar, ExitIntentPopup, Deliverables.
 
-### 10.3 — Calculatrice enrichie (taxes + assurances)
-- Le calculateur hypothécaire doit inclure **3 champs supplémentaires** en plus du paiement mensuel :
-  - **Taxe foncière annuelle** (montant estimé ou saisie manuelle)
-  - **Assurance habitation** (montant estimé ou saisie manuelle)
-  - **Ventilation mensuelle complète** : hypothèque + taxes + assurance = coût mensuel total
-- Afficher les 3 composantes dans un résumé visuel clair avec barres ou camembert.
+### 10.3 — Calculatrice enrichie
+- Hypothèque + taxe foncière + assurance habitation = coût mensuel total.
 
 ### 10.4 — Section Propriétés avec lien Centris
-- Ajouter une section **« Propriétés à vendre »** (placeholder) avec :
-  - Un titre comme « DÉCOUVREZ NOS PROPRIÉTÉS »
-  - 3 à 6 cartes de propriétés placeholder (image, prix, adresse, chambres/salles de bain)
-  - Un bouton CTA vers la page Centris du courtier : `https://www.centris.ca/fr/courtier~VOTRE-ID`
-- Cette section est un aperçu visuel — les données réelles sont sur Centris.
+- Cartes placeholder + CTA vers Centris.
 
-### 10.5 — Territoire affiché : QUÉBEC | ONTARIO
-- Le badge de territoire dans le Hero doit afficher : **QUÉBEC | ONTARIO** (ou la zone de service du courtier).
-- Format : toujours en majuscules, séparé par un pipe `|`.
-- Exemples : `GATINEAU | OTTAWA`, `OUTAOUAIS | ONTARIO`, `QUÉBEC | ONTARIO`.
+### 10.5 — Territoire Hero en MAJUSCULES
+- Format : `GATINEAU | OTTAWA` (pipe séparateur).
 
-### 10.6 — Section Équipe Parent (Parent Team)
-- Ajouter une section dédiée à l'**équipe ou la bannière du courtier** (ex: Royal LePage, RE/MAX, Sutton).
-- Contenu : logo de la bannière, nom de l'équipe, brève description, photo de groupe.
-- Si le courtier est indépendant, cette section peut être remplacée par une section "Partenaires".
+### 10.6 — Section Équipe Parent
+- Logo bannière immobilière (Royal LePage, RE/MAX, etc.).
 
-### 10.7 — Titres et CTAs en MAJUSCULES
-- Tous les **titres de section** (`<h2>`) doivent être en `uppercase` via Tailwind (`uppercase tracking-widest`).
-- Tous les **boutons CTA** doivent être en `uppercase` avec `tracking-widest` ou `tracking-wider`.
-- Les sous-titres et paragraphes restent en casse normale.
+### 10.7 — Titres et CTAs en UPPERCASE
+- `<h2>` : `uppercase tracking-widest`
+- Boutons CTA : `uppercase tracking-widest`
 
-### 10.8 — Section « Votre première rencontre est gratuite »
-- Ajouter une section dédiée **juste avant** les formulaires de contact (`LeadForm`).
-- Contenu :
-  - Titre : « VOTRE PREMIÈRE RENCONTRE EST GRATUITE »
-  - Sous-titre : « Sans engagement. Sans pression. On discute de votre projet. »
-  - Icônes : ✅ Gratuit · ✅ Sans engagement · ✅ Confidentiel
-- Objectif : réduire la friction avant le formulaire de conversion.
+### 10.8 — Section « Première rencontre gratuite »
+- Juste avant `LeadForm`. Badges ✅ Gratuit · ✅ Sans engagement · ✅ Confidentiel.
 
-### 10.9 — Section Services avec 3 piliers et icônes
-- La section Services doit présenter exactement **3 piliers** (pas 2, pas 4) :
-  - **ACHAT** — Accompagnement complet pour l'achat de propriété
-  - **VENTE** — Stratégie marketing et mise en marché
-  - **INVESTISSEMENT** — Analyse de rentabilité et conseil patrimonial
-- Chaque pilier a : une icône Lucide, un titre en majuscules, une description, et un CTA vers `#contact`.
+### 10.9 — Services — 3 piliers
+- ACHAT · VENTE · INVESTISSEMENT — toujours 3.
 
-> 📖 Voir `CLIENT_SWAP.md` pour la checklist d'implémentation de ces standards lors du swap client.
+---
 
+## 11. Documentation obligatoire
+
+Avant toute modification, lire :
+1. **`CLAUDE.md`** (ce fichier)
+2. **`INTRALYS_MASTER.md`** — Architecture complète du template
+3. **`.env.example`** — Variables requises
+4. **`wrangler.jsonc`** — Configuration du Worker + D1
+
+> ⚠️ Ne jamais modifier la structure sans mettre à jour la documentation.
