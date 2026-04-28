@@ -20,7 +20,19 @@ function AdminLayout() {
     setChecking(false);
   }, []);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    // Invalider le token côté serveur
+    const token = localStorage.getItem("intralys-admin-token");
+    if (token) {
+      try {
+        await fetch("/api/admin/logout", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } catch {
+        // Continuer la déconnexion même si l'API échoue
+      }
+    }
     localStorage.removeItem("intralys-admin-token");
     window.location.href = "/admin/login";
   };

@@ -125,8 +125,9 @@ export function MonComposant() {
 |---|---|---|
 | `/api/leads` | POST | Sauvegarder un lead (formulaire, Calendly) |
 | `/api/send-guide` | POST | Envoyer le guide PDF par email + sauvegarder lead |
-| `/api/admin/login` | POST | Authentification admin par mot de passe |
-| `/api/admin/leads` | GET | Récupérer tous les leads (protégé par token) |
+| `/api/admin/login` | POST | Authentification admin (rate limited : 5/h par IP) |
+| `/api/admin/logout` | POST | Déconnexion admin (supprime le token D1) |
+| `/api/admin/leads` | GET | Récupérer tous les leads (vérifie token D1 + expiration) |
 
 ### Bindings (définis dans `wrangler.jsonc`)
 
@@ -136,17 +137,24 @@ export function MonComposant() {
 | `ADMIN_PASSWORD` | Variable/Secret | Mot de passe du panel admin |
 | `RESEND_API_KEY` | Variable/Secret | Clé API Resend pour l'envoi d'emails |
 
-### Table `leads` (D1 SQLite)
+### Tables D1 (SQLite)
 
 ```sql
-CREATE TABLE IF NOT EXISTS leads (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT DEFAULT '',
-  message TEXT DEFAULT '',
-  type TEXT DEFAULT 'buy',
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+-- Leads (contacts entrants)
+CREATE TABLE leads (
+  id TEXT PRIMARY KEY, name TEXT, email TEXT, phone TEXT,
+  message TEXT, type TEXT, budget TEXT, timeline TEXT,
+  address TEXT, property_type TEXT, created_at TEXT
+);
+
+-- Sessions admin (token + expiration 24h)
+CREATE TABLE admin_sessions (
+  token TEXT PRIMARY KEY, created_at TEXT, expires_at TEXT
+);
+
+-- Rate limiting (tentatives de connexion)
+CREATE TABLE login_attempts (
+  id INTEGER PRIMARY KEY, ip TEXT, attempted_at TEXT
 );
 ```
 
@@ -243,6 +251,17 @@ npx wrangler deploy
 - Les variables serveur (RESEND_API_KEY, ADMIN_PASSWORD) doivent être dans le Dashboard Cloudflare → Settings → **Variables et secrets** (runtime, pas build).
 - Côté worker, accès via `env.VARIABLE` (pas `process.env`).
 
+### Règle 6 — Sécurité admin obligatoire
+- **JAMAIS** de validation de token par longueur seule. Tout token doit être **vérifié dans D1**.
+- Les sessions admin doivent avoir une **expiration** (24h par défaut).
+- Le login doit être **rate limité** (5 tentatives/heure par IP max).
+- La déconnexion doit **supprimer le token côté serveur** (pas seulement côté client).
+- Pattern obligatoire : `login → stocker token D1 → vérifier token D1 → logout → supprimer token D1`.
+
+### Règle 7 — Centralisation config client
+- Toutes les données spécifiques au courtier (nom, téléphone, email, réseaux sociaux, URLs) doivent être dans `src/lib/config.ts`.
+- **JAMAIS** de données client hardcodées dans les composants `.tsx`.
+
 ---
 
 ## 10. Standards de contenu et UX — Directives Intralys
@@ -283,7 +302,24 @@ npx wrangler deploy
 Avant toute modification, lire :
 1. **`CLAUDE.md`** (ce fichier)
 2. **`INTRALYS_MASTER.md`** — Architecture complète du template
-3. **`.env.example`** — Variables requises
-4. **`wrangler.jsonc`** — Configuration du Worker + D1
+3. **`src/lib/config.ts`** — Configuration client centralisée
+4. **`.env.example`** — Variables requises
+5. **`wrangler.jsonc`** — Configuration du Worker + D1
 
 > ⚠️ Ne jamais modifier la structure sans mettre à jour la documentation.
+
+---
+
+## 12. Leçons apprises — Standards de sécurité
+
+### ❌ ERREUR : Validation de token par longueur
+**Avant (faille critique)** : Le endpoint `/api/admin/leads` vérifiait seulement que le token faisait plus de 10 caractères. N'importe qui pouvait accéder à tous les leads avec un faux token.
+
+**Après (corrigé)** : Le token est un `crypto.randomUUID()` stocké dans la table `admin_sessions` de D1 avec une expiration de 24h. Chaque requête admin vérifie l'existence ET la validité du token dans D1.
+
+### ✅ Pattern sécurité obligatoire pour tout projet Intralys
+1. **Login** → `crypto.randomUUID()` → stocké dans D1 avec `expires_at`
+2. **Requêtes protégées** → vérifier token dans D1 + `expires_at > datetime('now')`
+3. **Logout** → supprimer le token de D1
+4. **Rate limiting** → table `login_attempts`, max 5/h par IP
+5. **Nettoyage** → supprimer sessions et tentatives expirées à chaque login réussi

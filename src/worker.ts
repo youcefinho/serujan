@@ -10,6 +10,11 @@ interface Env {
   RESEND_API_KEY: string;
 }
 
+// ── Constantes sécurité ─────────────────────────────────────
+const SESSION_DURATION_HOURS = 24;
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOGIN_WINDOW_HOURS = 1;
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -23,6 +28,9 @@ export default {
     }
     if (url.pathname === '/api/admin/login' && request.method === 'POST') {
       return handleAdminLogin(request, env);
+    }
+    if (url.pathname === '/api/admin/logout' && request.method === 'POST') {
+      return handleAdminLogout(request, env);
     }
     if (url.pathname === '/api/admin/leads' && request.method === 'GET') {
       return handleAdminLeads(request, env);
@@ -141,19 +149,49 @@ async function handleSendGuide(request: Request, env: Env): Promise<Response> {
 }
 
 // ── POST /api/admin/login ────────────────────────────────────
+// Sécurité : rate limiting + token stocké en D1 avec expiration
 async function handleAdminLogin(request: Request, env: Env): Promise<Response> {
   try {
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+
+    // ── Rate limiting : max 5 tentatives par IP par heure ────
+    const windowStart = new Date(Date.now() - LOGIN_WINDOW_HOURS * 60 * 60 * 1000).toISOString();
+    const { results: attempts } = await env.DB.prepare(
+      'SELECT COUNT(*) as count FROM login_attempts WHERE ip = ? AND attempted_at > ?'
+    ).bind(ip, windowStart).all();
+
+    const attemptCount = (attempts?.[0]?.count as number) || 0;
+    if (attemptCount >= MAX_LOGIN_ATTEMPTS) {
+      return json({ error: 'Trop de tentatives. Réessayez dans 1 heure.' }, 429);
+    }
+
     const { password } = await request.json() as { password: string };
+
+    // Enregistrer la tentative (succès ou échec)
+    await env.DB.prepare(
+      'INSERT INTO login_attempts (ip, attempted_at) VALUES (?, datetime(\'now\'))'
+    ).bind(ip).run();
 
     if (!password || password !== env.ADMIN_PASSWORD) {
       return json({ error: 'Mot de passe incorrect' }, 401);
     }
 
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password + Date.now().toString());
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const token = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    // ── Générer un token sécurisé et le stocker en D1 ────────
+    const token = crypto.randomUUID();
+    const expiresAt = new Date(Date.now() + SESSION_DURATION_HOURS * 60 * 60 * 1000).toISOString();
+
+    await env.DB.prepare(
+      'INSERT INTO admin_sessions (token, created_at, expires_at) VALUES (?, datetime(\'now\'), ?)'
+    ).bind(token, expiresAt).run();
+
+    // Nettoyer les sessions et tentatives expirées (best-effort)
+    try {
+      await env.DB.prepare('DELETE FROM admin_sessions WHERE expires_at < datetime(\'now\')').run();
+      const cleanupWindow = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      await env.DB.prepare('DELETE FROM login_attempts WHERE attempted_at < ?').bind(cleanupWindow).run();
+    } catch {
+      // Nettoyage non critique
+    }
 
     return json({ success: true, token });
   } catch (error) {
@@ -162,26 +200,59 @@ async function handleAdminLogin(request: Request, env: Env): Promise<Response> {
   }
 }
 
+// ── POST /api/admin/logout ───────────────────────────────────
+// Supprime le token de session de D1
+async function handleAdminLogout(request: Request, env: Env): Promise<Response> {
+  try {
+    const token = extractToken(request);
+    if (token) {
+      await env.DB.prepare('DELETE FROM admin_sessions WHERE token = ?').bind(token).run();
+    }
+    return json({ success: true });
+  } catch (error) {
+    console.error('Erreur logout admin:', error);
+    return json({ success: true }); // On déconnecte quand même côté client
+  }
+}
+
 // ── GET /api/admin/leads ─────────────────────────────────────
+// Sécurité : vérifie que le token existe en D1 ET n'est pas expiré
 async function handleAdminLeads(request: Request, env: Env): Promise<Response> {
   try {
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.replace('Bearer ', '').length < 10) {
+    const token = extractToken(request);
+    if (!token) {
       return json({ error: 'Non autorisé' }, 401);
     }
 
+    // Vérifier le token dans D1 + vérifier l'expiration
     const { results } = await env.DB.prepare(
+      'SELECT token FROM admin_sessions WHERE token = ? AND expires_at > datetime(\'now\')'
+    ).bind(token).all();
+
+    if (!results || results.length === 0) {
+      return json({ error: 'Session expirée ou invalide' }, 401);
+    }
+
+    const { results: leads } = await env.DB.prepare(
       'SELECT * FROM leads ORDER BY created_at DESC'
     ).all();
 
-    return json({ data: results });
+    return json({ data: leads });
   } catch (error) {
     console.error('Erreur lecture leads:', error);
     return json({ error: 'Erreur serveur' }, 500);
   }
 }
 
-// ── Helper ───────────────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────
+
+function extractToken(request: Request): string | null {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  const token = authHeader.replace('Bearer ', '').trim();
+  return token.length >= 10 ? token : null;
+}
+
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
