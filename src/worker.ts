@@ -36,8 +36,9 @@ export default {
 // ── POST /api/leads ──────────────────────────────────────────
 async function handleLeads(request: Request, env: Env): Promise<Response> {
   try {
-    const { name, email, phone, message, type } = await request.json() as {
+    const { name, email, phone, message, type, budget, timeline, address, property_type } = await request.json() as {
       name: string; email: string; phone?: string; message?: string; type?: string;
+      budget?: string; timeline?: string; address?: string; property_type?: string;
     };
 
     if (!email || !name) {
@@ -46,8 +47,19 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
 
     const id = crypto.randomUUID();
     await env.DB.prepare(
-      'INSERT INTO leads (id, name, email, phone, message, type) VALUES (?, ?, ?, ?, ?, ?)'
-    ).bind(id, name, email, phone || '', message || '', type || 'buy').run();
+      'INSERT INTO leads (id, name, email, phone, message, type, budget, timeline, address, property_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    ).bind(
+      id,
+      name,
+      email,
+      phone || '',
+      message || '',
+      type || 'buy',
+      budget || '',
+      timeline || '',
+      address || '',
+      property_type || '',
+    ).run();
 
     return json({ success: true, id });
   } catch (error) {

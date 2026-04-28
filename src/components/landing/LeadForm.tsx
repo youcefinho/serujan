@@ -69,6 +69,11 @@ export function LeadForm() {
           phone: parsed.phone,
           email: parsed.email,
           message: parsed.message || "",
+          // Champs de qualification spécifiques au type
+          budget: tab === "buy" && "budget" in parsed ? parsed.budget : "",
+          timeline: tab === "buy" && "timeline" in parsed ? parsed.timeline : "",
+          address: tab === "sell" && "address" in parsed ? parsed.address : "",
+          property_type: tab === "sell" && "property_type" in parsed ? parsed.property_type : "",
         }),
       });
 
