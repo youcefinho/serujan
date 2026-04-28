@@ -79,7 +79,7 @@ export function ExitIntentPopup() {
             onClick={(e) => { dismiss(); openCalendly(e); }}
             className="w-full py-4 bg-gradient-crimson text-primary-foreground font-bold uppercase tracking-widest rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
           >
-            Obtenir mon évaluation gratuite
+            Rencontre stratégique gratuite
           </button>
           <a
             href="tel:8199183409"

@@ -44,10 +44,10 @@ export function Deliverables() {
           
           <button
             onClick={openCalendly}
-            className="inline-flex items-center gap-3 px-8 py-5 bg-gradient-crimson text-primary-foreground font-bold rounded-lg shadow-crimson hover:scale-[1.02] transition-transform text-lg w-full sm:w-auto justify-center"
+            className="inline-flex items-center gap-3 px-8 py-5 bg-gradient-crimson text-primary-foreground font-bold rounded-lg shadow-crimson hover:scale-[1.02] transition-transform text-lg w-full sm:w-auto justify-center uppercase tracking-widest"
           >
             <Calendar className="w-6 h-6" />
-            Prendre rendez-vous maintenant
+            Rencontre stratégique gratuite
           </button>
         </div>
 

@@ -80,11 +80,11 @@ export function Navbar() {
           </a>
           <button
             onClick={openCalendly}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-crimson text-primary-foreground text-sm font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
-            aria-label="Prendre rendez-vous"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-crimson text-primary-foreground text-xs font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer uppercase tracking-wider"
+            aria-label="Rencontre stratégique gratuite"
           >
             <Calendar className="w-4 h-4" />
-            Rendez-vous
+            Rencontre stratégique
           </button>
         </div>
 
@@ -128,10 +128,10 @@ export function Navbar() {
             </a>
             <button
               onClick={(e) => { close(); openCalendly(e); }}
-              className="block w-full text-center py-3.5 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson cursor-pointer"
-              aria-label="Prendre rendez-vous avec Mathis Guimont"
+              className="block w-full text-center py-3.5 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson cursor-pointer uppercase tracking-wider"
+              aria-label="Rencontre stratégique gratuite"
             >
-              Prendre rendez-vous
+              Rencontre stratégique gratuite
             </button>
           </div>
         </nav>

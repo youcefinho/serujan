@@ -1,17 +1,24 @@
-import { Home, TrendingUp, ArrowRight } from "lucide-react";
+import { Home, TrendingUp, PiggyBank, ArrowRight } from "lucide-react";
 
+// Données des 3 piliers — ACHAT · VENTE · INVESTISSEMENT (standard Intralys §10.9)
 const services = [
   {
     icon: Home,
-    title: "ACHETER",
-    desc: "Trouvez la propriété parfaite à Gatineau. Accompagnement complet du premier visite jusqu'à la remise des clés.",
+    title: "ACHAT",
+    desc: "Trouvez la propriété parfaite. Accompagnement complet de la première visite jusqu'à la remise des clés.",
     points: ["Recherche ciblée", "Négociation experte", "Inspection accompagnée"],
   },
   {
     icon: TrendingUp,
-    title: "VENDRE",
+    title: "VENTE",
     desc: "Maximisez la valeur de votre propriété grâce à une stratégie marketing puissante et un large réseau d'acheteurs.",
     points: ["Évaluation gratuite", "Marketing premium", "Photos professionnelles"],
+  },
+  {
+    icon: PiggyBank,
+    title: "INVESTISSEMENT",
+    desc: "Identifiez les meilleures opportunités d'investissement immobilier. Analyse de rentabilité et accompagnement patrimonial.",
+    points: ["Analyse de marché", "Calcul de rendement", "Stratégie long terme"],
   },
 ];
 
@@ -21,10 +28,10 @@ export function Services() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="text-center mb-16">
           <span className="text-crimson text-sm font-bold uppercase tracking-widest">Services</span>
-          <h2 className="mt-3 text-2xl sm:text-4xl md:text-5xl font-bold">Deux missions. Une expertise.</h2>
+          <h2 className="mt-3 text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">Trois missions. Une expertise.</h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           {services.map(({ icon: Icon, title, desc, points }) => (
             <div
               key={title}
@@ -45,7 +52,7 @@ export function Services() {
                 </ul>
                 <a
                   href="#contact"
-                  className="inline-flex items-center gap-2 text-crimson font-bold group-hover:gap-4 transition-all"
+                  className="inline-flex items-center gap-2 text-crimson font-bold uppercase tracking-wider group-hover:gap-4 transition-all"
                   aria-label={`En savoir plus sur le service ${title.toLowerCase()}`}
                 >
                   En savoir plus <ArrowRight className="w-4 h-4" />

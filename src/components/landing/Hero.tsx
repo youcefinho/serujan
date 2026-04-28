@@ -56,7 +56,7 @@ export function Hero() {
               aria-label="Prendre rendez-vous avec Mathis Guimont"
             >
               <Calendar className="w-5 h-5" />
-              Prendre rendez-vous
+              RENCONTRE STRATÉGIQUE GRATUITE
             </button>
             <a
               href="tel:8199183409"

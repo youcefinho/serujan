@@ -15,11 +15,11 @@ export function MobileStickyBar() {
         </a>
         <button
           onClick={openCalendly}
-          className="flex items-center justify-center gap-2 py-3 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson text-sm"
-          aria-label="Prendre rendez-vous"
+          className="flex items-center justify-center gap-2 py-3 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson text-xs uppercase tracking-wider"
+          aria-label="Rencontre stratégique gratuite"
         >
           <Calendar className="w-4 h-4" />
-          Rendez-vous
+          Rencontre gratuite
         </button>
       </div>
     </div>
