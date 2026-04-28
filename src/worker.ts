@@ -98,6 +98,36 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
       cleanPropertyType,
     ).run();
 
+    // Notification email au courtier (best-effort — ne bloque pas la réponse)
+    try {
+      const resend = new Resend(env.RESEND_API_KEY);
+      const typeLabel = cleanType === 'buy' ? 'Acheteur' : 'Vendeur';
+      const details = cleanType === 'buy'
+        ? `Budget: ${cleanBudget || '—'} | Échéancier: ${cleanTimeline || '—'}`
+        : `Adresse: ${cleanAddress || '—'} | Type: ${cleanPropertyType || '—'}`;
+
+      await resend.emails.send({
+        from: CLIENT.emailFrom,
+        to: [CLIENT.email],
+        subject: `🔔 Nouveau lead ${typeLabel} — ${sanitizeHtml(cleanName)}`,
+        html: `
+          <div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:500px;margin:0 auto;padding:24px;border:1px solid #e0e0e0;border-radius:12px;">
+            <h2 style="color:#E63946;margin:0 0 16px;">Nouveau lead ${typeLabel}</h2>
+            <table style="width:100%;border-collapse:collapse;font-size:14px;">
+              <tr><td style="padding:8px 0;color:#666;width:100px;">Nom</td><td style="padding:8px 0;font-weight:bold;">${sanitizeHtml(cleanName)}</td></tr>
+              <tr><td style="padding:8px 0;color:#666;">Téléphone</td><td style="padding:8px 0;"><a href="tel:${cleanPhone}" style="color:#E63946;text-decoration:none;font-weight:bold;">${sanitizeHtml(cleanPhone)}</a></td></tr>
+              <tr><td style="padding:8px 0;color:#666;">Email</td><td style="padding:8px 0;"><a href="mailto:${cleanEmail}" style="color:#E63946;text-decoration:none;">${sanitizeHtml(cleanEmail)}</a></td></tr>
+              <tr><td style="padding:8px 0;color:#666;">Détails</td><td style="padding:8px 0;">${sanitizeHtml(details)}</td></tr>
+              ${cleanMessage ? `<tr><td style="padding:8px 0;color:#666;vertical-align:top;">Message</td><td style="padding:8px 0;">${sanitizeHtml(cleanMessage)}</td></tr>` : ''}
+            </table>
+            <p style="margin:16px 0 0;font-size:12px;color:#999;">Reçu le ${new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' })}</p>
+          </div>
+        `,
+      });
+    } catch (emailErr) {
+      console.warn('Échec notification courtier:', emailErr);
+    }
+
     return json({ success: true, id });
   } catch (error) {
     console.error('Erreur sauvegarde lead:', error);

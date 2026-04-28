@@ -16,7 +16,7 @@ export function Hero() {
       <div className="absolute inset-0">
         <img
           src={heroBanner}
-          alt="Quartier résidentiel à Gatineau au crépuscule"
+          alt={`Quartier résidentiel à ${clientConfig.territoryLabel} au crépuscule`}
           className="w-full h-full object-cover"
           loading="eager"
           decoding="async"

@@ -208,7 +208,7 @@ export function LeadForm() {
               {loading ? "Envoi en cours..." : "Envoyer ma demande"}
             </button>
             <p className="text-xs text-muted-foreground text-center">
-              Réponse personnelle de Mathis en moins de 2h. Vos informations restent confidentielles.
+              Réponse personnelle de {clientConfig.name} en moins de 2h. Vos informations restent confidentielles.
             </p>
           </form>
           </>

@@ -84,7 +84,7 @@ export function About() {
             <MapPin className="w-5 h-5 text-crimson shrink-0 mt-0.5" />
             <div className="text-sm">
               <div className="font-semibold">{t(translations.about.office)}</div>
-              <div className="text-muted-foreground">225 boul. de la Gappe, suite 102, Gatineau</div>
+              <div className="text-muted-foreground">{`${clientConfig.address.street}, ${clientConfig.address.city}`}</div>
             </div>
           </div>
         </div>

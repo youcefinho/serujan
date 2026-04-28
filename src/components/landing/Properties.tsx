@@ -5,9 +5,9 @@ import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 
 const properties = [
-  { price: 425000, address: "123 Rue de l'Exemple, Gatineau", beds: 3, baths: 2, type: { fr: "Maison unifamiliale", en: "Single family home" } },
-  { price: 349000, address: "456 Boulevard Placeholder, Hull", beds: 2, baths: 1, type: { fr: "Condo", en: "Condo" } },
-  { price: 575000, address: "789 Avenue Modèle, Aylmer", beds: 4, baths: 3, type: { fr: "Maison unifamiliale", en: "Single family home" } },
+  { price: 425000, beds: 3, baths: 2, type: { fr: "Maison unifamiliale", en: "Single family home" } },
+  { price: 349000, beds: 2, baths: 1, type: { fr: "Condo", en: "Condo" } },
+  { price: 575000, beds: 4, baths: 3, type: { fr: "Maison unifamiliale", en: "Single family home" } },
 ];
 
 const fmt = (v: number) =>
@@ -36,7 +36,7 @@ export function Properties() {
               <div className="p-6 space-y-4">
                 <div className="text-2xl font-black text-crimson">{fmt(prop.price)}</div>
                 <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-crimson" /><span>{prop.address}</span>
+                  <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-crimson" /><span>{clientConfig.address.city}</span>
                 </div>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground border-t border-border pt-4">
                   <span className="flex items-center gap-1.5"><Bed className="w-4 h-4" /> {prop.beds} {t(tr.beds)}</span>
