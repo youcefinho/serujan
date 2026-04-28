@@ -1,5 +1,5 @@
 import { Heart, Eye, Zap, MapPin } from "lucide-react";
-import mathisRed from "@/assets/mathis-red.jpg";
+import mathisWhite from "@/assets/mathis-white.jpg";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
@@ -20,7 +20,7 @@ export function About() {
           <div className="absolute -inset-8 bg-gradient-crimson rounded-full opacity-20 blur-3xl" />
           <div className="relative aspect-[4/5] max-w-md mx-auto lg:max-w-none overflow-hidden rounded-2xl shadow-elevate">
             <img
-              src={mathisRed}
+              src={mathisWhite}
               alt={`${clientConfig.name}, ${t(clientConfig.title)}`}
               className="w-full h-full object-cover object-top"
               loading="lazy"
