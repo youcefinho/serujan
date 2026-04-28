@@ -28,7 +28,7 @@ function AdminLogin() {
         body: JSON.stringify({ password }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { token?: string };
 
       if (!response.ok || !data.token) {
         setError("Mot de passe incorrect");

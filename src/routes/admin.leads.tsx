@@ -68,8 +68,8 @@ function AdminLeadsPage() {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!response.ok) throw new Error("Erreur chargement");
-        const { data } = await response.json();
-        setLeads((data as Lead[]) ?? []);
+        const { data } = await response.json() as { data: Lead[] };
+        setLeads(data ?? []);
       } catch (err) {
         console.error("Erreur chargement leads:", err);
       }
