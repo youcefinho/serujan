@@ -1,5 +1,5 @@
 import { Heart, Eye, Zap, MapPin } from "lucide-react";
-import mathisWhite from "@/assets/mathis-white.jpg";
+import mathisRed from "@/assets/mathis-red.jpg";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
@@ -15,29 +15,38 @@ export function About() {
   return (
     <section id="apropos" className="py-24 lg:py-32 bg-navy-deep">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        {/* Photo du courtier avec badges flottants */}
         <div className="relative order-2 lg:order-1">
-          <div className="absolute -inset-2 border-2 border-crimson rounded-2xl translate-x-4 translate-y-4" />
-          <div className="relative aspect-[4/5] bg-cream rounded-2xl overflow-hidden shadow-elevate">
+          <div className="absolute -inset-8 bg-gradient-crimson rounded-full opacity-20 blur-3xl" />
+          <div className="relative aspect-[4/5] max-w-md mx-auto lg:max-w-none overflow-hidden rounded-2xl shadow-elevate">
             <img
-              src={mathisWhite}
-              alt={`Portrait de ${clientConfig.name}`}
+              src={mathisRed}
+              alt={`${clientConfig.name}, ${t(clientConfig.title)}`}
               className="w-full h-full object-cover object-top"
               loading="lazy"
               decoding="async"
             />
+            {/* Badge nouvelle génération */}
+            <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm border border-white/20 text-navy px-4 py-2.5 rounded-xl shadow-elevate transform rotate-2">
+              <span className="block text-[10px] font-bold uppercase tracking-widest text-crimson mb-0.5">{clientConfig.ageBadge.value}</span>
+              <span className="block font-black text-sm leading-tight">{t(clientConfig.ageBadge.label)}</span>
             </div>
-            {/* Nouvelle génération badge */}
-            <div className="absolute -left-6 top-12 bg-white text-navy p-5 rounded-2xl shadow-elevate max-w-[240px] transform -rotate-2 z-10">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-crimson rounded-full flex items-center justify-center text-white font-bold text-lg">
-                  22
-                </div>
-                <div className="font-bold leading-tight" style={{ whiteSpace: "pre-line" }}>{t(translations.about.badge)}</div>
+            {/* Badge avis 5 étoiles — social proof */}
+            <div className="absolute top-6 left-6 bg-navy-deep/90 backdrop-blur-sm border border-crimson/30 text-foreground px-4 py-2.5 rounded-xl shadow-elevate transform -rotate-2">
+              <span className="block text-[10px] font-bold uppercase tracking-widest text-yellow-400 mb-0.5">★★★★★</span>
+              <span className="block font-black text-sm leading-tight">{t(clientConfig.reviewsBadge.label)}</span>
+            </div>
+            {/* Bande territoire */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-navy-deep/90 to-transparent">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-1 bg-crimson" />
+                <span className="text-sm font-semibold">{clientConfig.territoryLabel}</span>
               </div>
-              <p className="text-xs text-navy/70 font-medium">{t(translations.about.badgeDesc)}</p>
             </div>
           </div>
+        </div>
 
+        {/* Texte à propos */}
         <div className="order-1 lg:order-2 space-y-8">
           <div>
             <span className="text-crimson text-sm font-bold uppercase tracking-widest">{t(translations.about.label)}</span>
