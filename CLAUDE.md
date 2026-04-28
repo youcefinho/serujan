@@ -24,7 +24,7 @@ Le template actuel est celui de **Mathis Guimont**, courtier immobilier résiden
 | **Tailwind CSS** | v4 | Styles utilitaires (syntaxe v4 avec `@theme inline`) |
 | **Supabase** | 2.104+ | Base de données PostgreSQL + Auth + RLS |
 | **Bun** | Latest | Runtime et gestionnaire de paquets |
-| **Netlify** | — | Hébergement statique + Functions serverless |
+| **Cloudflare Pages** | — | Hébergement statique + Pages Functions serverless (gratuit) |
 | **Resend** | 6+ | Envoi d'emails transactionnels (Lead Magnet) |
 | **Calendly** | Widget JS | Prise de rendez-vous en popup |
 | **Zod** | 3.24+ | Validation des formulaires |
@@ -65,7 +65,7 @@ Le template actuel est celui de **Mathis Guimont**, courtier immobilier résiden
 
 ### Clés API
 - **JAMAIS hardcoder de clé API dans le code source.** Aucune exception.
-- Toutes les clés doivent être dans `.env.local` (côté client) ou dans les variables d'environnement Netlify (côté serveur).
+- Toutes les clés doivent être dans `.env.local` (côté client) ou dans les variables d'environnement Cloudflare (côté serveur).
 - Le fichier `.env.example` documente toutes les variables requises avec des valeurs placeholder.
 
 ### Variables d'environnement
@@ -75,8 +75,8 @@ Le template actuel est celui de **Mathis Guimont**, courtier immobilier résiden
 | `VITE_SUPABASE_ANON_KEY` | Client | Clé publique Supabase |
 | `VITE_CALENDLY_URL` | Client | URL Calendly du courtier |
 | `VITE_GA4_ID` | Client | ID Google Analytics (aussi dans `index.html`) |
-| `SUPABASE_URL` | Serveur | URL Supabase pour Netlify Functions |
-| `SUPABASE_ANON_KEY` | Serveur | Clé anon pour Netlify Functions |
+| `SUPABASE_URL` | Serveur | URL Supabase pour Cloudflare Pages Functions |
+| `SUPABASE_ANON_KEY` | Serveur | Clé anon pour Cloudflare Pages Functions |
 | `SUPABASE_SERVICE_ROLE_KEY` | Serveur | Clé admin Supabase (bypasse RLS) |
 | `RESEND_API_KEY` | Serveur | Clé API Resend pour l'envoi d'emails |
 
@@ -152,15 +152,17 @@ bun run build
 git add -A
 git commit -m "description concise du changement"
 
-# 3. Pousser — Netlify déploie automatiquement
+# 3. Pousser — Cloudflare déploie automatiquement
 git push origin main
 ```
 
-Le déploiement est géré par `netlify.toml` :
+Le déploiement est géré par Cloudflare Pages :
 - Build command : `npm run build`
-- Publish directory : `dist`
-- Headers de sécurité (CSP, X-Frame-Options, etc.) configurés automatiquement
-- Caching immutable sur `/assets/*`, zéro cache sur `/*.html`
+- Build output directory : `dist`
+- Headers de sécurité → `public/_headers`
+- Redirects SPA → `public/_redirects`
+- Fonctions serverless → `functions/` (Cloudflare Pages Functions)
+- Variables d'environnement côté serveur : `context.env.VARIABLE` (pas `process.env`)
 
 ---
 
@@ -192,7 +194,7 @@ Ces règles sont non négociables. Elles préviennent les erreurs récurrentes i
 
 ### Règle 3 — Ne jamais importer `client.server.ts` dans du code frontend
 - `src/integrations/supabase/client.server.ts` contient la **clé service_role** qui bypasse le Row Level Security.
-- Ce fichier est réservé **exclusivement** aux Netlify Functions (`netlify/functions/`).
+- Ce fichier est réservé **exclusivement** aux Cloudflare Pages Functions (`functions/`).
 - L'importer dans un composant React ou une route **exposerait la clé admin au navigateur**. C'est une faille de sécurité critique.
 - Côté client, toujours utiliser `client.ts` (qui utilise la clé anon publique).
 

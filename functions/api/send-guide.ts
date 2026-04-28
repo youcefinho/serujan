@@ -1,25 +1,33 @@
-import type { Handler } from '@netlify/functions';
+// Cloudflare Pages Function — API pour envoyer le guide gratuit
+// Route : POST /api/send-guide
+// Remplace l'ancienne Netlify Function (netlify/functions/send-guide.ts)
+// Variables d'environnement via context.env (pas process.env)
+
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+interface Env {
+  RESEND_API_KEY: string;
+  SUPABASE_URL: string;
+  SUPABASE_SERVICE_ROLE_KEY: string;
+  SUPABASE_ANON_KEY: string;
+}
 
-export const handler: Handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
-  }
-
+export const onRequestPost: PagesFunction<Env> = async (context) => {
   try {
-    const { prenom, email } = JSON.parse(event.body || '{}');
+    const { prenom, email } = await context.request.json() as { prenom?: string; email?: string };
 
     if (!email) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'Email requis' }) };
+      return new Response(JSON.stringify({ error: 'Email requis' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    // Save lead to Supabase (best-effort — don't block email delivery)
+    // Sauvegarder le lead dans Supabase (best-effort — ne bloque pas l'envoi d'email)
     try {
-      const supabaseUrl = process.env.SUPABASE_URL;
-      const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+      const supabaseUrl = context.env.SUPABASE_URL;
+      const supabaseKey = context.env.SUPABASE_SERVICE_ROLE_KEY || context.env.SUPABASE_ANON_KEY;
       if (supabaseUrl && supabaseKey) {
         const supabase = createClient(supabaseUrl, supabaseKey);
         await supabase.from('leads').insert({
@@ -31,9 +39,11 @@ export const handler: Handler = async (event) => {
         });
       }
     } catch (dbErr) {
-      console.warn('Failed to save Lead Magnet lead to Supabase:', dbErr);
+      console.warn('Échec sauvegarde lead Supabase:', dbErr);
     }
 
+    // Envoyer l'email via Resend
+    const resend = new Resend(context.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
       from: 'Mathis Guimont <onboarding@resend.dev>',
       to: [email],
@@ -46,14 +56,14 @@ export const handler: Handler = async (event) => {
           <div style="background-color: #f9f9f9; padding: 24px; border-radius: 8px; margin-bottom: 32px;">
             <p style="margin: 0 0 12px 0; font-weight: bold; color: #1a1a1a;">À l'intérieur vous trouverez :</p>
             <ul style="list-style: none; padding: 0; margin: 0;">
-              <li style="margin-bottom: 10px; display: flex; items-center;">✅ Les 5 erreurs les plus courantes à éviter</li>
-              <li style="margin-bottom: 10px; display: flex; items-center;">✅ Le vrai coût d'achat à Gatineau</li>
-              <li style="margin-bottom: 0; display: flex; items-center;">✅ Le processus étape par étape pour acheter sereinement</li>
+              <li style="margin-bottom: 10px;">✅ Les 5 erreurs les plus courantes à éviter</li>
+              <li style="margin-bottom: 10px;">✅ Le vrai coût d'achat à Gatineau</li>
+              <li style="margin-bottom: 0;">✅ Le processus étape par étape pour acheter sereinement</li>
             </ul>
           </div>
           
           <div style="text-align: center; margin-bottom: 32px;">
-            <a href="https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link" target="_blank" rel="noopener noreferrer" style="background-color: #E63946; color: #ffffff; padding: 18px 36px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 16px; transition: background-color 0.3s ease;">
+            <a href="https://drive.google.com/file/d/1dzYfbnMTxe5sO9C78E_PaTx-9bblW0C3/view?usp=drive_link" target="_blank" rel="noopener noreferrer" style="background-color: #E63946; color: #ffffff; padding: 18px 36px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 16px;">
               Accéder à mon guide gratuit
             </a>
           </div>
@@ -71,19 +81,22 @@ export const handler: Handler = async (event) => {
     });
 
     if (error) {
-      console.error('Resend error:', error);
-      return { statusCode: 500, body: JSON.stringify({ error }) };
+      console.error('Erreur Resend:', error);
+      return new Response(JSON.stringify({ error }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true, data }),
-    };
+    return new Response(JSON.stringify({ success: true, data }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    console.error('Function error:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Internal Server Error' }),
-    };
+    console.error('Erreur fonction:', error);
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 };

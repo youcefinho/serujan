@@ -108,7 +108,7 @@ Ces standards s'appliquent à tous les projets de landing page Intralys :
 
 ## 6. DÉPLOIEMENT
 
-### Netlify (par défaut)
+### Cloudflare Pages (par défaut)
 ```bash
 # 1. Vérifier le build
 bun run build
@@ -117,12 +117,14 @@ bun run build
 git add -A
 git commit -m "description concise"
 
-# 3. Pousser — Netlify auto-deploy
+# 3. Pousser — Cloudflare auto-deploy
 git push origin main
 ```
 
-- Netlify détecte le push et déploie automatiquement via `netlify.toml`.
-- Les headers de sécurité (CSP, X-Frame-Options, etc.) sont configurés dans `netlify.toml`.
+- Cloudflare Pages détecte le push et déploie automatiquement.
+- Les headers de sécurité sont dans `public/_headers`.
+- Les redirects SPA sont dans `public/_redirects`.
+- Les fonctions serverless sont dans `functions/` (Cloudflare Pages Functions).
 - Ne jamais déployer manuellement sauf urgence.
 
 ---
@@ -136,7 +138,7 @@ git push origin main
 
 ### Sécurité
 - `client.ts` (clé anon) → côté client uniquement.
-- `client.server.ts` (clé service_role) → Netlify Functions uniquement. **JAMAIS** dans du code frontend.
+- `client.server.ts` (clé service_role) → Cloudflare Pages Functions uniquement. **JAMAIS** dans du code frontend.
 - Row Level Security (RLS) activé sur toutes les tables.
 
 ---

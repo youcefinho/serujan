@@ -12,7 +12,7 @@ export function LeadMagnet() {
     const formData = new FormData(form);
 
     try {
-      const response = await fetch("/.netlify/functions/send-guide", {
+      const response = await fetch("/api/send-guide", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
