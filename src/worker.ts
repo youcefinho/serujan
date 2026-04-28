@@ -98,34 +98,66 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
       cleanPropertyType,
     ).run();
 
+    // Déterminer si c'est une inscription newsletter (PropertyAlerts)
+    const isNewsletter = cleanName === 'Alerte Propriété';
+
     // Notification email au courtier (best-effort — ne bloque pas la réponse)
     try {
       const resend = new Resend(env.RESEND_API_KEY);
-      const typeLabel = cleanType === 'buy' ? 'Acheteur' : 'Vendeur';
-      const details = cleanType === 'buy'
-        ? `Budget: ${cleanBudget || '—'} | Échéancier: ${cleanTimeline || '—'}`
-        : `Adresse: ${cleanAddress || '—'} | Type: ${cleanPropertyType || '—'}`;
 
-      await resend.emails.send({
-        from: CLIENT.emailFrom,
-        to: [CLIENT.email],
-        subject: `🔔 Nouveau lead ${typeLabel} — ${sanitizeHtml(cleanName)}`,
-        html: `
-          <div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:500px;margin:0 auto;padding:24px;border:1px solid #e0e0e0;border-radius:12px;">
-            <h2 style="color:#E63946;margin:0 0 16px;">Nouveau lead ${typeLabel}</h2>
-            <table style="width:100%;border-collapse:collapse;font-size:14px;">
-              <tr><td style="padding:8px 0;color:#666;width:100px;">Nom</td><td style="padding:8px 0;font-weight:bold;">${sanitizeHtml(cleanName)}</td></tr>
-              <tr><td style="padding:8px 0;color:#666;">Téléphone</td><td style="padding:8px 0;"><a href="tel:${cleanPhone}" style="color:#E63946;text-decoration:none;font-weight:bold;">${sanitizeHtml(cleanPhone)}</a></td></tr>
-              <tr><td style="padding:8px 0;color:#666;">Email</td><td style="padding:8px 0;"><a href="mailto:${cleanEmail}" style="color:#E63946;text-decoration:none;">${sanitizeHtml(cleanEmail)}</a></td></tr>
-              <tr><td style="padding:8px 0;color:#666;">Détails</td><td style="padding:8px 0;">${sanitizeHtml(details)}</td></tr>
-              ${cleanMessage ? `<tr><td style="padding:8px 0;color:#666;vertical-align:top;">Message</td><td style="padding:8px 0;">${sanitizeHtml(cleanMessage)}</td></tr>` : ''}
-            </table>
-            <p style="margin:16px 0 0;font-size:12px;color:#999;">Reçu le ${new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' })}</p>
-          </div>
-        `,
-      });
+      if (isNewsletter) {
+        // Notification courtier — inscription newsletter
+        await resend.emails.send({
+          from: CLIENT.emailFrom,
+          to: [CLIENT.email],
+          subject: `📬 Nouvelle inscription alertes propriétés — ${sanitizeHtml(cleanEmail)}`,
+          html: `
+            <div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:500px;margin:0 auto;padding:24px;border:1px solid #e0e0e0;border-radius:12px;">
+              <h2 style="color:#E63946;margin:0 0 16px;">📬 Nouvelle inscription alertes</h2>
+              <p style="font-size:14px;color:#666;">Un visiteur s'est inscrit aux alertes propriétés exclusives.</p>
+              <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                <tr><td style="padding:8px 0;color:#666;width:100px;">Email</td><td style="padding:8px 0;font-weight:bold;"><a href="mailto:${cleanEmail}" style="color:#E63946;text-decoration:none;">${sanitizeHtml(cleanEmail)}</a></td></tr>
+              </table>
+              <p style="margin:16px 0 0;font-size:12px;color:#999;">Reçu le ${new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' })}</p>
+            </div>
+          `,
+        });
+
+        // Email de bienvenue au subscriber
+        await resend.emails.send({
+          from: CLIENT.emailFrom,
+          to: [cleanEmail],
+          subject: `🏠 Bienvenue dans nos alertes propriétés exclusives — ${CLIENT.banner.name}`,
+          html: buildNewsletterWelcomeEmail(),
+        });
+      } else {
+        // Notification courtier — lead classique (achat/vente)
+        const typeLabel = cleanType === 'buy' ? 'Acheteur' : 'Vendeur';
+        const details = cleanType === 'buy'
+          ? `Budget: ${cleanBudget || '—'} | Échéancier: ${cleanTimeline || '—'}`
+          : `Adresse: ${cleanAddress || '—'} | Type: ${cleanPropertyType || '—'}`;
+
+        await resend.emails.send({
+          from: CLIENT.emailFrom,
+          to: [CLIENT.email],
+          subject: `🔔 Nouveau lead ${typeLabel} — ${sanitizeHtml(cleanName)}`,
+          html: `
+            <div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:500px;margin:0 auto;padding:24px;border:1px solid #e0e0e0;border-radius:12px;">
+              <h2 style="color:#E63946;margin:0 0 16px;">Nouveau lead ${typeLabel}</h2>
+              <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                <tr><td style="padding:8px 0;color:#666;width:100px;">Nom</td><td style="padding:8px 0;font-weight:bold;">${sanitizeHtml(cleanName)}</td></tr>
+                <tr><td style="padding:8px 0;color:#666;">Téléphone</td><td style="padding:8px 0;"><a href="tel:${cleanPhone}" style="color:#E63946;text-decoration:none;font-weight:bold;">${sanitizeHtml(cleanPhone)}</a></td></tr>
+                <tr><td style="padding:8px 0;color:#666;">Email</td><td style="padding:8px 0;"><a href="mailto:${cleanEmail}" style="color:#E63946;text-decoration:none;">${sanitizeHtml(cleanEmail)}</a></td></tr>
+                <tr><td style="padding:8px 0;color:#666;">Détails</td><td style="padding:8px 0;">${sanitizeHtml(details)}</td></tr>
+                ${cleanMessage ? `<tr><td style="padding:8px 0;color:#666;vertical-align:top;">Message</td><td style="padding:8px 0;">${sanitizeHtml(cleanMessage)}</td></tr>` : ''}
+              </table>
+              <p style="margin:16px 0 0;font-size:12px;color:#999;">Reçu le ${new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' })}</p>
+            </div>
+          `,
+        });
+      }
     } catch (emailErr) {
-      console.warn('Échec notification courtier:', emailErr);
+      console.warn('Échec notification email:', emailErr);
     }
 
     return json({ success: true, id });
@@ -133,6 +165,66 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
     console.error('Erreur sauvegarde lead:', error);
     return json({ error: 'Erreur serveur' }, 500);
   }
+}
+
+// ── Email de bienvenue newsletter (HTML premium) ─────────────
+function buildNewsletterWelcomeEmail(): string {
+  const city = CLIENT.address.city;
+  const team = CLIENT.banner.name;
+  const phone = CLIENT.phone.display;
+  const siteUrl = CLIENT.siteUrl;
+
+  return `
+    <div style="background-color:#0d1b2a;color:#ffffff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;border-radius:12px;overflow:hidden;">
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,#E63946 0%,#c62828 100%);padding:40px 32px;text-align:center;">
+        <h1 style="margin:0;font-size:28px;font-weight:900;letter-spacing:2px;text-transform:uppercase;">🏠 Bienvenue!</h1>
+        <p style="margin:12px 0 0;font-size:15px;opacity:0.9;">Vous faites maintenant partie de notre réseau exclusif</p>
+      </div>
+
+      <!-- Corps -->
+      <div style="padding:32px;">
+        <p style="font-size:16px;line-height:1.7;margin:0 0 24px;color:#e0e0e0;">
+          Merci de vous être inscrit(e) aux <strong style="color:#E63946;">alertes propriétés exclusives</strong> de <strong>${team}</strong>.
+        </p>
+
+        <p style="font-size:16px;line-height:1.7;margin:0 0 24px;color:#e0e0e0;">
+          Vous recevrez en priorité nos nouvelles inscriptions à <strong>${city}</strong> — avant même qu'elles soient affichées publiquement.
+        </p>
+
+        <!-- Ce que vous recevrez -->
+        <div style="background-color:#1b2838;border:1px solid #2a3a4a;border-radius:10px;padding:24px;margin:0 0 28px;">
+          <p style="margin:0 0 16px;font-weight:bold;font-size:14px;text-transform:uppercase;letter-spacing:1.5px;color:#E63946;">Ce que vous recevrez :</p>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr><td style="padding:8px 0;font-size:15px;color:#e0e0e0;">🏡</td><td style="padding:8px 0 8px 12px;font-size:15px;color:#e0e0e0;">Nouvelles propriétés en exclusivité</td></tr>
+            <tr><td style="padding:8px 0;font-size:15px;color:#e0e0e0;">📊</td><td style="padding:8px 0 8px 12px;font-size:15px;color:#e0e0e0;">Analyses du marché immobilier à ${city}</td></tr>
+            <tr><td style="padding:8px 0;font-size:15px;color:#e0e0e0;">💡</td><td style="padding:8px 0 8px 12px;font-size:15px;color:#e0e0e0;">Conseils d'experts pour vos projets</td></tr>
+            <tr><td style="padding:8px 0;font-size:15px;color:#e0e0e0;">🔔</td><td style="padding:8px 0 8px 12px;font-size:15px;color:#e0e0e0;">Opportunités d'investissement</td></tr>
+          </table>
+        </div>
+
+        <!-- CTA -->
+        <div style="text-align:center;margin:0 0 28px;">
+          <a href="${siteUrl}#contact" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg,#E63946 0%,#c62828 100%);color:#ffffff;padding:16px 40px;text-decoration:none;border-radius:8px;font-weight:bold;display:inline-block;font-size:14px;text-transform:uppercase;letter-spacing:1.5px;">
+            Planifier une rencontre gratuite
+          </a>
+        </div>
+
+        <p style="font-size:14px;line-height:1.6;color:#999;margin:0 0 28px;text-align:center;">
+          Vous avez des questions ? Appelez-nous au <a href="tel:${phone.replace(/-/g, '')}" style="color:#E63946;text-decoration:none;font-weight:bold;">${phone}</a>
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div style="background-color:#0a1628;padding:24px 32px;border-top:1px solid #1b2838;text-align:center;">
+        <p style="margin:0 0 4px;font-weight:bold;font-size:16px;">${team}</p>
+        <p style="margin:0;font-size:13px;color:#666;">Courtiers immobiliers — ${city}</p>
+        <p style="margin:12px 0 0;font-size:11px;color:#555;">
+          <a href="${siteUrl}" style="color:#E63946;text-decoration:none;">${siteUrl.replace('https://', '')}</a>
+        </p>
+      </div>
+    </div>
+  `;
 }
 
 // ── POST /api/send-guide ─────────────────────────────────────
