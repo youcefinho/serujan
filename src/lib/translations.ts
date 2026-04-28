@@ -19,18 +19,18 @@ export const translations = {
   // --- Hero ---
   hero: {
     badge: { fr: "La Transaction Sans Stress · Gatineau", en: "The Stress-Free Transaction · Gatineau" },
-    title: { fr: "Votre premier achat à Gatineau.", en: "Your first home in Gatineau." },
+    title: { fr: "Achetez. Vendez. Sans stress.", en: "Buy. Sell. Stress-free." },
     phrases: {
-      fr: ["Sans stress.", "Sans mauvaise surprise."],
-      en: ["Stress-free.", "No bad surprises."],
+      fr: ["Sans mauvaise surprise.", "Sans pression.", "De A à Z."],
+      en: ["No bad surprises.", "No pressure.", "From A to Z."],
     },
     description: {
-      fr: "\"Et si on se trompe de quartier ? Et si la maison a des problèmes cachés ? Et si on n'est pas vraiment prêts financièrement ?\"",
-      en: "\"What if we pick the wrong neighborhood? What if the house has hidden problems? What if we're not really financially ready?\"",
+      fr: "Je sais exactement ce qui vous empêche de dormir la nuit. La peur de payer trop cher. La peur du vice caché. L'incertitude face à vos finances.",
+      en: "I know exactly what keeps you up at night. The fear of overpaying. The fear of hidden defects. The uncertainty about your finances.",
     },
     descriptionBold: {
-      fr: "est le seul courtier de Gatineau qui répond à ces questions avant même que vous les posiez.",
-      en: "is the only broker in Gatineau who answers these questions before you even ask them.",
+      fr: "est votre stratège implacable — de A à Z.",
+      en: "is your relentless strategist — from A to Z.",
     },
     ctaPrimary: { fr: "RENCONTRE STRATÉGIQUE GRATUITE", en: "FREE STRATEGIC CONSULTATION" },
     ctaCall: { fr: "Appeler maintenant", en: "Call now" },
@@ -78,7 +78,7 @@ export const translations = {
         en: ["Market analysis", "Return calculation", "Long-term strategy"],
       },
     },
-    learnMore: { fr: "En savoir plus", en: "Learn more" },
+    learnMore: { fr: "Me contacter", en: "Contact me" },
   },
 
   // --- Properties ---

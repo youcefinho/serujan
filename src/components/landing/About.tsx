@@ -96,6 +96,14 @@ export function About() {
               <div className="text-muted-foreground">{`${clientConfig.address.street}, ${clientConfig.address.city}`}</div>
             </div>
           </div>
+
+          {/* CTA conversion */}
+          <a
+            href="#contact"
+            className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform uppercase tracking-widest text-sm"
+          >
+            {t(translations.hero.ctaPrimary)}
+          </a>
         </div>
       </div>
     </section>
