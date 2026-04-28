@@ -1,6 +1,7 @@
 import { Play, Instagram } from "lucide-react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
+import { clientConfig } from "@/lib/config";
 
 const thumbnails = [
   "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=600",
@@ -33,7 +34,7 @@ export function InstagramReels() {
           {reels.map((reel, i) => (
             <a
               key={i}
-              href="https://www.instagram.com/mathis_guimont/"
+              href={clientConfig.socials.instagram?.url || "#"}
               target="_blank"
               rel="noopener noreferrer"
               className="relative aspect-[9/16] rounded-2xl overflow-hidden group bg-navy shadow-elevate block"
@@ -67,7 +68,7 @@ export function InstagramReels() {
 
         <div className="text-center">
           <a
-            href="https://www.instagram.com/mathis_guimont/"
+            href={clientConfig.socials.instagram?.url || "#"}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform shadow-elevate"

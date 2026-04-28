@@ -2,7 +2,7 @@ import { MapPin, Bed, Bath, ExternalLink } from "lucide-react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 
-const CENTRIS_URL = "https://www.centris.ca/fr";
+import { clientConfig } from "@/lib/config";
 
 const properties = [
   { price: 425000, address: "123 Rue de l'Exemple, Gatineau", beds: 3, baths: 2, type: { fr: "Maison unifamiliale", en: "Single family home" } },
@@ -48,7 +48,7 @@ export function Properties() {
         </div>
 
         <div className="text-center">
-          <a href={CENTRIS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform uppercase tracking-widest" aria-label={t(tr.cta)}>
+          <a href={clientConfig.centrisUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform uppercase tracking-widest" aria-label={t(tr.cta)}>
             <ExternalLink className="w-5 h-5" />{t(tr.cta)}
           </a>
         </div>

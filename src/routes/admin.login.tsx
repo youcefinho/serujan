@@ -28,10 +28,20 @@ function AdminLogin() {
         body: JSON.stringify({ password }),
       });
 
-      const data = await response.json() as { token?: string };
+      const data = await response.json() as { token?: string; error?: string };
 
-      if (!response.ok || !data.token) {
+      if (response.status === 429) {
+        setError("Trop de tentatives. Réessayez dans 1 heure.");
+        return;
+      }
+
+      if (response.status === 401 || !data.token) {
         setError("Mot de passe incorrect");
+        return;
+      }
+
+      if (!response.ok) {
+        setError(data.error || "Erreur serveur");
         return;
       }
 
