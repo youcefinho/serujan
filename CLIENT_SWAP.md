@@ -156,7 +156,7 @@ npx wrangler d1 execute NOM-COURTIER-leads --file=./schema.sql
 
 ---
 
-## Étape 8 : Vérification finale
+## Étape 8 : Vérification finale et déploiement
 
 ```bash
 # 1. Build
@@ -184,15 +184,40 @@ bun run dev     # Vérifier visuellement
 # 5. Deploy
 npx wrangler deploy
 
-# 6. Secrets dans Cloudflare Dashboard
-# → Settings → Variables et secrets
-# → RESEND_API_KEY + ADMIN_PASSWORD
+# 6. ⚠️ OBLIGATOIRE — Remettre les secrets (effacés par le deploy)
+# Copier post-deploy.example.cjs → post-deploy.cjs
+# Mettre les vrais secrets dedans
+node post-deploy.cjs
 
-# 7. Push
+# 7. Vérifications post-deploy :
+# [ ] Login admin → /admin/login avec le mot de passe
+# [ ] Formulaire ACHAT → remplir et soumettre → page merci
+# [ ] Formulaire VENTE → remplir et soumettre → page merci
+# [ ] Newsletter → inscrire un email test → vérifier spams
+# [ ] Notification courtier → vérifier l'email reçu
+# [ ] Admin panel → vérifier que les leads apparaissent
+# [ ] Lien "← Retour au site" dans l'admin
+# [ ] Vider les leads de test : npx wrangler d1 execute DB --command="DELETE FROM leads" --remote
+
+# 8. Push
 git add -A
 git commit -m "feat: nouveau client — NOM_COURTIER"
 git push -u origin main
 ```
+
+> ⚠️ **Si la base D1 existait déjà** avec un ancien schéma, exécuter d'abord :
+> `npx wrangler d1 execute DB --file=./migration-leads.sql --remote`
+
+---
+
+## Étape 9 : Fichiers à créer pour chaque client
+
+| Fichier | Source | Description |
+|---|---|---|
+| `post-deploy.cjs` | Copier `post-deploy.example.cjs` | Mettre les vrais secrets dedans |
+| `.vscode/settings.json` | Déjà dans le template | `"css.validate": false` (Tailwind v4) |
+
+> ⚠️ `post-deploy.cjs` est dans `.gitignore` — il ne sera JAMAIS commité.
 
 ---
 
@@ -218,7 +243,10 @@ git push -u origin main
 | 16 | Biographie | 2-3 paragraphes |
 | 17 | Guide PDF (Lead Magnet) | URL hébergée (Google Drive) |
 | 18 | ID Google Analytics 4 | G-XXXXXXXX |
+| 19 | Mot de passe admin | Pour `post-deploy.cjs` |
+| 20 | Membres de l'équipe | Nom, téléphone, site web, photo |
 
 ---
 
 > ⚠️ Temps estimé pour un swap complet : **30-45 minutes** si tous les éléments client sont fournis.
+
