@@ -1,0 +1,25 @@
+{
+  "name": "Mathis Guimont · Courtier immobilier à Gatineau",
+  "short_name": "Mathis Guimont",
+  "description": "Courtier immobilier résidentiel à Gatineau — Premiers acheteurs, vendeurs et investisseurs.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0D1B2A",
+  "theme_color": "#E63946",
+  "lang": "fr-CA",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
