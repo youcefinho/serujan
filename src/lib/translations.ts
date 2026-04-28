@@ -107,7 +107,7 @@ export const translations = {
     taxes: { fr: "Taxes foncières", en: "Property taxes" },
     insuranceLabel: { fr: "Assurance", en: "Insurance" },
     downPaymentAmount: { fr: "Mise de fonds", en: "Down payment" },
-    cta: { fr: "Discuter de mon projet", en: "Discuss my project" },
+    cta: { fr: "Analyser ce scénario avec Mathis", en: "Analyze this scenario with Mathis" },
     perMonth: { fr: "/mois", en: "/mo" },
   },
 
@@ -305,18 +305,18 @@ export const translations = {
     title: { fr: "5 étapes vers votre propriété.", en: "5 steps to your property." },
     steps: {
       fr: [
-        { title: "Consultation", desc: "On discute de vos besoins, votre budget et vos objectifs." },
-        { title: "Pré-approbation", desc: "On valide votre capacité d'emprunt avec un courtier hypothécaire." },
-        { title: "Recherche", desc: "Visites ciblées des propriétés qui correspondent à vos critères." },
-        { title: "Négociation", desc: "On rédige et négocie l'offre pour obtenir le meilleur prix." },
-        { title: "Signature", desc: "Inspection, financement, notaire — vous recevez les clés." },
+        { title: "L'Audit Stratégique", desc: "On s'assoit, on regarde vos vrais chiffres sans jugement et on bâtit une stratégie blindée." },
+        { title: "Radar Exclusif", desc: "Accès aux propriétés hors-marché et alertes avant qu'elles soient saturées d'offres." },
+        { title: "Rigueur Juridique", desc: "J'épluche les déclarations, je détecte les vices cachés et je négocie férocement le prix." },
+        { title: "Transaction Blindée", desc: "Inspection, financement, notaire — vous sortez avec zéro stress, 100% protégé." },
+        { title: "Les Clés", desc: "Signature chez le notaire. Vous recevez les clés de votre nouvelle propriété." },
       ],
       en: [
-        { title: "Consultation", desc: "We discuss your needs, budget, and goals." },
-        { title: "Pre-approval", desc: "We validate your borrowing capacity with a mortgage broker." },
-        { title: "Search", desc: "Targeted visits to properties matching your criteria." },
-        { title: "Negotiation", desc: "We draft and negotiate the offer for the best price." },
-        { title: "Closing", desc: "Inspection, financing, notary — you get the keys." },
+        { title: "Strategic Audit", desc: "We sit down, look at your real numbers without judgment and build a bulletproof strategy." },
+        { title: "Exclusive Radar", desc: "Access to off-market properties and alerts before they're flooded with overbidding offers." },
+        { title: "Legal Rigor", desc: "I scrutinize declarations, detect hidden defects and fiercely negotiate the price." },
+        { title: "Secured Transaction", desc: "Inspection, financing, notary — you come out with zero stress, 100% protected." },
+        { title: "The Keys", desc: "Signing at the notary. You receive the keys to your new property." },
       ],
     },
   },
@@ -403,7 +403,7 @@ export const translations = {
 
   // --- InstagramReels ---
   instagram: {
-    title: { fr: "Suivez mon actualité immobilière sur Instagram", en: "Follow my real estate updates on Instagram" },
+    title: { fr: "Dans les tranchées de l'immobilier.", en: "In the trenches of real estate." },
     subtitle: { fr: "Conseils, analyses de marché et coulisses de l'immobilier en Outaouais.", en: "Tips, market analysis, and behind-the-scenes of Outaouais real estate." },
     cta: { fr: "Voir tous mes Reels", en: "See all my Reels" },
     reels: {

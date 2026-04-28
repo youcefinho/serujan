@@ -110,6 +110,11 @@ export function Hero() {
               <span className="block text-[10px] font-bold uppercase tracking-widest text-crimson mb-0.5">{clientConfig.ageBadge.value}</span>
               <span className="block font-black text-sm leading-tight">{t(clientConfig.ageBadge.label)}</span>
             </div>
+            {/* Badge avis 5 étoiles — social proof */}
+            <div className="absolute top-6 left-6 bg-navy-deep/90 backdrop-blur-sm border border-crimson/30 text-foreground px-4 py-2.5 rounded-xl shadow-elevate transform -rotate-2">
+              <span className="block text-[10px] font-bold uppercase tracking-widest text-yellow-400 mb-0.5">★★★★★</span>
+              <span className="block font-black text-sm leading-tight">{t(clientConfig.reviewsBadge.label)}</span>
+            </div>
             
             <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-navy-deep/90 to-transparent">
               <div className="flex items-center gap-3">

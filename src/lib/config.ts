@@ -18,6 +18,10 @@ export const clientConfig = {
     value: "22 ans",
     label: { fr: "Nouvelle\ngénération", en: "New\ngeneration" },
   },
+  // Badge avis — social proof sur la photo Hero
+  reviewsBadge: {
+    label: { fr: "Avis 5 étoiles", en: "5-Star Reviews" },
+  },
 
   // ── Contact ───────────────────────────────────────────
   phone: {
