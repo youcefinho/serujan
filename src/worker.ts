@@ -146,9 +146,11 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
     // Enregistrement de la tentative pour le rate limit
     await env.DB.prepare("INSERT INTO lead_attempts (ip) VALUES (?)").bind(ip).run();
 
-    // Notification email (best-effort)
+    // Notification email à Serujan + accusé de réception au lead (best-effort)
     try {
       const resend = new Resend(env.RESEND_API_KEY);
+
+      // 1) Notification interne à Serujan
       await resend.emails.send({
         from: CLIENT.emailFrom,
         to: [CLIENT.email],
@@ -162,6 +164,22 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
           message: cleanMessage,
         }),
       });
+
+      // 2) Accusé de réception au lead — uniquement si email fourni
+      // (Si seulement le téléphone est rempli, Serujan rappelle directement.)
+      if (cleanEmail) {
+        await resend.emails.send({
+          from: CLIENT.emailFrom,
+          to: [cleanEmail],
+          replyTo: CLIENT.email,
+          subject: "Demande reçue · Équipe Serujan",
+          html: renderConfirmationHtml({
+            name: cleanName,
+            phone: cleanPhone,
+            amount: cleanAmount,
+          }),
+        });
+      }
     } catch (emailErr) {
       console.warn("Échec notification email:", emailErr);
     }
@@ -221,6 +239,58 @@ function renderEmailHtml(d: {
         ${d.message ? `<tr><td style="padding:14px 0 6px;color:#9a9a9a;font-size:13px;vertical-align:top;">Message</td><td style="padding:14px 0 6px;color:#f5f5f5;line-height:1.6;">${sanitizeHtml(d.message)}</td></tr>` : ""}
       </table>
       <p style="margin:20px 0 0;font-size:11px;color:#6a6a6a;letter-spacing:0.05em;">Reçu le ${new Date().toLocaleString("fr-CA", { timeZone: "America/Toronto" })}</p>
+    </div>
+  `;
+}
+
+// Email d'accusé de réception au lead — confirme que la demande est arrivée
+// et donne le prochain pas (rappel personnel sous 24h ouvrées).
+function renderConfirmationHtml(d: { name: string; phone: string; amount: string }): string {
+  const firstName = sanitizeHtml(d.name.split(/\s+/)[0] || d.name);
+  const phoneLine = d.phone
+    ? `<p style="margin:0 0 14px;font-size:14px;color:#cfcfcf;line-height:1.7;">Pendant ce délai, vous pouvez aussi joindre directement Serujan au <a href="tel:+1${CLIENT.phone.raw}" style="color:#d4af37;text-decoration:none;font-weight:600;">${sanitizeHtml(CLIENT.phone.display)}</a>.</p>`
+    : "";
+  const amountLine = d.amount
+    ? `<p style="margin:0 0 18px;font-size:13px;color:#9a9a9a;line-height:1.6;">Demande référencée — fourchette indicative <strong style="color:#cfcfcf;">${sanitizeHtml(d.amount)}</strong>.</p>`
+    : "";
+
+  return `
+    <div style="font-family:'Inter',Helvetica,Arial,sans-serif;max-width:560px;margin:0 auto;padding:36px 32px;border:1px solid #2a2a2a;border-radius:16px;background:#0e0e10;color:#f5f5f5;">
+      <div style="border-bottom:1px solid #2a2a2a;padding-bottom:18px;margin-bottom:24px;">
+        <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#d4af37;font-weight:600;">Demande reçue · Équipe Serujan</div>
+        <h2 style="margin:10px 0 0;font-family:Georgia,serif;font-weight:400;font-style:italic;font-size:24px;color:#f5f5f5;">Bonjour ${firstName},</h2>
+      </div>
+
+      <p style="margin:0 0 16px;font-size:15px;color:#e5e5e5;line-height:1.7;">
+        Merci pour votre demande. Elle a bien été enregistrée et sera traitée personnellement par
+        <strong style="color:#fff;">Serujan Kaneshalingam</strong>.
+      </p>
+
+      <p style="margin:0 0 22px;font-size:15px;color:#e5e5e5;line-height:1.7;">
+        Vous serez recontacté <strong style="color:#d4af37;">sous 24 heures ouvrées</strong> pour
+        cadrer le projet, discuter de la structure de financement adaptée et planifier les prochaines étapes.
+      </p>
+
+      ${amountLine}
+      ${phoneLine}
+
+      <div style="margin:26px 0 0;padding:18px 20px;border:1px solid rgba(212,175,55,0.25);border-radius:10px;background:rgba(212,175,55,0.04);">
+        <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#d4af37;font-weight:600;margin-bottom:8px;">Confidentialité garantie</div>
+        <p style="margin:0;font-size:13px;color:#bdbdbd;line-height:1.6;">
+          Vos informations restent strictement confidentielles. Conformité Loi 25 du Québec.
+          Vos états financiers ne sont jamais transmis à un prêteur sans votre autorisation explicite.
+        </p>
+      </div>
+
+      <p style="margin:28px 0 0;font-size:13px;color:#9a9a9a;line-height:1.7;">
+        Au plaisir d'échanger,<br>
+        <span style="color:#d4af37;font-style:italic;font-family:Georgia,serif;font-size:16px;">Équipe Serujan</span><br>
+        <span style="font-size:11px;letter-spacing:0.04em;color:#7a7a7a;">Courtage hypothécaire commercial · Montréal</span>
+      </p>
+
+      <div style="border-top:1px solid #2a2a2a;margin-top:26px;padding-top:14px;font-size:10px;color:#6a6a6a;letter-spacing:0.06em;">
+        ${sanitizeHtml(CLIENT.address.street)}, ${sanitizeHtml(CLIENT.address.suite)} · ${sanitizeHtml(CLIENT.address.city)}, ${sanitizeHtml(CLIENT.address.province)}
+      </div>
     </div>
   `;
 }
