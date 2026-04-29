@@ -9,13 +9,12 @@ import { useEffect, useRef, useCallback } from "react";
 const TRAIL_COUNT = 4;
 const TRAIL_SIZES = [6, 5, 4, 3]; // px
 const TRAIL_OPACITIES = [0.7, 0.45, 0.28, 0.15];
-const TRAIL_DELAYS = [0, 40, 90, 150]; // ms de retard — réduits pour plus de fluidité
 
 export function MouseSpotlight() {
   const dotsRef = useRef<HTMLDivElement[]>([]);
-  const positions = useRef(Array.from({ length: TRAIL_COUNT }, () => ({ x: -100, y: -100 })));
-  const mousePos = useRef({ x: -100, y: -100 });
-  const visible = useRef(false);
+  const positions = useRef(Array.from({ length: TRAIL_COUNT }, () => ({ x: -9999, y: -9999 })));
+  const mousePos = useRef({ x: -9999, y: -9999 });
+  const hasMoved = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const assignRef = useCallback((el: HTMLDivElement | null, i: number) => {
@@ -31,21 +30,42 @@ export function MouseSpotlight() {
     // Écoute souris
     function handleMouseMove(e: MouseEvent) {
       mousePos.current = { x: e.clientX, y: e.clientY };
-      if (!visible.current && containerRef.current) {
-        containerRef.current.style.opacity = "1";
-        visible.current = true;
+
+      // Premier mouvement : initialiser toutes les positions à la position actuelle
+      // pour éviter un "saut" depuis (-9999, -9999)
+      if (!hasMoved.current) {
+        for (let i = 0; i < TRAIL_COUNT; i++) {
+          positions.current[i] = { x: e.clientX, y: e.clientY };
+        }
+        hasMoved.current = true;
+        if (containerRef.current) {
+          containerRef.current.style.opacity = "1";
+        }
       }
     }
 
     function handleMouseLeave() {
       if (containerRef.current) {
         containerRef.current.style.opacity = "0";
-        visible.current = false;
+      }
+    }
+
+    function handleMouseEnter(e: MouseEvent) {
+      // Re-synchroniser les positions pour éviter un point résiduel
+      if (hasMoved.current) {
+        mousePos.current = { x: e.clientX, y: e.clientY };
+        for (let i = 0; i < TRAIL_COUNT; i++) {
+          positions.current[i] = { x: e.clientX, y: e.clientY };
+        }
+        if (containerRef.current) {
+          containerRef.current.style.opacity = "1";
+        }
       }
     }
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.addEventListener("mouseleave", handleMouseLeave);
+    document.addEventListener("mouseenter", handleMouseEnter);
 
     // Animation loop — chaque point suit le précédent avec un retard
     let rafId: number;
@@ -53,6 +73,9 @@ export function MouseSpotlight() {
 
     function animate(time: number) {
       rafId = requestAnimationFrame(animate);
+
+      // Ne rien faire tant que la souris n'a pas bougé
+      if (!hasMoved.current) return;
 
       // Limiter à ~60fps
       if (time - lastTime < 16) return;
@@ -80,6 +103,7 @@ export function MouseSpotlight() {
       cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseleave", handleMouseLeave);
+      document.removeEventListener("mouseenter", handleMouseEnter);
     };
   }, []);
 
@@ -102,7 +126,7 @@ export function MouseSpotlight() {
             borderRadius: "50%",
             background: `oklch(0.82 0.14 82 / ${TRAIL_OPACITIES[i]})`,
             boxShadow: `0 0 ${TRAIL_SIZES[i] * 2}px ${TRAIL_SIZES[i]}px oklch(0.78 0.13 82 / ${TRAIL_OPACITIES[i] * 0.5})`,
-            transitionDelay: `${TRAIL_DELAYS[i]}ms`,
+            transform: "translate(-9999px, -9999px)",
             willChange: "transform",
           }}
         />
@@ -110,3 +134,4 @@ export function MouseSpotlight() {
     </div>
   );
 }
+
