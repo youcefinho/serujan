@@ -2,7 +2,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import { Network, Award, Trophy } from "lucide-react";
+import { Network, Award, Trophy, ArrowRight } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════
 // WhySerujan — 3 cartes "trust signals" entre Hero et Services.
@@ -110,6 +110,22 @@ export default function WhySerujan() {
             );
           })}
         </div>
+
+        {/* CTA contextuel — capture les visiteurs convaincus dès la sect. 2 */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.7, ease }}
+          className="mt-12 md:mt-14 flex justify-center"
+        >
+          <a
+            href="#contact"
+            className="group inline-flex items-center gap-2 px-7 py-3.5 border border-gold/30 text-foreground/90 hover:text-gold hover:border-gold/60 hover:bg-black-elevated/40 font-medium rounded-md transition-all duration-300"
+          >
+            <span>{t(translations.whySerujan.cta)}</span>
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
+        </motion.div>
       </div>
     </section>
   );

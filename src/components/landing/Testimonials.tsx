@@ -2,7 +2,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import { Quote, Star } from "lucide-react";
+import { Quote, Star, ArrowRight } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════
 // Testimonials — 4 avis clients réels publiés sur Elev8
@@ -145,6 +145,22 @@ export default function Testimonials() {
         >
           {t(translations.testimonials.source)}
         </motion.p>
+
+        {/* CTA contextuel — capitalise sur l'effet de preuve sociale */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.95, ease }}
+          className="mt-10 flex justify-center"
+        >
+          <a
+            href="#contact"
+            className="group inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold-sm hover:shadow-gold transition-all duration-300 hover:-translate-y-0.5 btn-shine btn-glow"
+          >
+            <span>{t(translations.testimonials.cta)}</span>
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
+        </motion.div>
       </div>
     </section>
   );

@@ -28,34 +28,27 @@ export const translations = {
       fr: "Courtage hypothécaire commercial · Québec",
       en: "Commercial Mortgage Brokerage · Quebec",
     },
-    titleLead: { fr: "Le financement", en: "Financing" },
-    titleEmphasis: { fr: "qui ouvre les portes", en: "that opens doors" },
-    titleTail: { fr: "fermées aux autres.", en: "closed to others." },
+    titleLead: { fr: "Financement commercial", en: "Commercial financing" },
+    titleEmphasis: {
+      fr: "pour promoteurs et investisseurs",
+      en: "for developers and investors",
+    },
+    titleTail: { fr: "de 1 M$ à 50 M$ au Québec.", en: "from $1M to $50M in Quebec." },
     subtitle: {
-      fr: "Acquisitions, refinancements, développements et construction. Structurés avec rigueur, négociés avec un réseau institutionnel privilégié.",
-      en: "Acquisitions, refinancing, developments and construction. Structured with rigor, negotiated through a privileged institutional network.",
+      fr: "Acquisitions, refinancements, développements et construction. Réponse personnelle de Serujan sous 24 h.",
+      en: "Acquisitions, refinancing, developments and construction. Personal response from Serujan within 24 hours.",
     },
     ctaPrimary: { fr: "Évaluer mon projet", en: "Evaluate my project" },
     ctaCall: { fr: "Parler à Serujan", en: "Speak with Serujan" },
     statFunded: { fr: "Financés", en: "Funded" },
     statApproval: { fr: "Taux d'approbation", en: "Approval rate" },
-    statDays: { fr: "Jours en moyenne", en: "Days on average" },
-    statProjects: { fr: "Projets menés", en: "Projects led" },
-    scrollHint: { fr: "Découvrir l'expertise", en: "Discover the expertise" },
-    typewriterPhrases: {
-      fr: [
-        "qui ouvre les portes fermées aux autres.",
-        "qui finance l'impossible.",
-        "qui bâtit des empires.",
-        "qui transforme votre vision en réalité.",
-      ],
-      en: [
-        "that opens doors closed to others.",
-        "that finances the impossible.",
-        "that builds empires.",
-        "that turns your vision into reality.",
-      ],
+    statSince: { fr: "Au service depuis", en: "Serving since" },
+    statElev8: { fr: "Participants Elev8", en: "Elev8 attendees" },
+    trustStrip: {
+      fr: "Présent sur podcast aux côtés de Patrick Bet-David · Ryan Serhant",
+      en: "Featured on podcast alongside Patrick Bet-David · Ryan Serhant",
     },
+    scrollHint: { fr: "Découvrir l'expertise", en: "Discover the expertise" },
   },
 
   // --- ValueCards (3 cartes sous le hero) ---
@@ -165,6 +158,7 @@ export const translations = {
       fr: "Quatre étapes maîtrisées, exécutées dans l'ordre, à chaque fois. Pas de raccourci, pas d'improvisation.",
       en: "Four mastered steps, executed in order, every time. No shortcuts, no improvisation.",
     },
+    cta: { fr: "Lancer mon diagnostic", en: "Start my diagnostic" },
     steps: {
       fr: [
         {
@@ -405,6 +399,22 @@ export const translations = {
     },
     cta: { fr: "OBTENIR UNE ÉVALUATION PRÉCISE", en: "GET A PRECISE EVALUATION" },
     perMonth: { fr: "/mois", en: "/mo" },
+    captureLabel: {
+      fr: "Recevoir cette simulation par courriel",
+      en: "Receive this simulation by email",
+    },
+    captureSubtitle: {
+      fr: "Serujan vous transmet un rapport personnalisé sous 24 h, sans engagement.",
+      en: "Serujan sends you a personalized report within 24h, no commitment.",
+    },
+    captureFirstName: { fr: "Prénom", en: "First name" },
+    captureEmail: { fr: "Courriel", en: "Email" },
+    captureSubmit: { fr: "Recevoir mon rapport", en: "Send me the report" },
+    captureSending: { fr: "Envoi…", en: "Sending…" },
+    captureSuccess: {
+      fr: "Rapport envoyé. Serujan vous contactera personnellement.",
+      en: "Report sent. Serujan will contact you personally.",
+    },
     disclaimer: {
       fr: "Ces résultats sont estimatifs et ne constituent pas une offre de financement. Les taux réels peuvent varier selon votre profil et les conditions du marché. Consultez Serujan pour une évaluation précise et personnalisée de votre projet commercial.",
       en: "These results are estimates and do not constitute a financing offer. Actual rates may vary based on your profile and market conditions. Consult Serujan for a precise and personalized evaluation of your commercial project.",
@@ -438,6 +448,16 @@ export const translations = {
       fr: "Réponse personnelle de Serujan dans les 24h. Vos informations restent confidentielles.",
       en: "Personal response from Serujan within 24h. Your information remains confidential.",
     },
+    trustBadge: {
+      fr: "Réponse personnelle sous 24 h · Confidentialité garantie",
+      en: "Personal response within 24h · Confidentiality guaranteed",
+    },
+    optional: { fr: "(optionnel)", en: "(optional)" },
+    contactRequired: {
+      fr: "Téléphone ou courriel requis",
+      en: "Phone or email required",
+    },
+    amountRequired: { fr: "Montant requis", en: "Amount required" },
     projectTypeOptions: {
       fr: ["Acquisition", "Refinancement", "Développement", "Construction", "Autre"],
       en: ["Acquisition", "Refinancing", "Development", "Construction", "Other"],
@@ -628,6 +648,7 @@ export const translations = {
       fr: "Dans un marché où chaque détail compte, l'expérience et le réseau font toute la différence.",
       en: "In a market where every detail matters, experience and network make all the difference.",
     },
+    cta: { fr: "Évaluer mon éligibilité", en: "Check my eligibility" },
     cards: {
       fr: [
         {
@@ -741,6 +762,7 @@ export const translations = {
       fr: "Témoignages publiés sur elev8academie.ca",
       en: "Testimonials published on elev8academie.ca",
     },
+    cta: { fr: "Devenir le prochain", en: "Become the next" },
   },
 
   // --- LendersNetwork (réseau de prêteurs institutionnels) ---
@@ -850,6 +872,48 @@ export const translations = {
     expand: { fr: "Voir la réponse", en: "See answer" },
     collapse: { fr: "Fermer", en: "Collapse" },
     cta: { fr: "Une autre question ? Parlons-en", en: "Another question? Let's talk" },
+  },
+
+  // --- MidPageCTA (bandeau capture rapide entre sections) ---
+  midPageCTA: {
+    label: { fr: "Rappel rapide", en: "Quick callback" },
+    title: {
+      fr: "Pas le temps de remplir un long formulaire ?",
+      en: "No time for a long form?",
+    },
+    subtitle: {
+      fr: "Laissez vos coordonnées. Serujan vous rappelle personnellement sous 1 h ouvrée.",
+      en: "Leave your details. Serujan personally calls you back within 1 business hour.",
+    },
+    name: { fr: "Nom", en: "Name" },
+    phone: { fr: "Téléphone", en: "Phone" },
+    submit: { fr: "Recevoir un appel", en: "Get a callback" },
+    sending: { fr: "Envoi…", en: "Sending…" },
+    success: {
+      fr: "Reçu. Serujan vous appelle au plus vite.",
+      en: "Got it. Serujan will call you back shortly.",
+    },
+    sourceTag: { fr: "Source: rappel rapide", en: "Source: quick callback" },
+  },
+
+  // --- ExitIntent (modal sobre quand l'utilisateur s'apprête à partir) ---
+  exitIntent: {
+    title: { fr: "Avant de partir", en: "Before you leave" },
+    subtitle: {
+      fr: "Recevez un rappel personnel de Serujan sous 1 h ouvrée pour discuter de votre projet — sans engagement.",
+      en: "Get a personal callback from Serujan within 1 business hour to discuss your project — no commitment.",
+    },
+    name: { fr: "Nom", en: "Name" },
+    phone: { fr: "Téléphone", en: "Phone" },
+    submit: { fr: "Recevoir un rappel", en: "Get a callback" },
+    sending: { fr: "Envoi…", en: "Sending…" },
+    decline: { fr: "Non merci", en: "No thanks" },
+    success: {
+      fr: "Reçu. Serujan vous appelle bientôt.",
+      en: "Got it. Serujan will call you soon.",
+    },
+    close: { fr: "Fermer", en: "Close" },
+    sourceTag: { fr: "Source: exit-intent", en: "Source: exit-intent" },
   },
 
   // --- Footer ---

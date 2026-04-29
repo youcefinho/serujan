@@ -3,21 +3,21 @@ import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { Phone, ArrowRight, ArrowDown } from "lucide-react";
+import { Phone, ArrowRight, ArrowDown, Mic } from "lucide-react";
 import { CountUp } from "@/components/ui/CountUp";
-import { Typewriter } from "@/components/ui/Typewriter";
 
 // ═══════════════════════════════════════════════════════════
-// Hero v2 — éditorial, dense, signature
-// Titre tripartite (Fraunces) + sous-titre Inter + 4 stats
-// Une seule section pour : promesse + preuves + double CTA.
+// Hero v3 — orienté conversion
+// Titre statique tripartite (offre + audience + cadrage),
+// 4 stats sourcées Elev8/Planiprêt, trust strip podcast,
+// double CTA (form + tel direct).
 // ═══════════════════════════════════════════════════════════
 
 const STATS = [
   { value: "500M$+", key: "statFunded" as const },
   { value: "95%", key: "statApproval" as const },
-  { value: "30", key: "statDays" as const },
-  { value: "1000+", key: "statProjects" as const },
+  { value: "2016", key: "statSince" as const },
+  { value: "900+", key: "statElev8" as const },
 ];
 
 const fadeUp = (delay: number) => ({
@@ -27,7 +27,7 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function Hero() {
-  const { t, ta } = useLanguage();
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
 
   // Parallax léger : l'image de fond se déplace en sens inverse du scroll
@@ -81,23 +81,20 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* Titre avec typewriter */}
+        {/* Titre statique tripartite — clair en 3 secondes */}
         <h1 className="font-display text-[2.75rem] sm:text-6xl lg:text-7xl xl:text-[5.5rem] leading-[1.02] tracking-tight max-w-5xl">
           <motion.span {...fadeUp(0.08)} className="block text-foreground">
             {t(translations.hero.titleLead)}
           </motion.span>
           <motion.span
             {...fadeUp(0.18)}
-            className="block text-gold-gradient-animated italic font-display-italic min-h-[2.4em] sm:min-h-[1.2em]"
+            className="block text-gold-gradient-animated italic font-display-italic"
             style={{ fontVariationSettings: "'SOFT' 100, 'opsz' 144" }}
           >
-            <Typewriter
-              phrases={ta(translations.hero.typewriterPhrases) as string[]}
-              typeSpeed={45}
-              deleteSpeed={25}
-              pauseAfterType={2200}
-              pauseAfterDelete={400}
-            />
+            {t(translations.hero.titleEmphasis)}
+          </motion.span>
+          <motion.span {...fadeUp(0.28)} className="block text-foreground/85 text-balance">
+            {t(translations.hero.titleTail)}
           </motion.span>
         </h1>
 
@@ -134,7 +131,7 @@ export default function Hero() {
           </a>
         </motion.div>
 
-        {/* Stats — 4 chiffres avec micro-typo Fraunces */}
+        {/* Stats — 4 chiffres sourcés (Elev8 + Planiprêt) */}
         <motion.div
           {...fadeUp(0.65)}
           className="mt-20 md:mt-28 grid grid-cols-2 md:grid-cols-4 gap-px bg-gold/10 border border-gold/10 rounded-xl overflow-hidden"
@@ -153,6 +150,15 @@ export default function Hero() {
               </div>
             </div>
           ))}
+        </motion.div>
+
+        {/* Trust strip — preuve sociale médiatique sourcée Elev8 */}
+        <motion.div
+          {...fadeUp(0.78)}
+          className="mt-8 flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-foreground/50"
+        >
+          <Mic className="w-3.5 h-3.5 text-gold/70 flex-shrink-0" strokeWidth={1.5} />
+          <span>{t(translations.hero.trustStrip)}</span>
         </motion.div>
       </div>
 

@@ -2,7 +2,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { Search, Puzzle, Handshake, CheckCircle2 } from "lucide-react";
+import { Search, Puzzle, Handshake, CheckCircle2, ArrowRight } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════
 // Process v2 — Timeline verticale avec ligne or qui se trace
@@ -142,6 +142,22 @@ export default function Process() {
             );
           })}
         </div>
+
+        {/* CTA contextuel — déclenche le pas après avoir vu le process */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.9, ease }}
+          className="mt-8 md:mt-12 flex justify-center"
+        >
+          <a
+            href="#contact"
+            className="group inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold-sm hover:shadow-gold transition-all duration-300 hover:-translate-y-0.5 btn-shine btn-glow"
+          >
+            <span>{t(translations.process.cta)}</span>
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
+        </motion.div>
       </div>
     </section>
   );

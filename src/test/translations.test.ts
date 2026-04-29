@@ -84,7 +84,9 @@ describe("Système i18n — Intégrité des traductions (Serujan)", () => {
     // Garde-fou : ces sections ont été supprimées car aucun composant ne les
     // consomme dans le funnel commercial Serujan v2. Les réintroduire sans
     // composant associé = code mort.
-    const removed = ["exitIntent", "podcast", "elev8Academy", "freeConsultation"];
+    // Note : "exitIntent" a été réintroduit avec un composant associé (ExitIntent.tsx)
+    // dans le tunnel de conversion v3, donc retiré de cette liste.
+    const removed = ["podcast", "elev8Academy", "freeConsultation"];
     for (const key of removed) {
       expect(
         translations as unknown as Record<string, unknown>,

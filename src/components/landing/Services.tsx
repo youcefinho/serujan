@@ -3,6 +3,8 @@ import { translations } from "@/lib/translations";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { Building2, BarChart3, Landmark, ArrowUpRight } from "lucide-react";
+// Note : retrait des CTA "Voir un cas similaire" sur chaque carte —
+// pas de cas réel publiable, ne pas mentir au visiteur.
 
 // ═══════════════════════════════════════════════════════════
 // Services v2 — 3 piliers en cartes éditoriales
@@ -136,15 +138,6 @@ export default function Services() {
                 <p className="text-foreground/60 leading-relaxed text-[15px] text-pretty">
                   {t(translations.services[key].desc)}
                 </p>
-
-                {/* Lien d'action */}
-                <a
-                  href="#contact"
-                  className="mt-8 inline-flex items-center gap-1.5 text-sm text-gold/70 hover:text-gold transition-all duration-300"
-                >
-                  <span>{t(translations.services.pillarCta)}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </a>
               </div>
 
               {/* Filet doré qui se trace en bas */}

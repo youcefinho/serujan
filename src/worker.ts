@@ -102,8 +102,11 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
       return json({ success: true, id: "silent" });
     }
 
-    if (!body.email || !body.name) {
-      return json({ error: "Nom et email requis" }, 400);
+    // Nom obligatoire ; au moins UN canal de contact (email OU phone) requis.
+    // Permet la capture mid-page / exit-intent (nom + tel sans email)
+    // et la capture calculator (nom + email sans tel).
+    if (!body.name || (!body.email && !body.phone)) {
+      return json({ error: "Nom et téléphone ou courriel requis" }, 400);
     }
 
     const cleanName = sanitizeInput(body.name, 100);
@@ -114,9 +117,13 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
     const cleanMessage = sanitizeInput(body.message, 1000);
 
     if (cleanName.length < 2) return json({ error: "Nom trop court" }, 400);
-    if (!isValidEmail(cleanEmail)) return json({ error: "Email invalide" }, 400);
+    // Si email rempli, valider le format
+    if (cleanEmail && !isValidEmail(cleanEmail)) return json({ error: "Email invalide" }, 400);
+    // Si phone rempli, valider le format
     if (cleanPhone && !isValidPhone(cleanPhone))
       return json({ error: "Numéro de téléphone invalide" }, 400);
+    // Au moins un canal de contact valide après nettoyage
+    if (!cleanEmail && !cleanPhone) return json({ error: "Téléphone ou courriel requis" }, 400);
 
     const id = crypto.randomUUID();
 

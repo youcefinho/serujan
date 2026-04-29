@@ -1,8 +1,10 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
-import { motion, useInView, useSpring, useTransform } from "motion/react";
+import { isValidEmail, sanitizeInput } from "@/lib/security";
+import { motion, useInView, useSpring, useTransform, AnimatePresence } from "motion/react";
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Calculator as CalcIcon, ArrowRight } from "lucide-react";
+import { Calculator as CalcIcon, ArrowRight, Mail, Loader2, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 // ═══════════════════════════════════════════════════════════
 // Calculator v2 — Donut SVG animé + valeurs qui s'animent
@@ -184,6 +186,15 @@ export default function Calculator() {
   const [propertyTax, setPropertyTax] = useState(25_000);
   const [insurance, setInsurance] = useState(5_000);
 
+  // Capture lead léger (prénom + email) — convertit l'outil en porte d'entrée
+  const captureMountRef = useRef<number>(Date.now());
+  useEffect(() => {
+    captureMountRef.current = Date.now();
+  }, []);
+  const [captureFirstName, setCaptureFirstName] = useState("");
+  const [captureEmail, setCaptureEmail] = useState("");
+  const [captureStatus, setCaptureStatus] = useState<"idle" | "sending" | "success">("idle");
+
   const calc = useMemo(() => {
     const loanAmount = Math.max(0, propertyPrice - downPayment);
     const monthlyRate = interestRate / 100 / 12;
@@ -225,6 +236,39 @@ export default function Calculator() {
 
   const fmtPct = (n: number) =>
     `${new Intl.NumberFormat("fr-CA", { maximumFractionDigits: 1 }).format(n)} %`;
+
+  async function handleCapture(e: React.FormEvent) {
+    e.preventDefault();
+    if (sanitizeInput(captureFirstName).length < 2) return;
+    if (!isValidEmail(captureEmail)) return;
+    setCaptureStatus("sending");
+    const elapsed_ms = Date.now() - captureMountRef.current;
+    const summary = `Simulation calculator — Prix ${fmt(propertyPrice)}, mise ${fmt(downPayment)}, taux ${interestRate}%, ${amortization} ans, mensuel ${fmt(calc.totalMonthly)}, LTV ${fmtPct(calc.ltv)}.`;
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: sanitizeInput(captureFirstName, 100),
+          email: sanitizeInput(captureEmail, 200),
+          phone: "",
+          project_type: "Calculator",
+          estimated_amount: fmt(calc.loanAmount),
+          message: summary,
+          hp: "",
+          elapsed_ms,
+        }),
+      });
+      if (!res.ok) throw new Error();
+      setCaptureStatus("success");
+      toast.success(t(translations.calculator.captureSuccess));
+      setCaptureFirstName("");
+      setCaptureEmail("");
+    } catch {
+      setCaptureStatus("idle");
+      toast.error(t(translations.leadForm.error));
+    }
+  }
 
   return (
     <section
@@ -437,7 +481,7 @@ export default function Calculator() {
               </div>
             </div>
 
-            {/* CTA */}
+            {/* CTA principal */}
             <a
               href="#contact"
               className="group relative overflow-hidden block w-full p-5 rounded-xl bg-gradient-gold text-black-deep font-semibold text-center transition-all duration-300 hover:-translate-y-0.5 shadow-gold hover:shadow-gold-sm btn-shine btn-glow"
@@ -447,6 +491,84 @@ export default function Calculator() {
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </span>
             </a>
+
+            {/* Capture lead léger — transforme l'outil en porte d'entrée */}
+            <div className="p-6 rounded-2xl bg-off-white-elevated border border-gold-deep/20 shadow-[0_20px_60px_-25px_oklch(0.22_0.012_50/0.10)]">
+              <AnimatePresence mode="wait">
+                {captureStatus === "success" ? (
+                  <motion.div
+                    key="capture-success"
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.5, ease }}
+                    className="flex items-center gap-3 py-2"
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-gold-deep flex-shrink-0" />
+                    <p className="text-sm text-ink leading-relaxed">
+                      {t(translations.calculator.captureSuccess)}
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="capture-form"
+                    onSubmit={handleCapture}
+                    initial={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <Mail className="w-4 h-4 text-gold-deep flex-shrink-0" strokeWidth={1.7} />
+                      <span className="text-xs uppercase tracking-[0.2em] text-gold-deep font-medium">
+                        {t(translations.calculator.captureLabel)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-ink-soft leading-relaxed mb-4">
+                      {t(translations.calculator.captureSubtitle)}
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                      <input
+                        type="text"
+                        required
+                        minLength={2}
+                        maxLength={100}
+                        value={captureFirstName}
+                        onChange={(e) => setCaptureFirstName(e.target.value)}
+                        placeholder={t(translations.calculator.captureFirstName)}
+                        aria-label={t(translations.calculator.captureFirstName)}
+                        className="w-full px-3.5 py-2.5 rounded-md bg-off-white border border-gold-deep/20 text-ink placeholder-ink-soft focus:border-gold-deep/55 focus:outline-none focus:ring-2 focus:ring-gold-deep/15 transition-all text-sm"
+                      />
+                      <input
+                        type="email"
+                        required
+                        maxLength={200}
+                        value={captureEmail}
+                        onChange={(e) => setCaptureEmail(e.target.value)}
+                        placeholder={t(translations.calculator.captureEmail)}
+                        aria-label={t(translations.calculator.captureEmail)}
+                        className="w-full px-3.5 py-2.5 rounded-md bg-off-white border border-gold-deep/20 text-ink placeholder-ink-soft focus:border-gold-deep/55 focus:outline-none focus:ring-2 focus:ring-gold-deep/15 transition-all text-sm"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={captureStatus === "sending"}
+                      className="w-full py-2.5 rounded-md bg-ink text-off-white font-medium text-sm hover:bg-gold-deep transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {captureStatus === "sending" ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>{t(translations.calculator.captureSending)}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="w-3.5 h-3.5" />
+                          <span>{t(translations.calculator.captureSubmit)}</span>
+                        </>
+                      )}
+                    </button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
+            </div>
 
             <p className="text-[11px] text-ink-soft leading-relaxed">
               {t(translations.calculator.disclaimer)}
