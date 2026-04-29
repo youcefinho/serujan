@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { Phone, ArrowRight, ArrowDown, Mic } from "lucide-react";
 import { CountUp } from "@/components/ui/CountUp";
+import { Typewriter } from "@/components/ui/Typewriter";
 
 // ═══════════════════════════════════════════════════════════
 // Hero v3 — orienté conversion
@@ -27,7 +28,7 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function Hero() {
-  const { t } = useLanguage();
+  const { t, ta } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
 
   // Parallax léger : l'image de fond se déplace en sens inverse du scroll
@@ -94,10 +95,16 @@ export default function Hero() {
           </motion.span>
           <motion.span
             {...fadeUp(0.18)}
-            className="block text-gold-gradient-animated italic font-display-italic"
+            className="block text-gold-gradient-animated italic font-display-italic min-h-[2.4em] sm:min-h-[1.2em]"
             style={{ fontVariationSettings: "'SOFT' 100, 'opsz' 144" }}
           >
-            {t(translations.hero.titleEmphasis)}
+            <Typewriter
+              phrases={ta(translations.hero.typewriterPhrases) as string[]}
+              typeSpeed={45}
+              deleteSpeed={25}
+              pauseAfterType={2200}
+              pauseAfterDelete={350}
+            />
           </motion.span>
           <motion.span {...fadeUp(0.28)} className="block text-foreground/85 text-balance">
             {t(translations.hero.titleTail)}

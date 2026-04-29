@@ -2,7 +2,7 @@
 
 > Ce fichier contient les règles globales qui s'appliquent à **TOUS** les projets Intralys.
 > Antigravity doit lire ce fichier à chaque ouverture de projet.
-> Dernière mise à jour : 2026-04-28
+> Dernière mise à jour : 2026-04-29
 
 ---
 
@@ -118,20 +118,56 @@ bun run build
 
 ---
 
-## 6. DÉPLOIEMENT
+## 6. WORKFLOW DE DÉVELOPPEMENT
 
-### Cloudflare Workers (par défaut)
+### Règle fondamentale : Localhost → GitHub → Cloudflare
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
+│  LOCALHOST   │ ──► │   GITHUB     │ ──► │   CLOUDFLARE    │
+│  (dev/test)  │     │  (sauvegarde)│     │  (production)   │
+└─────────────┘     └──────────────┘     └─────────────────┘
+   Travail actif       Backup régulier      Deploy explicite
+```
+
+1. **LOCALHOST** — On travaille **toujours** en local avec `bun run dev`. C'est ici qu'on développe, teste, et itère.
+2. **GITHUB** — On push régulièrement sur GitHub pour **sauvegarder** le code. C'est un backup, pas un déploiement.
+3. **CLOUDFLARE** — On deploy sur Cloudflare **uniquement** quand une version est validée et prête pour la production.
+
+> ⚠️ **`git push` ≠ déploiement.** Le push sur GitHub sert de sauvegarde. Le deploy sur Cloudflare est une action **manuelle et explicite**.
+
+### Développement local
 ```bash
-# 1. Build
-bun run build
+# Démarrer le serveur de développement
+bun run dev
 
-# 2. Deploy
+# Tester les changements dans le navigateur (localhost)
+# Itérer jusqu'à satisfaction
+```
+
+### Sauvegarde sur GitHub
+```bash
+# Sauvegarder régulièrement sur GitHub (backup)
+git add -A
+git commit -m "description concise"
+git push origin main
+```
+- Pusher souvent pour ne pas perdre de travail.
+- Le push sur `main` **ne déclenche PAS** de déploiement automatique.
+
+### Déploiement sur Cloudflare (production)
+```bash
+# ⚠️ UNIQUEMENT quand la version est validée et prête
+
+# 1. Build final
+bun run build    # DOIT passer avec 0 erreurs
+
+# 2. Deploy explicite
 npx wrangler deploy
 
 # 3. ⚠️ OBLIGATOIRE — Remettre les secrets
 node post-deploy.cjs
 
-# 4. Vérifier
+# 4. Vérifier en production
 # - Login admin
 # - Formulaires achat + vente
 # - Newsletter email
@@ -153,8 +189,13 @@ node post-deploy.cjs
 - Exemples : `"fix: suppression console.log"`, `"feat: ajout section Propriétés"`, `"docs: mise à jour CLAUDE.md"`.
 
 ### Branches
-- `main` = production. Tout push déclenche un déploiement.
+- `main` = branche principale. Push = sauvegarde, **PAS** déploiement automatique.
+- Le deploy sur Cloudflare est **toujours manuel** (`npx wrangler deploy`).
 - Pour les changements risqués, créer une branche feature.
+
+### Fréquence de sauvegarde
+- **Pusher sur GitHub régulièrement** — au minimum à chaque fin de session de travail.
+- Ne pas attendre d'avoir une version parfaite pour push — GitHub est un filet de sécurité.
 
 ---
 
