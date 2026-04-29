@@ -27,7 +27,7 @@ export default function Footer() {
           {/* Colonne identité */}
           <div className="lg:col-span-5">
             {clientConfig.logoUrl && (
-              <img src={clientConfig.logoUrl} alt={clientConfig.teamName} className="h-12 w-auto mb-6 opacity-90" />
+              <img src={clientConfig.logoUrl} alt={clientConfig.teamName} loading="lazy" decoding="async" className="h-12 w-auto mb-6 opacity-90" />
             )}
             <p className="font-display text-xl md:text-2xl leading-tight text-foreground/85 max-w-md text-balance">
               {t(translations.footer.desc)}

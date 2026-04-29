@@ -34,13 +34,16 @@ function getTimeLeft(target: Date) {
 }
 
 export default function Elev8() {
-  const { t, ta } = useLanguage();
+  const { t, ta, lang } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.1 });
   const countdown = useCountdown(EVENT_DATE);
   const [playing, setPlaying] = useState(false);
 
   const academyFeatures = ta(translations.elev8.academyFeatures) as string[];
+  const eventDateFormatted = new Intl.DateTimeFormat(lang === "fr" ? "fr-CA" : "en-CA", {
+    day: "numeric", month: "long", year: "numeric",
+  }).format(EVENT_DATE);
   const cd = [
     { value: countdown.days, label: t(translations.elev8.days) },
     { value: countdown.hours, label: t(translations.elev8.hours) },
@@ -135,7 +138,7 @@ export default function Elev8() {
             <div className="inline-flex items-center gap-2 mb-4">
               <Calendar className="w-3.5 h-3.5 text-gold" />
               <span className="text-[11px] uppercase tracking-[0.24em] text-gold-light">
-                17 octobre 2026
+                {eventDateFormatted}
               </span>
             </div>
             <h3 className="font-display text-3xl md:text-4xl text-foreground tracking-tight mb-3">

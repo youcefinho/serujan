@@ -44,6 +44,8 @@ export default function Navbar() {
             <img
               src={clientConfig.logoUrl}
               alt={clientConfig.teamName}
+              decoding="async"
+              fetchPriority="high"
               className="h-10 w-auto"
             />
           ) : (

@@ -2,25 +2,24 @@
 
 > Ce fichier est lu automatiquement par l'IA à chaque ouverture du projet.
 > Respecter ces règles à la lettre.
-> Dernière mise à jour : 2026-04-29
+> Dernière mise à jour : 2026-04-29 (v2 — refonte premium)
 
 ---
 
 ## 1. Description du projet
 
-Ce projet est le **site de Serujan Kaneshalingam**, courtier hypothécaire **COMMERCIAL** à Montréal. C'est une landing page haute conversion construite sur le **template commercial Intralys** (`intralys-template-commercial`).
+Site **Serujan Kaneshalingam**, courtier hypothécaire **COMMERCIAL** à Montréal.
+Landing page haute conversion noir/or éditoriale, signature Fraunces + Inter.
 
-⚠️ **Ce n'est PAS un courtier immobilier résidentiel.** Pas de ACHAT/VENTE de maisons, pas de Lead Magnet PDF, pas de newsletter, pas de Properties/Centris, pas de WhatsApp. C'est du **financement commercial** (immeubles, multi-logements, développement, construction).
+⚠️ **PAS un courtier résidentiel.** Pas de Lead Magnet, pas de Newsletter, pas de Properties/Centris, pas de WhatsApp.
+Financement commercial : acquisitions, refinancements, développements, construction.
 
 ### Données client
-- **Nom** : Serujan Kaneshalingam
-- **Équipe** : Équipe Serujan
+- **Nom** : Serujan Kaneshalingam · Équipe Serujan
 - **Téléphone** : (514) 701-6171
 - **Email** : expert@serujan.com
 - **Bureau** : 111 Rue Chabanel O, Suite 617, Montréal, QC
-- **Territoire** : MONTRÉAL | QUÉBEC
 - **Site** : https://serujan.intralysqc.workers.dev
-- **Design** : Noir/Or premium
 - **Elev8 Event** : https://elev82025.ca/
 - **Elev8 Academy** : https://elev8academie.ca/
 
@@ -30,212 +29,232 @@ Ce projet est le **site de Serujan Kaneshalingam**, courtier hypothécaire **COM
 
 | Outil | Version | Rôle |
 |---|---|---|
-| **React** | 19 | UI — composants fonctionnels uniquement |
-| **TypeScript** | 5.8+ | Typage strict obligatoire |
-| **Vite** | 7 | Build tool et dev server |
-| **TanStack Router** | 1.168+ | Routing type-safe basé sur les fichiers |
-| **Tailwind CSS** | v4 | Styles utilitaires (syntaxe v4 avec `@theme inline`, couleurs `oklch`) |
-| **Cloudflare Workers** | — | Worker unifié : API + assets statiques |
-| **Cloudflare D1** | — | Base de données SQLite serverless (table `leads`) |
-| **Resend** | 6+ | Envoi d'emails de notification |
-| **Bun** | Latest | Runtime et gestionnaire de paquets |
-| **Calendly** | Widget JS | Prise de rendez-vous en popup |
+| **React** | 19 | UI — composants fonctionnels |
+| **TypeScript** | 5.8+ | Strict obligatoire |
+| **Vite** | 7 | Build + dev server |
+| **TanStack Router** | 1.168+ | File-based routing type-safe |
+| **Tailwind CSS** | v4 | `@theme inline` + `oklch` |
+| **motion/react** | 12 | Animations premium (useScroll, useSpring, AnimatePresence) |
+| **@fontsource-variable/fraunces** | 5 | Display sérif self-hosted |
+| **@fontsource-variable/inter** | 5 | Body sans-serif self-hosted |
+| **Cloudflare Workers** | — | Worker unifié (API + assets) avec `run_worker_first` |
+| **Cloudflare D1** | — | SQLite serverless |
+| **Resend** | 6+ | Emails de notification |
+| **Bun** | Latest | Runtime + paquets |
+| **Calendly** | Widget JS | Popup RDV |
 
-### Architecture backend : Worker natif (pas Pages Functions)
+### Architecture worker
 
-Le backend est un **Cloudflare Worker unique** (`src/worker.ts`) qui :
-- Sert les assets statiques depuis `dist/` (via `assets.directory` dans `wrangler.jsonc`)
-- Route les requêtes API (`/api/*`) vers les handlers internes
-- Utilise D1 pour la persistence et Resend pour les emails
+`src/worker.ts` avec `assets.run_worker_first: true` dans `wrangler.jsonc` :
+- Toute requête passe d'abord par le worker
+- Routes `/api/*` traitées en interne
+- Reste délégué à `env.ASSETS.fetch()` (SPA Vite)
+- **Tous les responses reçoivent les headers de sécurité** (CSP, HSTS, etc.)
 
-> ⚠️ Il n'y a **PAS** de dossier `functions/`. Toute la logique backend est dans `src/worker.ts`.
+Pas de dossier `functions/`. Tout est dans `src/worker.ts` + helpers `src/lib/security.ts`.
 
 ---
 
 ## 3. Standards de code
 
 ### Gestionnaire de paquets
-- **Toujours utiliser `bun`**, jamais `npm` ni `yarn`.
+- **Toujours `bun`** — jamais npm/yarn.
 
 ### TypeScript
-- **Mode strict activé** (`"strict": true` dans `tsconfig.json`).
-- Ne jamais utiliser `any` sauf en dernier recours avec un commentaire justificatif.
-- Toujours typer les props des composants.
+- Mode strict. Pas de `any` sauf eslint-disable justifié.
+- Typer les props.
+- `bunx tsc --noEmit` doit retourner 0 erreur.
 
-### Structure du projet
+### Structure
 ```
 src/
-├── assets/          # Images du courtier, logos
+├── assets/
 ├── components/
-│   ├── landing/     # 20 composants de la landing page
-│   └── ui/          # Composants UI réutilisables (accordion, sonner)
-├── hooks/           # useScrollReveal, useIsMobile
+│   ├── landing/      # 9 sections + LegalPage partagé
+│   └── ui/           # accordion, sonner
+├── hooks/            # useScrollReveal, useIsMobile
 ├── lib/
-│   ├── config.ts         # ⭐ DONNÉES CLIENT — Modifier ici pour personnaliser
-│   ├── translations.ts   # ⭐ TRADUCTIONS FR/EN — 14 sections
+│   ├── config.ts            # ⭐ Données client
+│   ├── translations.ts      # ⭐ FR/EN — toutes les chaînes
+│   ├── security.ts          # ⭐ Helpers sécurité testables
 │   ├── LanguageContext.tsx
 │   ├── analytics.ts
 │   ├── calendly.ts
 │   └── utils.ts
-├── routes/          # Routes TanStack Router (file-based)
-│   ├── __root.tsx
-│   ├── index.tsx    # Page principale (14 sections)
-│   ├── merci.tsx    # Page post-formulaire
-│   ├── admin.tsx
+├── routes/
+│   ├── __root.tsx           # SkipLink + 404 v2
+│   ├── index.tsx            # Landing 9 sections
+│   ├── merci.tsx            # Confirmation
+│   ├── mentions-legales.tsx # Loi 25 / droit québécois
+│   ├── confidentialite.tsx
+│   ├── admin.tsx            # Layout admin
 │   ├── admin.login.tsx
-│   └── admin.leads.tsx
-├── test/            # Vitest (calculatrice + traductions)
-├── worker.ts        # ⭐ API Cloudflare Workers (leads, auth admin, email, GHL)
-├── main.tsx
-└── styles.css       # ⭐ Design system Noir/Or (oklch)
+│   └── admin.leads.tsx      # Dashboard leads
+├── test/
+│   ├── calculator.test.ts
+│   ├── translations.test.ts
+│   └── security.test.ts     # XSS, validation, anti-bot
+├── worker.ts                # API + headers sécurité
+├── main.tsx                 # Imports fonts Fontsource
+└── styles.css               # ⭐ Design system v2
 ```
 
-### 14 sections de la page (index.tsx)
+### 9 sections landing (`routes/index.tsx`)
 ```
-1. Hero — Accroche + CTA + logo
-2. ValueCards — 3 cartes sous le hero
-3. StatsBar — Chiffres animés (500M$, 95%, etc.)
-4. Services — 3 piliers commerciaux
-5. Elev8Event — Événement + vidéo + countdown
-6. Podcast — Embed Spotify
-7. Process — 4 étapes méthodologie
-8. About (Mon Approche) — Bio + features
-9. Elev8Academy — Formation investissement
-10. Calculator — Simulateur hypothécaire commercial (donut chart)
-11. FreeConsultation — CTA avant formulaire
-12. LeadForm — Formulaire contact (type projet + montant)
-13. ExitIntentPopup — Popup avant de quitter
-14. Footer — Contact + réseaux + copyright
-+ MobileStickyBar — Barre fixe mobile
-+ ScrollProgressBar — Barre de progression
+1. Hero        — titre tripartite Fraunces + 4 stats intégrées
+2. Services    — 3 piliers cartes éditoriales (numéro géant filigrane)
+3. About       — citation Fraunces italic + 4 features
+4. Process     — timeline avec ligne or qui se trace au scroll
+5. Calculator  — donut SVG animé + sliders or + spring physics
+6. Elev8       — Event (vidéo + countdown) + Academy fusionnés
+7. LeadForm    — pitch sticky + form anti-bot timing
+8. Footer      — 4 colonnes éditoriales
++ Navbar, MobileStickyBar, ScrollProgressBar
 ```
 
 ---
 
-## 4. Système de traduction bilingue (i18n)
+## 4. Design system v2
 
-### Architecture
-- **`src/lib/translations.ts`** : Fichier unique contenant TOUTES les chaînes FR/EN
-- **`src/lib/LanguageContext.tsx`** : Provider React + hook `useLanguage()`
-- **Français = langue par défaut**, choix persisté dans `localStorage`
+### Polices
+- **Display** : `Fraunces Variable` — pour H1/H2/H3 et accents éditoriaux
+- **Body** : `Inter Variable` — pour le corps
+- Toutes self-hosted via Fontsource (zéro Google Fonts → CSP plus stricte, LCP rapide)
 
-### Utilisation dans les composants
+### Palette `oklch`
+- **Or 8 tons** : `gold-50` à `gold-deep` + `gold-light`
+- **Noirs profonds** : `black-deep`, `black-surface`, `black-elevated`
+- **Crème** : accent neutre chaud
+- Texte gradient or : classe `.text-gold-gradient`
+- Italic Fraunces optique : classe `.font-display-italic`
+
+### Motion
+- Animations via `motion/react` (`useInView`, `useScroll`, `useSpring`, `AnimatePresence`)
+- Easing standard : `[0.16, 1, 0.3, 1]` (ease-out-expo)
+- `prefers-reduced-motion: reduce` désactive tout
+
+### Pattern de section
+Chaque section v2 commence par :
 ```tsx
-import { useLanguage } from "@/lib/LanguageContext";
-import { translations } from "@/lib/translations";
-
-export function MonComposant() {
-  const { t, ta } = useLanguage();
-  // t() — pour une chaîne simple { fr: "...", en: "..." }
-  // ta() — pour un tableau/objet { fr: [...], en: [...] }
-}
+<motion.div initial={...} animate={inView ? ... : {}} transition={{ ease }}>
+  <span className="w-8 h-px bg-gold/50" aria-hidden />
+  <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+    {label}
+  </span>
+</motion.div>
+<h2 className="font-display text-5xl ...">
+  {titleLead} <span className="text-gold-gradient italic font-display-italic">
+    {titleEmphasis}
+  </span>
+</h2>
 ```
-
-### Règle absolue
-- **TOUS les textes visibles** doivent être dans `translations.ts`
-- **Jamais de texte hardcodé** dans les composants
 
 ---
 
-## 5. Backend — Worker (`src/worker.ts`)
+## 5. i18n FR/EN
+
+- Tous les textes visibles dans `src/lib/translations.ts`
+- Hook `useLanguage()` retourne `{ lang, setLang, t, ta }`
+- `t(obj)` pour string, `ta(obj)` pour array/object
+- FR par défaut, choix persisté `localStorage` clé `intralys-lang`
+- Test `translations.test.ts` valide que toutes les clés ont fr+en
+
+---
+
+## 6. Backend — Worker
 
 ### Routes API
 | Route | Méthode | Description |
 |---|---|---|
-| `/api/leads` | POST | Sauvegarder un lead commercial |
-| `/api/admin/login` | POST | Auth admin (rate limited : 5/h par IP) |
-| `/api/admin/logout` | POST | Déconnexion admin |
-| `/api/admin/leads` | GET | Récupérer tous les leads |
+| `/api/leads` | POST | Sauvegarde lead (rate limit 10/h, anti-bot) |
+| `/api/admin/login` | POST | Auth admin (rate limit 5/h) |
+| `/api/admin/logout` | POST | Déconnexion |
+| `/api/admin/leads` | GET | Liste leads (token Bearer requis) |
 
-### Tables D1 (schema.sql)
+### Sécurité
+- **CSP stricte** : whitelist Calendly + GA4 + assets distants
+- **HSTS** : 1 an + includeSubDomains + preload
+- **X-Frame-Options** : DENY
+- **Permissions-Policy** : camera/mic/geo désactivés
+- **Anti-bot leads** : honeypot `hp` + `elapsed_ms` (< 3 s = silencieux)
+- **Rate limits** : 10/h pour leads, 5/h pour login, par IP
+- **Sanitisation** : trim + maxLen + HTML escape sur tout input
+
+### Tables D1 (schema.sql + migrations/)
 ```sql
-CREATE TABLE leads (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT,
-  project_type TEXT,      -- Acquisition, Refinancement, Développement, Construction, Autre
-  estimated_amount TEXT,  -- 500K$-2M$, 2M$-5M$, etc.
-  message TEXT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE admin_sessions (
-  token TEXT PRIMARY KEY, created_at TEXT, expires_at TEXT
-);
-
-CREATE TABLE login_attempts (
-  id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT, attempted_at TEXT
-);
+leads(id, name, email, phone, project_type, estimated_amount, message, created_at)
+admin_sessions(token, created_at, expires_at)  -- TTL 24h
+login_attempts(id, ip, attempted_at)           -- rate limit login
+lead_attempts(id, ip, attempted_at)            -- rate limit form
 ```
-
-### Sécurité intégrée
-- `sanitizeHtml()` — protection XSS pour les emails
-- `sanitizeInput()` — trim + maxLength sur tout input
-- Rate limiting : 5 tentatives/heure par IP
-- Sessions token D1 avec expiration 24h
-- Webhook GHL optionnel
 
 ---
 
-## 6. Variables d'environnement
+## 7. Variables d'environnement
 
-### Serveur (Cloudflare Dashboard → Variables et secrets)
+### Serveur (Cloudflare Dashboard)
 | Variable | Description |
 |---|---|
 | `ADMIN_PASSWORD` | Mot de passe admin |
-| `RESEND_API_KEY` | Clé API Resend |
-| `GHL_WEBHOOK_URL` | *(optionnel)* Webhook GoHighLevel |
+| `RESEND_API_KEY` | Clé Resend |
+| `GHL_WEBHOOK_URL` | *(optionnel)* GoHighLevel |
 
 ### Client (`.env.local`)
 | Variable | Description |
 |---|---|
-| `VITE_CALENDLY_URL` | URL Calendly de Serujan |
-| `VITE_GA4_ID` | ID Google Analytics 4 |
+| `VITE_CALENDLY_URL` | URL Calendly |
+| `VITE_GA4_ID` | ID GA4 (sinon mettre dans index.html directement) |
 
 ---
 
-## 7. Build
+## 8. Build & déploiement
 
 ```bash
-bun run build    # DOIT être 0 erreurs avant tout push
-bun run test     # 12 tests doivent passer
-bun run dev      # Dev server
+bun install            # Dépendances
+bun run dev            # Dev server (localhost:5173)
+bun run build          # Build production (dist/)
+bun run test           # Vitest (43 tests)
+bunx tsc --noEmit      # Type-check strict
 ```
 
----
-
-## 8. Règles absolues
-
-1. **Bun, jamais npm** — `bun install`, `bun run build`, `bun add`
-2. **0 console.log** en production (console.error dans catch OK)
-3. **0 données hardcodées** — tout dans config.ts ou translations.ts
-4. **TypeScript strict** — pas de `any`
-5. **Build = 0 erreurs** avant de terminer
-6. **i18n complet** — toggle FR/EN = 100% du texte change
-7. **Centralisation** — toutes données client dans `config.ts`
-8. **Sécurité admin** — token D1 + expiration + rate limiting
-9. **Sanitisation serveur** — XSS + trim + maxLen sur tout input
-10. **Français** — réponses, commits, commentaires en français
+Voir `DEPLOYMENT.md` pour les étapes Cloudflare D1 + secrets + deploy.
 
 ---
 
-## 9. Ce qui n'existe PAS dans ce projet (NE PAS AJOUTER)
+## 9. Règles absolues
+
+1. **Bun, jamais npm** — `bun add`, `bun install`, `bun run`
+2. **0 console.log** en prod (`console.error/warn` dans catch OK)
+3. **0 données hardcodées** dans les composants — tout dans `config.ts` ou `translations.ts`
+4. **TypeScript strict** — pas de `any` non justifié
+5. **Build = 0 erreur** avant push
+6. **Tests = 43/43** avant push
+7. **i18n complet** — toggle FR/EN = 100% du texte visible change
+8. **Sécurité** — CSP stricte, rate limits, sanitisation serveur
+9. **Français** — réponses, commits, commentaires en français
+10. **Polices self-hosted** — jamais de Google Fonts (CSP)
+
+---
+
+## 10. Ce qui n'existe PAS (NE PAS AJOUTER)
 
 - ❌ Lead Magnet / PDF guide
-- ❌ Newsletter / inscription email
+- ❌ Newsletter
 - ❌ Section Properties / Centris
 - ❌ WhatsApp button
-- ❌ Section Témoignages (pas encore fournis par le client)
-- ❌ Supabase (on utilise D1)
-- ❌ Dossier `functions/` (tout est dans worker.ts)
-- ❌ Section Équipe Parent / bannière immobilière
+- ❌ Témoignages (en attente de contenu client)
+- ❌ Supabase (D1)
+- ❌ Dossier `functions/`
+- ❌ Google Fonts (Fontsource self-hosted)
+- ❌ ExitIntentPopup (anti-pattern UX)
 
 ---
 
-## 10. Références
+## 11. Références
 
-- **Template source** : `../intralys-template-commercial/` (architecture de référence)
-- **Site demo existant** : https://demo.intralys.com/serujan
+- **Template source** : `../intralys-template-commercial/`
+- **Site demo référence visuelle** : https://demo.intralys.com/serujan
 - **Config client** : `src/lib/config.ts`
 - **Traductions** : `src/lib/translations.ts`
+- **Helpers sécurité testables** : `src/lib/security.ts`
+- **Migrations** : `migrations/001`, `002`, `003`
