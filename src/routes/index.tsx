@@ -12,6 +12,7 @@ import LeadForm from "@/components/landing/LeadForm";
 import Footer from "@/components/landing/Footer";
 import MobileStickyBar from "@/components/landing/MobileStickyBar";
 import { ScrollProgressBar } from "@/components/landing/ScrollProgressBar";
+import { BackToTop } from "@/components/landing/BackToTop";
 import { MouseSpotlight } from "@/components/ui/MouseSpotlight";
 
 export const Route = createFileRoute("/")({
@@ -34,6 +35,7 @@ function Index() {
       <LeadForm />
       <Footer />
       <MobileStickyBar />
+      <BackToTop />
       <Toaster />
     </main>
   );

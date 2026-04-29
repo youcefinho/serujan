@@ -5,6 +5,7 @@ import { trackLeadFormSubmit } from "@/lib/analytics";
 import { isValidEmail, isValidPhone, sanitizeInput } from "@/lib/security";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { useState, useRef, useEffect } from "react";
+import { toast } from "sonner";
 import {
   Send,
   CheckCircle2,
@@ -57,6 +58,9 @@ export default function LeadForm() {
     if (form.phone && !isValidPhone(form.phone))
       newErrors.phone = t(translations.leadForm.phoneInvalid);
     setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      toast.error(t(translations.leadForm.validationError));
+    }
     return Object.keys(newErrors).length === 0;
   }
 
@@ -90,6 +94,9 @@ export default function LeadForm() {
       }
 
       setStatus("success");
+      toast.success(t(translations.leadForm.success), {
+        description: t(translations.leadForm.trustText),
+      });
       trackLeadFormSubmit(form.projectType);
       setForm({
         name: "",
@@ -102,6 +109,9 @@ export default function LeadForm() {
       });
     } catch {
       setStatus("error");
+      toast.error(t(translations.leadForm.error), {
+        description: `${t(translations.leadForm.genericError)} ${clientConfig.phone.display}`,
+      });
     }
   }
 
@@ -109,7 +119,7 @@ export default function LeadForm() {
     <section
       id="contact"
       ref={ref}
-      className="relative py-28 md:py-36 px-6 bg-black-surface bg-stars overflow-hidden"
+      className="relative py-28 md:py-36 px-6 bg-black-surface bg-stars grain-overlay overflow-hidden"
     >
       {/* Halo */}
       <div

@@ -32,7 +32,7 @@ export default function Bio() {
     <section
       id="bio"
       ref={ref}
-      className="relative py-28 md:py-36 px-6 bg-black-deep bg-stars overflow-hidden"
+      className="relative py-28 md:py-36 px-6 bg-black-deep bg-stars grain-overlay overflow-hidden"
     >
       {/* Halo doré décentré */}
       <div

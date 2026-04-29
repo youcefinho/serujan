@@ -3,7 +3,7 @@ import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { LanguageToggle } from "./LanguageToggle";
 import { useState, useEffect } from "react";
-import { Menu, X, Phone, ExternalLink } from "lucide-react";
+import { Phone, ExternalLink } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════
 // Navbar — Navigation premium noir/or pour Serujan
@@ -97,15 +97,32 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* Burger menu mobile */}
+        {/* Burger menu mobile — 3 barres morphing en X */}
         <div className="flex lg:hidden items-center gap-3">
           <LanguageToggle />
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 text-foreground"
-            aria-label="Menu"
+            className="relative w-10 h-10 flex items-center justify-center text-foreground rounded-md hover:bg-gold/5 transition-colors"
+            aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={isOpen}
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <span className="relative w-5 h-4 block" aria-hidden>
+              <span
+                className={`absolute left-0 right-0 h-[2px] bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  isOpen ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0"
+                }`}
+              />
+              <span
+                className={`absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-current rounded-full transition-all duration-200 ${
+                  isOpen ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"
+                }`}
+              />
+              <span
+                className={`absolute left-0 right-0 h-[2px] bg-current rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  isOpen ? "top-1/2 -translate-y-1/2 -rotate-45" : "bottom-0"
+                }`}
+              />
+            </span>
           </button>
         </div>
       </div>

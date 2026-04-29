@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { LogOut, LayoutDashboard, ExternalLink } from "lucide-react";
 import { clientConfig } from "@/lib/config";
+import { RouteMeta } from "@/components/RouteMeta";
 
 // Layout admin avec design v2 noir/or
 // Auth par token localStorage + invalidation server-side via /api/admin/logout
@@ -39,6 +40,7 @@ function AdminLayout() {
   if (checking) {
     return (
       <div className="min-h-screen bg-black-deep flex items-center justify-center text-foreground">
+        <RouteMeta title="Admin — Serujan Kaneshalingam" noindex />
         <div className="text-xs uppercase tracking-[0.2em] text-foreground/50">Chargement…</div>
       </div>
     );
@@ -47,6 +49,7 @@ function AdminLayout() {
   if (!authed) {
     return (
       <div className="min-h-screen bg-black-deep flex items-center justify-center text-foreground">
+        <RouteMeta title="Admin — Serujan Kaneshalingam" noindex />
         <Outlet />
       </div>
     );
@@ -54,6 +57,7 @@ function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-black-deep text-foreground">
+      <RouteMeta title="Admin — Serujan Kaneshalingam" noindex />
       <header className="sticky top-0 z-30 border-b border-gold/10 bg-black-deep/85 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/admin/leads" className="flex items-center gap-2.5 group">

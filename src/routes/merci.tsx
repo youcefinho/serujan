@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
+import { RouteMeta } from "@/components/RouteMeta";
 
 export const Route = createFileRoute("/merci")({
   component: MerciPage,
@@ -15,10 +16,23 @@ export const Route = createFileRoute("/merci")({
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 function MerciPage() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   return (
     <main className="relative min-h-screen bg-black-deep text-foreground flex items-center justify-center px-6 py-20 overflow-hidden">
+      <RouteMeta
+        title={
+          lang === "en"
+            ? "Thank you — your request has been received | Serujan Kaneshalingam"
+            : "Merci — votre demande a bien été reçue | Serujan Kaneshalingam"
+        }
+        description={
+          lang === "en"
+            ? "Your request has been received. Serujan Kaneshalingam will contact you within 24 hours to discuss your commercial financing project."
+            : "Votre demande a bien été reçue. Serujan Kaneshalingam vous contactera dans les 24h pour discuter de votre projet de financement commercial."
+        }
+        noindex
+      />
       {/* Halo doré */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44rem] h-[44rem] rounded-full pointer-events-none opacity-50"

@@ -145,6 +145,8 @@ export default function Elev8() {
                 src={clientConfig.elev8VideoUrl}
                 controls
                 autoPlay
+                preload="none"
+                poster={clientConfig.heroImageUrl}
                 className="w-full h-full object-cover"
               />
             ) : null}
