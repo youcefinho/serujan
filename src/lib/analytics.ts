@@ -5,14 +5,12 @@
 //              trackEvent("cta_click", { location: "hero" });
 // ═══════════════════════════════════════════════════════
 
-// Typage pour gtag (Google Analytics 4)
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
   }
 }
 
-// Événement GA4 générique
 export function trackEvent(
   eventName: string,
   params?: Record<string, string | number | boolean>
@@ -24,7 +22,6 @@ export function trackEvent(
 
 // ── Événements prédéfinis ────────────────────────────
 
-// CTA Calendly cliqué
 export function trackCalendlyClick(location: string): void {
   trackEvent("calendly_click", {
     event_category: "conversion",
@@ -33,24 +30,14 @@ export function trackCalendlyClick(location: string): void {
   });
 }
 
-// Formulaire de contact soumis
-export function trackLeadFormSubmit(type: "buy" | "sell"): void {
+export function trackLeadFormSubmit(projectType: string): void {
   trackEvent("lead_form_submit", {
     event_category: "conversion",
-    event_label: type,
-    lead_type: type,
+    event_label: projectType || "unspecified",
+    project_type: projectType || "unspecified",
   });
 }
 
-// Lead Magnet (guide) téléchargé
-export function trackLeadMagnetDownload(): void {
-  trackEvent("lead_magnet_download", {
-    event_category: "conversion",
-    event_label: "guide_premier_acheteur",
-  });
-}
-
-// Toggle langue
 export function trackLanguageToggle(lang: "fr" | "en"): void {
   trackEvent("language_toggle", {
     event_category: "engagement",
@@ -59,7 +46,6 @@ export function trackLanguageToggle(lang: "fr" | "en"): void {
   });
 }
 
-// Appel téléphonique
 export function trackPhoneClick(location: string): void {
   trackEvent("phone_click", {
     event_category: "conversion",
@@ -68,15 +54,6 @@ export function trackPhoneClick(location: string): void {
   });
 }
 
-// WhatsApp cliqué
-export function trackWhatsAppClick(): void {
-  trackEvent("whatsapp_click", {
-    event_category: "conversion",
-    event_label: "floating_button",
-  });
-}
-
-// Scroll depth (pour mesurer l'engagement)
 export function trackScrollDepth(percent: number): void {
   trackEvent("scroll_depth", {
     event_category: "engagement",
@@ -85,15 +62,13 @@ export function trackScrollDepth(percent: number): void {
   });
 }
 
-// Calculatrice utilisée
 export function trackCalculatorUse(): void {
   trackEvent("calculator_use", {
     event_category: "engagement",
-    event_label: "mortgage_calculator",
+    event_label: "commercial_mortgage_calculator",
   });
 }
 
-// Exit intent popup affiché
 export function trackExitIntent(action: "shown" | "closed" | "clicked"): void {
   trackEvent("exit_intent", {
     event_category: "engagement",

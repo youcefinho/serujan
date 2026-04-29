@@ -11,7 +11,7 @@ const icons = [Building2, Award, TrendingUp];
 
 export default function ValueCards() {
   const { ta, t } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   const cards = ta(translations.valueCards.cards);
 

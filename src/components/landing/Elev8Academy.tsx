@@ -12,7 +12,7 @@ const icons = [Lightbulb, Users, GraduationCap];
 
 export default function Elev8Academy() {
   const { t, ta } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   const features = ta(translations.elev8Academy.features);
 

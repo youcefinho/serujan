@@ -42,7 +42,7 @@ function AnimatedCounter({ target, duration = 2000 }: { target: number; duration
 
 export default function StatsBar() {
   const { ta } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   const stats = ta(translations.statsBar);
 

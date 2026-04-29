@@ -12,7 +12,7 @@ import { Calculator as CalcIcon } from "lucide-react";
 
 export default function Calculator() {
   const { t } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   // Valeurs par défaut commerciales
   const [loanAmount, setLoanAmount] = useState(2000000);

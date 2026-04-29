@@ -1,17 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Search, Phone, Mail, X, Home, ShoppingCart, Download } from "lucide-react";
+import { Loader2, Search, Phone, Mail, X, Briefcase, DollarSign, Download } from "lucide-react";
 
 interface Lead {
   id: string;
-  type: "buy" | "sell";
   name: string;
   phone: string;
   email: string;
-  budget: string | null;
-  timeline: string | null;
-  address: string | null;
-  property_type: string | null;
+  project_type: string | null;
+  estimated_amount: string | null;
   message: string | null;
   created_at: string;
 }
@@ -23,7 +20,7 @@ export const Route = createFileRoute("/admin/leads")({
 function exportCSV(leads: Lead[]) {
   if (leads.length === 0) return;
 
-  const headers = ["Date", "Type", "Nom", "Téléphone", "Courriel", "Budget", "Échéancier", "Adresse", "Type propriété", "Message"];
+  const headers = ["Date", "Nom", "Téléphone", "Courriel", "Type de projet", "Montant estimé", "Message"];
   const escape = (v: string | null) => {
     if (!v) return "";
     const s = v.replace(/"/g, '""');
@@ -32,19 +29,16 @@ function exportCSV(leads: Lead[]) {
 
   const rows = leads.map((l) => [
     new Date(l.created_at).toLocaleString("fr-CA"),
-    l.type === "buy" ? "Acheteur" : "Vendeur",
     escape(l.name),
     escape(l.phone),
     escape(l.email),
-    escape(l.budget),
-    escape(l.timeline),
-    escape(l.address),
-    escape(l.property_type),
+    escape(l.project_type),
+    escape(l.estimated_amount),
     escape(l.message),
   ].join(","));
 
   const csv = [headers.join(","), ...rows].join("\n");
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -57,7 +51,6 @@ function AdminLeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "buy" | "sell">("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Lead | null>(null);
 
@@ -66,7 +59,6 @@ function AdminLeadsPage() {
       try {
         const token = localStorage.getItem("intralys-admin-token");
         if (!token) {
-          // Pas de token → redirection directe
           localStorage.removeItem("intralys-admin-token");
           window.location.href = "/admin/login";
           return;
@@ -76,7 +68,6 @@ function AdminLeadsPage() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        // Session expirée ou token invalide → déconnecter et rediriger
         if (response.status === 401) {
           localStorage.removeItem("intralys-admin-token");
           window.location.href = "/admin/login";
@@ -98,27 +89,26 @@ function AdminLeadsPage() {
 
   const filtered = useMemo(() => {
     return leads.filter((l) => {
-      if (filter !== "all" && l.type !== filter) return false;
       if (search) {
         const q = search.toLowerCase();
         return (
           l.name.toLowerCase().includes(q) ||
           l.email.toLowerCase().includes(q) ||
           l.phone.toLowerCase().includes(q) ||
-          (l.address?.toLowerCase().includes(q) ?? false)
+          (l.project_type?.toLowerCase().includes(q) ?? false)
         );
       }
       return true;
     });
-  }, [leads, filter, search]);
+  }, [leads, search]);
 
   const stats = useMemo(() => {
     const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
     return {
       total: leads.length,
-      buy: leads.filter((l) => l.type === "buy").length,
-      sell: leads.filter((l) => l.type === "sell").length,
       week: leads.filter((l) => new Date(l.created_at).getTime() > weekAgo).length,
+      withProject: leads.filter((l) => l.project_type && l.project_type.length > 0).length,
+      withAmount: leads.filter((l) => l.estimated_amount && l.estimated_amount.length > 0).length,
     };
   }, [leads]);
 
@@ -149,7 +139,7 @@ function AdminLeadsPage() {
     <div>
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Leads</h1>
+          <h1 className="text-3xl font-bold">Leads commerciaux</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Toutes les demandes reçues via le formulaire
           </p>
@@ -169,35 +159,21 @@ function AdminLeadsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard label="Total" value={stats.total} />
         <StatCard label="Cette semaine" value={stats.week} accent />
-        <StatCard label="Acheteurs" value={stats.buy} icon={<ShoppingCart className="w-4 h-4" />} />
-        <StatCard label="Vendeurs" value={stats.sell} icon={<Home className="w-4 h-4" />} />
+        <StatCard label="Type projet" value={stats.withProject} icon={<Briefcase className="w-4 h-4" />} />
+        <StatCard label="Montant estimé" value={stats.withAmount} icon={<DollarSign className="w-4 h-4" />} />
       </div>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="flex gap-1 bg-card border border-border rounded-md p-1">
-          {(["all", "buy", "sell"] as const).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-4 py-2 text-xs font-bold uppercase tracking-widest rounded transition ${
-                filter === f
-                  ? "bg-gold text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {f === "all" ? "Tous" : f === "buy" ? "J'achète" : "Je vends"}
-            </button>
-          ))}
-        </div>
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Rechercher par nom, email, téléphone..."
+            placeholder="Rechercher par nom, email, téléphone, type de projet..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-md focus:border-gold focus:outline-none transition text-sm"
+            aria-label="Rechercher dans les leads"
           />
         </div>
       </div>
@@ -206,7 +182,7 @@ function AdminLeadsPage() {
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         {filtered.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground">
-            Aucun lead {filter !== "all" && `de type "${filter}"`} {search && `pour "${search}"`}.
+            Aucun lead {search && `pour "${search}"`}.
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -214,10 +190,10 @@ function AdminLeadsPage() {
               <thead className="bg-black-surface text-xs uppercase tracking-widest text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3 text-left">Date</th>
-                  <th className="px-4 py-3 text-left">Type</th>
                   <th className="px-4 py-3 text-left">Nom</th>
                   <th className="px-4 py-3 text-left hidden md:table-cell">Contact</th>
-                  <th className="px-4 py-3 text-left hidden lg:table-cell">Détails</th>
+                  <th className="px-4 py-3 text-left hidden lg:table-cell">Projet</th>
+                  <th className="px-4 py-3 text-left hidden lg:table-cell">Montant</th>
                 </tr>
               </thead>
               <tbody>
@@ -235,26 +211,20 @@ function AdminLeadsPage() {
                         minute: "2-digit",
                       })}
                     </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                          l.type === "buy"
-                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                            : "bg-gold/10 text-gold border border-gold/30"
-                        }`}
-                      >
-                        {l.type === "buy" ? "Achète" : "Vend"}
-                      </span>
-                    </td>
                     <td className="px-4 py-3 font-semibold">{l.name}</td>
                     <td className="px-4 py-3 hidden md:table-cell text-muted-foreground text-xs">
                       <div>{l.email}</div>
                       <div>{l.phone}</div>
                     </td>
                     <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground text-xs">
-                      {l.type === "buy"
-                        ? `${l.budget ?? "—"} · ${l.timeline ?? "—"}`
-                        : `${l.address ?? "—"} · ${l.property_type ?? "—"}`}
+                      {l.project_type ? (
+                        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-gold border border-gold/30">
+                          {l.project_type}
+                        </span>
+                      ) : "—"}
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground text-xs">
+                      {l.estimated_amount || "—"}
                     </td>
                   </tr>
                 ))}
@@ -311,11 +281,15 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
         <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
           <div>
             <span className="text-xs uppercase tracking-widest text-muted-foreground">
-              {lead.type === "buy" ? "Acheteur" : "Vendeur"}
+              Lead commercial
             </span>
             <h2 className="text-xl font-bold">{lead.name}</h2>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground"
+            aria-label="Fermer"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -327,15 +301,17 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
               timeStyle: "short",
             })}
           </Field>
-          <Field label="Téléphone">
-            <a
-              href={`tel:${lead.phone}`}
-              className="inline-flex items-center gap-2 text-gold hover:underline font-semibold"
-            >
-              <Phone className="w-4 h-4" />
-              {lead.phone}
-            </a>
-          </Field>
+          {lead.phone && (
+            <Field label="Téléphone">
+              <a
+                href={`tel:${lead.phone}`}
+                className="inline-flex items-center gap-2 text-gold hover:underline font-semibold"
+              >
+                <Phone className="w-4 h-4" />
+                {lead.phone}
+              </a>
+            </Field>
+          )}
           <Field label="Courriel">
             <a
               href={`mailto:${lead.email}`}
@@ -345,17 +321,8 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
               {lead.email}
             </a>
           </Field>
-          {lead.type === "buy" ? (
-            <>
-              <Field label="Budget">{lead.budget ?? "—"}</Field>
-              <Field label="Échéancier">{lead.timeline ?? "—"}</Field>
-            </>
-          ) : (
-            <>
-              <Field label="Adresse">{lead.address ?? "—"}</Field>
-              <Field label="Type de propriété">{lead.property_type ?? "—"}</Field>
-            </>
-          )}
+          <Field label="Type de projet">{lead.project_type || "—"}</Field>
+          <Field label="Montant estimé">{lead.estimated_amount || "—"}</Field>
           {lead.message && (
             <Field label="Message">
               <div className="whitespace-pre-wrap text-foreground/90">{lead.message}</div>
@@ -363,13 +330,15 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
           )}
 
           <div className="flex gap-2 pt-4 border-t border-border">
-            <a
-              href={`tel:${lead.phone}`}
-              className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-gold text-primary-foreground rounded-md font-bold text-sm"
-            >
-              <Phone className="w-4 h-4" />
-              Appeler
-            </a>
+            {lead.phone && (
+              <a
+                href={`tel:${lead.phone}`}
+                className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-gold text-primary-foreground rounded-md font-bold text-sm"
+              >
+                <Phone className="w-4 h-4" />
+                Appeler
+              </a>
+            )}
             <a
               href={`mailto:${lead.email}`}
               className="flex-1 inline-flex items-center justify-center gap-2 py-3 border border-border text-foreground rounded-md font-bold text-sm hover:border-gold"

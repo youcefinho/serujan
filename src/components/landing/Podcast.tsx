@@ -9,7 +9,7 @@ import { Headphones, Mic } from "lucide-react";
 
 export default function Podcast() {
   const { t } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   return (
     <section className="relative py-20 px-4 bg-black-card" ref={ref}>

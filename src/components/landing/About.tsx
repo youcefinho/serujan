@@ -11,7 +11,7 @@ const featureIcons = [Target, Lightbulb, Handshake, UserCheck];
 
 export default function About() {
   const { t, ta } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   const features = ta(translations.approche.features);
 

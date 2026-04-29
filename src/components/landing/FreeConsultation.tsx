@@ -10,7 +10,7 @@ import { Mail, Phone } from "lucide-react";
 
 export default function FreeConsultation() {
   const { t } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   return (
     <section className="relative py-20 px-4 bg-black-card" ref={ref}>
@@ -42,7 +42,9 @@ export default function FreeConsultation() {
         {/* Infos contact */}
         <div className="mt-12 grid sm:grid-cols-3 gap-6 text-sm text-muted-foreground">
           <div>
-            <p className="font-semibold text-gold uppercase tracking-widest text-xs mb-2">Email</p>
+            <p className="font-semibold text-gold uppercase tracking-widest text-xs mb-2">
+              {t(translations.common.email)}
+            </p>
             <a href={`mailto:${clientConfig.email}`} className="hover:text-gold transition-colors">
               {clientConfig.email}
             </a>
@@ -56,7 +58,9 @@ export default function FreeConsultation() {
             </a>
           </div>
           <div>
-            <p className="font-semibold text-gold uppercase tracking-widest text-xs mb-2">Bureau</p>
+            <p className="font-semibold text-gold uppercase tracking-widest text-xs mb-2">
+              {t(translations.common.office)}
+            </p>
             <p>
               {clientConfig.address.street}
               <br />

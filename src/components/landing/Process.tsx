@@ -11,7 +11,7 @@ const stepIcons = [Search, Puzzle, Handshake, CheckCircle];
 
 export default function Process() {
   const { t, ta } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   const steps = ta(translations.process.steps);
 
@@ -50,7 +50,7 @@ export default function Process() {
                 <div className="pb-12 pt-2">
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-xs font-bold text-gold/50 uppercase tracking-widest">
-                      Étape {String(i + 1).padStart(2, "0")}
+                      {t(translations.common.step)} {String(i + 1).padStart(2, "0")}
                     </span>
                   </div>
                   <h3 className="text-xl font-bold uppercase tracking-widest text-foreground mb-3">

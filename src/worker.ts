@@ -34,6 +34,11 @@ function sanitizeInput(str: string | undefined, maxLen = MAX_INPUT_LENGTH): stri
   return str.trim().slice(0, maxLen);
 }
 
+// Validation email côté serveur (RFC 5322 simplifié)
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 200;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -76,6 +81,14 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
     const cleanProjectType = sanitizeInput(body.project_type, 100);
     const cleanAmount = sanitizeInput(body.estimated_amount, 100);
     const cleanMessage = sanitizeInput(body.message, 1000);
+
+    // Validation : nom min. 2 caractères, email valide
+    if (cleanName.length < 2) {
+      return json({ error: 'Nom trop court' }, 400);
+    }
+    if (!isValidEmail(cleanEmail)) {
+      return json({ error: 'Email invalide' }, 400);
+    }
 
     const id = crypto.randomUUID();
 

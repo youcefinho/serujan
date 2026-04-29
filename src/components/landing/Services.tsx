@@ -16,7 +16,7 @@ const pillars = [
 
 export default function Services() {
   const { t } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   return (
     <section id="services" className="relative py-24 px-4 bg-black-deep" ref={ref}>

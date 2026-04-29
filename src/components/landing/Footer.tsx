@@ -52,7 +52,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#elev8" className="hover:text-gold transition-colors">
-                  Méthode Elev8
+                  {t(translations.footer.elev8Method)}
                 </a>
               </li>
               <li>
@@ -62,7 +62,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-gold transition-colors"
                 >
-                  Événement Elev8 2025
+                  {t(translations.footer.elev8Event)}
                 </a>
               </li>
               <li>
@@ -125,7 +125,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-gold transition-colors"
                 >
-                  Événement Elev8
+                  {t(translations.footer.elev8EventShort)}
                 </a>
               </li>
             </ul>

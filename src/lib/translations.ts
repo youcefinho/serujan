@@ -367,6 +367,9 @@ export const translations = {
   // --- Common ---
   common: {
     years: { fr: "ans", en: "years" },
+    step: { fr: "Étape", en: "Step" },
+    email: { fr: "Email", en: "Email" },
+    office: { fr: "Bureau", en: "Office" },
   },
 
   // --- Footer ---
@@ -379,6 +382,10 @@ export const translations = {
     contactTitle: { fr: "Contact", en: "Contact" },
     followMe: { fr: "Suivez-nous", en: "Follow us" },
     usefulLinks: { fr: "Liens utiles", en: "Useful links" },
+    elev8Method: { fr: "Méthode Elev8", en: "Elev8 Method" },
+    elev8Event: { fr: "Événement Elev8 2025", en: "Elev8 2025 Event" },
+    elev8EventShort: { fr: "Événement Elev8", en: "Elev8 Event" },
+    podcastVideoLabel: { fr: "Vidéo Elev8 Event", en: "Elev8 Event video" },
     copyright: {
       fr: "Serujan Kaneshalingam · Courtage Hypothécaire Commercial",
       en: "Serujan Kaneshalingam · Commercial Mortgage Brokerage",

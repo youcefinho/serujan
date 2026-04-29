@@ -46,10 +46,11 @@ export function attachCalendlyListener() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "buy",
           name: invitee.name ?? "Rendez-vous Calendly",
           email: invitee.email ?? "",
           phone: "",
+          project_type: "Consultation",
+          estimated_amount: "",
           message: `Rendez-vous pris via Calendly le ${
             payload.event?.start_time
               ? new Date(payload.event.start_time).toLocaleString("fr-CA")

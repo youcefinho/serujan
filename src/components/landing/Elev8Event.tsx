@@ -41,7 +41,7 @@ function getTimeLeft(targetDate: Date) {
 
 export default function Elev8Event() {
   const { t } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
   const countdown = useCountdown(EVENT_DATE);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
@@ -104,7 +104,7 @@ export default function Elev8Event() {
                   <Play className="w-8 h-8 text-gold ml-1" fill="currentColor" />
                 </div>
                 <span className="absolute bottom-4 left-4 text-sm text-gold/70 z-10">
-                  Vidéo Elev8 Event
+                  {t(translations.footer.podcastVideoLabel)}
                 </span>
               </button>
             ) : clientConfig.elev8VideoUrl ? (

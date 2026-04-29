@@ -1,6 +1,7 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
+import { trackLeadFormSubmit } from "@/lib/analytics";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useState } from "react";
 import { Send, CheckCircle, AlertCircle, Loader2, Shield } from "lucide-react";
@@ -26,7 +27,7 @@ function validatePhone(phone: string): boolean {
 
 export default function LeadForm() {
   const { t, ta } = useLanguage();
-  const ref = useScrollReveal();
+  const { ref } = useScrollReveal();
 
   const [form, setForm] = useState({
     name: "",
@@ -84,6 +85,7 @@ export default function LeadForm() {
       }
 
       setStatus("success");
+      trackLeadFormSubmit(form.projectType);
       setForm({ name: "", email: "", phone: "", projectType: "", estimatedAmount: "", message: "", honeypot: "" });
     } catch {
       setStatus("error");
