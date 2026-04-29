@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
+
+// Sync — above-the-fold + early scroll (chargés avec le main bundle)
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import WhySerujan from "@/components/landing/WhySerujan";
@@ -9,18 +12,20 @@ import About from "@/components/landing/About";
 import Process from "@/components/landing/Process";
 import LendersNetwork from "@/components/landing/LendersNetwork";
 import Bio from "@/components/landing/Bio";
-import MidPageCTA from "@/components/landing/MidPageCTA";
-import Calculator from "@/components/landing/Calculator";
-import Faq from "@/components/landing/Faq";
-import Elev8Event from "@/components/landing/Elev8Event";
-import LeadForm from "@/components/landing/LeadForm";
 import Footer from "@/components/landing/Footer";
 import MobileStickyBar from "@/components/landing/MobileStickyBar";
-import ExitIntent from "@/components/landing/ExitIntent";
 import { ScrollProgressBar } from "@/components/landing/ScrollProgressBar";
 import { BackToTop } from "@/components/landing/BackToTop";
 import { WhatsAppFab } from "@/components/landing/WhatsAppFab";
 import { MouseSpotlight } from "@/components/ui/MouseSpotlight";
+
+// Lazy — bottom-of-fold (capturés en chunks séparés, chargés à la demande)
+const MidPageCTA = lazy(() => import("@/components/landing/MidPageCTA"));
+const Calculator = lazy(() => import("@/components/landing/Calculator"));
+const Faq = lazy(() => import("@/components/landing/Faq"));
+const Elev8Event = lazy(() => import("@/components/landing/Elev8Event"));
+const LeadForm = lazy(() => import("@/components/landing/LeadForm"));
+const ExitIntent = lazy(() => import("@/components/landing/ExitIntent"));
 
 // ═══════════════════════════════════════════════════════════
 // Tunnel de conversion v3 — ordre AIDA optimisé
@@ -65,16 +70,22 @@ function Index() {
         <LendersNetwork />
       </div>
       <Bio />
-      <MidPageCTA />
-      <Calculator />
-      <Faq />
-      <Elev8Event />
-      <LeadForm />
+      {/* Bottom-of-fold — chunks séparés, fallback null (l'utilisateur arrive après scroll) */}
+      <Suspense fallback={null}>
+        <MidPageCTA />
+        <Calculator />
+        <Faq />
+        <Elev8Event />
+        <LeadForm />
+      </Suspense>
       <Footer />
       <MobileStickyBar />
       <BackToTop />
       <WhatsAppFab />
-      <ExitIntent />
+      {/* Modal lazy — pas chargé tant que pas armé */}
+      <Suspense fallback={null}>
+        <ExitIntent />
+      </Suspense>
       <Toaster />
     </main>
   );
