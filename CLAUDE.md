@@ -97,17 +97,22 @@ src/
 └── styles.css               # ⭐ Design system v2
 ```
 
-### 9 sections landing (`routes/index.tsx`)
+### 13 sections landing (`routes/index.tsx`)
 ```
-1. Hero        — titre tripartite Fraunces + 4 stats intégrées
-2. Services    — 3 piliers cartes éditoriales (numéro géant filigrane)
-3. About       — citation Fraunces italic + 4 features
-4. Process     — timeline avec ligne or qui se trace au scroll
-5. Calculator  — donut SVG animé + sliders or + spring physics
-6. Elev8       — Event (vidéo + countdown) + Academy fusionnés
-7. LeadForm    — pitch sticky + form anti-bot timing
-8. Footer      — 4 colonnes éditoriales
-+ Navbar, MobileStickyBar, ScrollProgressBar
+ 1. Hero            — typewriter Fraunces + 4 stats CountUp + parallax
+ 2. WhySerujan      — 3 cartes trust signals (Réseau · Expertise · Résultats)
+ 3. Services        — 3 piliers cartes éditoriales (numéro géant filigrane)
+ 4. About           — citation Fraunces italic + 4 features
+ 5. Process         — timeline 4 étapes avec ligne or qui se trace au scroll
+ 6. LendersNetwork  — marquee infinite-scroll 10 catégories de prêteurs
+ 7. Bio             — split photo + 4 milestones CountUp
+ 8. Testimonials    — 4 avis clients réels (Elev8 Academy)
+ 9. Calculator      — 6 inputs + LTV + coûts totaux + donut SVG animé
+10. Faq             — accordéon premium 6 Q/R commerciales
+11. Elev8           — Event (vidéo + countdown) + Academy fusionnés
+12. LeadForm        — pitch sticky + form anti-bot timing
+13. Footer          — 4 colonnes éditoriales
++ Navbar (burger morphing), MobileStickyBar, ScrollProgressBar, BackToTop, MouseSpotlight
 ```
 
 ---
@@ -280,11 +285,12 @@ git push --force-with-lease origin main   # uniquement si tu es seul sur le repo
 - ❌ Newsletter
 - ❌ Section Properties / Centris
 - ❌ WhatsApp button
-- ❌ Témoignages (en attente de contenu client)
 - ❌ Supabase (D1)
 - ❌ Dossier `functions/`
 - ❌ Google Fonts (Fontsource self-hosted)
 - ❌ ExitIntentPopup (anti-pattern UX)
+
+> ✅ **Témoignages** : 4 témoignages clients **réels** intégrés (composant `Testimonials.tsx`), source publiée sur `elev8academie.ca`. Toute autre affirmation (chiffres, prêteurs, délais) doit rester **vérifiable** : pas de chiffres ou noms inventés sans validation client.
 
 ---
 

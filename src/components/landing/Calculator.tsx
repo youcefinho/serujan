@@ -177,33 +177,44 @@ export default function Calculator() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.15 });
 
-  const [loanAmount, setLoanAmount] = useState(2_000_000);
+  const [propertyPrice, setPropertyPrice] = useState(2_500_000);
+  const [downPayment, setDownPayment] = useState(500_000);
   const [interestRate, setInterestRate] = useState(5.5);
   const [amortization, setAmortization] = useState(25);
   const [propertyTax, setPropertyTax] = useState(25_000);
   const [insurance, setInsurance] = useState(5_000);
 
   const calc = useMemo(() => {
+    const loanAmount = Math.max(0, propertyPrice - downPayment);
     const monthlyRate = interestRate / 100 / 12;
     const numPayments = amortization * 12;
     const monthlyMortgage =
-      monthlyRate === 0
-        ? loanAmount / numPayments
-        : (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
-          (Math.pow(1 + monthlyRate, numPayments) - 1);
+      loanAmount === 0
+        ? 0
+        : monthlyRate === 0
+          ? loanAmount / numPayments
+          : (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
+            (Math.pow(1 + monthlyRate, numPayments) - 1);
     const monthlyTax = propertyTax / 12;
     const monthlyInsurance = insurance / 12;
     const totalMonthly = monthlyMortgage + monthlyTax + monthlyInsurance;
+    const totalMortgage = monthlyMortgage * numPayments;
+    const totalInterest = Math.max(0, totalMortgage - loanAmount);
+    const ltv = propertyPrice > 0 ? (loanAmount / propertyPrice) * 100 : 0;
     return {
+      loanAmount,
       monthlyMortgage,
       monthlyTax,
       monthlyInsurance,
       totalMonthly,
-      mortgagePercent: (monthlyMortgage / totalMonthly) * 100,
-      taxPercent: (monthlyTax / totalMonthly) * 100,
-      insurancePercent: (monthlyInsurance / totalMonthly) * 100,
+      totalMortgage,
+      totalInterest,
+      ltv,
+      mortgagePercent: totalMonthly > 0 ? (monthlyMortgage / totalMonthly) * 100 : 0,
+      taxPercent: totalMonthly > 0 ? (monthlyTax / totalMonthly) * 100 : 0,
+      insurancePercent: totalMonthly > 0 ? (monthlyInsurance / totalMonthly) * 100 : 0,
     };
-  }, [loanAmount, interestRate, amortization, propertyTax, insurance]);
+  }, [propertyPrice, downPayment, interestRate, amortization, propertyTax, insurance]);
 
   const fmt = (n: number) =>
     new Intl.NumberFormat("fr-CA", {
@@ -211,6 +222,9 @@ export default function Calculator() {
       currency: "CAD",
       maximumFractionDigits: 0,
     }).format(n);
+
+  const fmtPct = (n: number) =>
+    `${new Intl.NumberFormat("fr-CA", { maximumFractionDigits: 1 }).format(n)} %`;
 
   return (
     <section
@@ -275,12 +289,22 @@ export default function Calculator() {
             className="p-8 md:p-10 rounded-2xl bg-off-white-elevated border border-gold-deep/15 shadow-[0_30px_80px_-30px_oklch(0.22_0.012_50/0.12)] space-y-7"
           >
             <GoldSlider
-              label={t(translations.calculator.loanAmount)}
-              value={loanAmount}
+              label={t(translations.calculator.propertyPrice)}
+              value={propertyPrice}
               min={500_000}
               max={50_000_000}
-              step={100_000}
-              onChange={setLoanAmount}
+              step={50_000}
+              onChange={setPropertyPrice}
+              unit="$ CAD"
+              inputWidth="w-32"
+            />
+            <GoldSlider
+              label={t(translations.calculator.downPayment)}
+              value={downPayment}
+              min={0}
+              max={Math.max(downPayment, propertyPrice)}
+              step={25_000}
+              onChange={setDownPayment}
               unit="$ CAD"
               inputWidth="w-32"
             />
@@ -379,6 +403,40 @@ export default function Calculator() {
               />
             </div>
 
+            {/* Vue d'ensemble du financement — totaux + LTV */}
+            <div className="p-6 md:p-7 rounded-2xl bg-off-white-elevated border border-gold-deep/20 shadow-[0_20px_60px_-25px_oklch(0.22_0.012_50/0.10)]">
+              <p className="text-[10px] uppercase tracking-[0.24em] text-gold-deep/85 mb-5">
+                {t(translations.calculator.totalsTitle)}
+              </p>
+              <div className="grid grid-cols-3 gap-4 md:gap-6">
+                <TotalCell
+                  label={t(translations.calculator.loanAmount)}
+                  value={fmt(calc.loanAmount)}
+                />
+                <TotalCell
+                  label={t(translations.calculator.totalInterest)}
+                  value={fmt(calc.totalInterest)}
+                />
+                <TotalCell
+                  label={t(translations.calculator.totalMortgage)}
+                  value={fmt(calc.totalMortgage)}
+                />
+              </div>
+              <div className="mt-5 pt-5 border-t border-gold-deep/15">
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="text-xs uppercase tracking-[0.18em] text-ink-soft">
+                    {t(translations.calculator.ltv)}
+                  </span>
+                  <span className="font-display text-2xl md:text-3xl text-gold-gradient tabular-nums leading-none">
+                    {fmtPct(calc.ltv)}
+                  </span>
+                </div>
+                <p className="mt-2 text-[11px] text-ink-soft leading-relaxed">
+                  {t(translations.calculator.ltvHelp)}
+                </p>
+              </div>
+            </div>
+
             {/* CTA */}
             <a
               href="#contact"
@@ -397,6 +455,19 @@ export default function Calculator() {
         </div>
       </div>
     </section>
+  );
+}
+
+function TotalCell({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-[0.18em] text-ink-soft mb-1.5 leading-tight">
+        {label}
+      </div>
+      <div className="font-display text-base md:text-lg text-ink tabular-nums leading-tight">
+        {value}
+      </div>
+    </div>
   );
 }
 

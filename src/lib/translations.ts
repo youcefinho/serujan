@@ -374,6 +374,8 @@ export const translations = {
       fr: "Ajustez les paramètres et visualisez instantanément le coût total mensuel de votre projet commercial. Estimation à titre indicatif — la structure réelle est négociée selon votre profil.",
       en: "Adjust parameters and instantly visualize your project's total monthly cost. Estimate only — the real structure is negotiated based on your profile.",
     },
+    propertyPrice: { fr: "Prix de la propriété", en: "Property price" },
+    downPayment: { fr: "Mise de fonds", en: "Down payment" },
     loanAmount: { fr: "Montant du prêt", en: "Loan amount" },
     interestRate: { fr: "Taux d'intérêt", en: "Interest rate" },
     amortization: { fr: "Amortissement", en: "Amortization" },
@@ -389,6 +391,14 @@ export const translations = {
     mortgage: { fr: "Hypothèque", en: "Mortgage" },
     taxes: { fr: "Taxes foncières", en: "Property taxes" },
     insuranceLabel: { fr: "Assurance", en: "Insurance" },
+    totalsTitle: { fr: "Vue d'ensemble du financement", en: "Financing overview" },
+    totalInterest: { fr: "Coût total des intérêts", en: "Total interest cost" },
+    totalMortgage: { fr: "Coût total de l'hypothèque", en: "Total mortgage cost" },
+    ltv: { fr: "Ratio prêt/valeur (LTV)", en: "Loan-to-value (LTV)" },
+    ltvHelp: {
+      fr: "Plus le LTV est bas, plus les conditions négociées sont favorables.",
+      en: "The lower the LTV, the better the negotiated conditions.",
+    },
     cta: { fr: "OBTENIR UNE ÉVALUATION PRÉCISE", en: "GET A PRECISE EVALUATION" },
     perMonth: { fr: "/mois", en: "/mo" },
     disclaimer: {
@@ -597,6 +607,130 @@ export const translations = {
       en: "In the meantime, follow Serujan on Instagram for exclusive insights",
     },
     backHome: { fr: "Retour à l'accueil", en: "Back to home" },
+  },
+
+  // --- WhySerujan (3 cartes trust signals juste après Hero) ---
+  whySerujan: {
+    label: { fr: "Pourquoi Serujan", en: "Why Serujan" },
+    titleLead: { fr: "L'expertise qui", en: "The expertise that" },
+    titleEmphasis: { fr: "fait la différence.", en: "makes the difference." },
+    subtitle: {
+      fr: "Dans un marché où chaque détail compte, l'expérience et le réseau font toute la différence.",
+      en: "In a market where every detail matters, experience and network make all the difference.",
+    },
+    cards: {
+      fr: [
+        {
+          title: "RÉSEAU EXCLUSIF",
+          desc: "Accès privilégié aux décideurs des plus grandes institutions financières du Québec et du Canada.",
+        },
+        {
+          title: "EXPERTISE RECONNUE",
+          desc: "Spécialiste des stratégies de financement alternatives en commercial — courtier hypothécaire depuis 2016.",
+        },
+        {
+          title: "RÉSULTATS GARANTIS",
+          desc: "Plus de 500 M$ financés en stratégies de financement commercial sur mesure.",
+        },
+      ],
+      en: [
+        {
+          title: "EXCLUSIVE NETWORK",
+          desc: "Privileged access to decision-makers at the largest financial institutions in Quebec and Canada.",
+        },
+        {
+          title: "RECOGNIZED EXPERTISE",
+          desc: "Specialist in alternative commercial financing strategies — mortgage broker since 2016.",
+        },
+        {
+          title: "GUARANTEED RESULTS",
+          desc: "Over $500M financed in custom commercial financing strategies.",
+        },
+      ],
+    },
+  },
+
+  // --- Testimonials (4 avis clients réels Elev8 Academy) ---
+  testimonials: {
+    label: { fr: "Avis clients", en: "Client reviews" },
+    titleLead: { fr: "Ce que disent les", en: "What our" },
+    titleEmphasis: { fr: "investisseurs.", en: "investors say." },
+    subtitle: {
+      fr: "Témoignages issus du webinaire Elev8 et des accompagnements en financement commercial.",
+      en: "Testimonials from the Elev8 webinar and commercial financing support.",
+    },
+    items: {
+      fr: [
+        {
+          quote:
+            "Le webinaire de Serujan a changé ma vie ! Il a simplifié les stratégies de financement à 100 %, et j'ai rapidement acquis ma première propriété sans utiliser mes économies personnelles.",
+          author: "James R.",
+          role: "Entrepreneur",
+          photo: "",
+        },
+        {
+          quote:
+            "Serujan n'a pas seulement parlé de théorie ; il nous a montré EXACTEMENT comment faire. Mon premier bien commercial est en cours, grâce à ce webinaire !",
+          author: "Puva Siva",
+          role: "Entrepreneur",
+          photo:
+            "https://assets.cdn.filesafe.space/9aPZC0le27uwLey993YT/media/680cc2158c8266660b037840.jpeg",
+        },
+        {
+          quote:
+            "Serujan a partagé des stratégies que je n'aurais jamais cru possibles. Je suis repartie confiante et prête à conclure ma première affaire.",
+          author: "Lauren K.",
+          role: "Propriétaire de petite entreprise",
+          photo:
+            "https://assets.cdn.filesafe.space/9aPZC0le27uwLey993YT/media/76de5c90-52cc-4ec6-97dd-26ecbd3d9275.png",
+        },
+        {
+          quote:
+            "Serujan nous a donné la feuille de route vers le succès. Son enthousiasme et ses connaissances ont rendu le processus facile à suivre.",
+          author: "Nina Martellino",
+          role: "Agent commercial numérique",
+          photo:
+            "https://assets.cdn.filesafe.space/9aPZC0le27uwLey993YT/media/680cc35e8c826644560378e4.jpeg",
+        },
+      ],
+      en: [
+        {
+          quote:
+            "Serujan's webinar changed my life! He simplified 100% financing strategies, and I quickly acquired my first property without using my personal savings.",
+          author: "James R.",
+          role: "Entrepreneur",
+          photo: "",
+        },
+        {
+          quote:
+            "Serujan didn't just talk theory; he showed us EXACTLY how to do it. My first commercial property is in progress, thanks to this webinar!",
+          author: "Puva Siva",
+          role: "Entrepreneur",
+          photo:
+            "https://assets.cdn.filesafe.space/9aPZC0le27uwLey993YT/media/680cc2158c8266660b037840.jpeg",
+        },
+        {
+          quote:
+            "Serujan shared strategies I never thought possible. I left confident and ready to close my first deal.",
+          author: "Lauren K.",
+          role: "Small business owner",
+          photo:
+            "https://assets.cdn.filesafe.space/9aPZC0le27uwLey993YT/media/76de5c90-52cc-4ec6-97dd-26ecbd3d9275.png",
+        },
+        {
+          quote:
+            "Serujan gave us the roadmap to success. His enthusiasm and knowledge made the process easy to follow.",
+          author: "Nina Martellino",
+          role: "Digital commercial agent",
+          photo:
+            "https://assets.cdn.filesafe.space/9aPZC0le27uwLey993YT/media/680cc35e8c826644560378e4.jpeg",
+        },
+      ],
+    },
+    source: {
+      fr: "Témoignages publiés sur elev8academie.ca",
+      en: "Testimonials published on elev8academie.ca",
+    },
   },
 
   // --- LendersNetwork (réseau de prêteurs institutionnels) ---
