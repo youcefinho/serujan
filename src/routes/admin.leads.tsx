@@ -103,7 +103,7 @@ function AdminLeadsPage() {
         const { data } = (await response.json()) as { data: Lead[] };
         setLeads(data ?? []);
       } catch (err) {
-        console.error("Erreur chargement leads:", err);
+        // Erreur silencieuse — affichage utilisateur via setError, pas de log client
         setError(err instanceof Error ? err.message : "Erreur de connexion au serveur");
       }
       setLoading(false);

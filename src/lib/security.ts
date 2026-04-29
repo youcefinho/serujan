@@ -52,6 +52,9 @@ export function buildSecurityHeaders(csp: string): Record<string, string> {
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
     "Cross-Origin-Opener-Policy": "same-origin",
+    // same-site permet les ressources internes mais bloque la lecture cross-origin (Spectre).
+    // Pas same-origin car ça casserait le partage légitime sous-domaine si on ajoute www. plus tard.
+    "Cross-Origin-Resource-Policy": "same-site",
     "X-DNS-Prefetch-Control": "on",
   };
 }

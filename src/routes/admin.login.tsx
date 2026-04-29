@@ -46,8 +46,8 @@ function AdminLogin() {
 
       localStorage.setItem("intralys-admin-token", data.token);
       window.location.href = "/admin/leads";
-    } catch (err) {
-      console.error("Login error:", err);
+    } catch {
+      // Erreur silencieuse côté client — message générique affiché à l'utilisateur
       setError("Erreur de connexion. Réessayez.");
     } finally {
       setLoading(false);
