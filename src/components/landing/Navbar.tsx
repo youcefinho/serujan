@@ -82,7 +82,7 @@ export default function Navbar() {
             className="inline-flex items-center gap-2 px-4 py-2 text-sm text-gold border border-gold/30 rounded-lg hover:bg-gold/10 transition-colors"
           >
             <Phone className="w-4 h-4" />
-            <span className="tabular-nums">{clientConfig.phone.display}</span>
+            <span className="font-mono tabular-nums tracking-[0.06em]">{clientConfig.phone.display}</span>
           </a>
           <a
             href="#contact"
@@ -150,7 +150,7 @@ export default function Navbar() {
                 className="flex items-center justify-center gap-2 py-3 border border-gold/30 text-gold rounded-lg font-medium"
               >
                 <Phone className="w-4 h-4" />
-                <span className="tabular-nums">{clientConfig.phone.display}</span>
+                <span className="font-mono tabular-nums tracking-[0.06em]">{clientConfig.phone.display}</span>
               </a>
               <a
                 href="#contact"

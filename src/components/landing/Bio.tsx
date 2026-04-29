@@ -169,7 +169,7 @@ export default function Bio() {
             >
               <CountUp
                 value={m.metric}
-                className="font-display text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums"
+                className="font-display font-light tracking-[-0.02em] text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums"
               />
               <div className="mt-3 text-[11px] uppercase tracking-[0.18em] text-foreground/60 font-medium">
                 {m.label}

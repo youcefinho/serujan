@@ -102,7 +102,7 @@ export default function WhySerujan() {
                 {/* Chiffre-clé — impact visuel immédiat */}
                 <CountUp
                   value={card.metric}
-                  className="font-display text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums mb-4"
+                  className="font-display font-light tracking-[-0.02em] text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums mb-4"
                 />
 
                 <h3 className="font-display text-lg md:text-xl tracking-tight text-foreground mb-3 text-balance">

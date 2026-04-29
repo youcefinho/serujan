@@ -147,7 +147,7 @@ export default function Hero() {
         >
           <a
             href="#contact"
-            className="group relative overflow-hidden inline-flex items-center justify-center gap-2 px-7 py-4 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold hover:shadow-gold-sm transition-all duration-300 hover:-translate-y-0.5 btn-shine btn-glow"
+            className="group relative overflow-hidden inline-flex items-center justify-center gap-2 px-7 py-4 bg-gradient-gold text-black-deep font-bold tracking-[0.04em] rounded-md shadow-gold hover:shadow-gold-sm transition-all duration-300 hover:-translate-y-0.5 btn-shine btn-glow"
           >
             <span>{t(translations.hero.ctaPrimary)}</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -159,7 +159,7 @@ export default function Hero() {
           >
             <Phone className="w-4 h-4 text-gold/80 group-hover:text-gold transition-colors" />
             <span>{t(translations.hero.ctaCall)}</span>
-            <span className="text-foreground/40 group-hover:text-gold/70 text-sm tabular-nums transition-colors">
+            <span className="text-foreground/40 group-hover:text-gold/70 text-sm font-mono tabular-nums tracking-[0.06em] transition-colors">
               {clientConfig.phone.display}
             </span>
           </a>
@@ -200,7 +200,7 @@ export default function Hero() {
             >
               <CountUp
                 value={s.value}
-                className="font-display text-3xl md:text-4xl lg:text-5xl tabular-nums text-gold-gradient leading-none"
+                className="font-display font-light tracking-[-0.02em] text-3xl md:text-4xl lg:text-5xl tabular-nums text-gold-gradient leading-none"
               />
               <div className="mt-3 text-[11px] uppercase tracking-[0.18em] text-foreground/55">
                 {t(translations.hero[s.key])}

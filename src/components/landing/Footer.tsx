@@ -76,7 +76,7 @@ export default function Footer() {
                   className="flex items-center gap-2.5 hover:text-gold transition-colors group"
                 >
                   <Phone className="w-3.5 h-3.5 text-gold/60 group-hover:text-gold transition-colors" />
-                  <span className="tabular-nums">{clientConfig.phone.display}</span>
+                  <span className="font-mono tabular-nums tracking-[0.06em]">{clientConfig.phone.display}</span>
                 </a>
               </li>
               <li>
