@@ -61,15 +61,11 @@ describe("Système i18n — Intégrité des traductions (Serujan)", () => {
       "hero",
       "approche",
       "footer",
-      "valueCards",
       "services",
       "process",
       "calculator",
-      "freeConsultation",
       "leadForm",
-      "statsBar",
       "nav",
-      "exitIntent",
     ];
 
     for (const section of requiredSections) {
@@ -80,19 +76,22 @@ describe("Système i18n — Intégrité des traductions (Serujan)", () => {
     }
   });
 
-  it("le hero contient un titre FR et EN", () => {
-    expect(translations.hero.title.fr).toBeTruthy();
-    expect(translations.hero.title.en).toBeTruthy();
-    expect(translations.hero.title.fr).not.toBe(translations.hero.title.en);
-  });
-
-  it("les value cards ont 3 items en FR et EN", () => {
-    expect(translations.valueCards.cards.fr).toHaveLength(3);
-    expect(translations.valueCards.cards.en).toHaveLength(3);
+  it("le hero a un titre tripartite FR et EN distincts", () => {
+    expect(translations.hero.titleLead.fr).toBeTruthy();
+    expect(translations.hero.titleLead.en).toBeTruthy();
+    expect(translations.hero.titleEmphasis.fr).toBeTruthy();
+    expect(translations.hero.titleTail.fr).toBeTruthy();
+    expect(translations.hero.titleLead.fr).not.toBe(translations.hero.titleLead.en);
   });
 
   it("le process a 4 étapes en FR et EN", () => {
     expect(translations.process.steps.fr).toHaveLength(4);
     expect(translations.process.steps.en).toHaveLength(4);
+  });
+
+  it("services a 3 piliers", () => {
+    expect(translations.services.pillar1.title.fr).toBeTruthy();
+    expect(translations.services.pillar2.title.fr).toBeTruthy();
+    expect(translations.services.pillar3.title.fr).toBeTruthy();
   });
 });

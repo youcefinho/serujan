@@ -3,6 +3,11 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { attachCalendlyListener } from "./lib/calendly";
+
+// Polices self-hosted (zéro appel réseau, immune aux blocages CSP)
+import "@fontsource-variable/fraunces/index.css";
+import "@fontsource-variable/inter/index.css";
+
 import "./styles.css";
 
 // Create the router instance

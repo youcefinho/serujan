@@ -24,22 +24,21 @@ export const translations = {
 
   // --- Hero ---
   hero: {
-    badge: { fr: "Courtage Hypothécaire Commercial · Québec", en: "Commercial Mortgage Brokerage · Quebec" },
-    title: { fr: "L'excellence en financement commercial", en: "Excellence in commercial financing" },
+    badge: { fr: "Courtage hypothécaire commercial · Québec", en: "Commercial Mortgage Brokerage · Quebec" },
+    titleLead: { fr: "Le financement", en: "Financing" },
+    titleEmphasis: { fr: "qui ouvre les portes", en: "that opens doors" },
+    titleTail: { fr: "fermées aux autres.", en: "closed to others." },
     subtitle: {
-      fr: "Quand votre projet mérite plus qu'un simple financement.",
-      en: "When your project deserves more than simple financing.",
+      fr: "Acquisitions, refinancements, développements et construction. Structurés avec rigueur, négociés avec un réseau institutionnel privilégié.",
+      en: "Acquisitions, refinancing, developments and construction. Structured with rigor, negotiated through a privileged institutional network.",
     },
-    description: {
-      fr: "Structures sur mesure, négociations d'expert, résultats garantis.",
-      en: "Custom structures, expert negotiations, guaranteed results.",
-    },
-    ctaPrimary: { fr: "ÉVALUER MON PROJET", en: "EVALUATE MY PROJECT" },
-    ctaCall: { fr: "CONSULTATION RAPIDE", en: "QUICK CONSULTATION" },
-    trustBadge: {
-      fr: "500M$+ financés · 95% approbation · Montréal",
-      en: "500M$+ funded · 95% approval · Montréal",
-    },
+    ctaPrimary: { fr: "Évaluer mon projet", en: "Evaluate my project" },
+    ctaCall: { fr: "Parler à Serujan", en: "Speak with Serujan" },
+    statFunded: { fr: "Financés", en: "Funded" },
+    statApproval: { fr: "Taux d'approbation", en: "Approval rate" },
+    statDays: { fr: "Jours en moyenne", en: "Days on average" },
+    statProjects: { fr: "Projets menés", en: "Projects led" },
+    scrollHint: { fr: "Découvrir l'expertise", en: "Discover the expertise" },
   },
 
   // --- ValueCards (3 cartes sous le hero) ---

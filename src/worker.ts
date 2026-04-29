@@ -1,24 +1,59 @@
-// Worker principal — Route les requêtes API vers les handlers
-// Template Commercial Intralys — Pas de Lead Magnet, pas de newsletter
+// Worker principal Serujan v2 — API + assets + sécurité headers
+// Architecture : run_worker_first → ce worker intercepte TOUTE requête
+//                puis route vers /api/* ou délègue à env.ASSETS pour le SPA.
 
 import { Resend } from 'resend';
 import { clientConfig as CLIENT } from './lib/config';
 
 interface Env {
   DB: D1Database;
+  ASSETS: Fetcher;
   ADMIN_PASSWORD: string;
   RESEND_API_KEY: string;
-  GHL_WEBHOOK_URL?: string; // GoHighLevel — optionnel, configuré dans Dashboard Cloudflare
+  GHL_WEBHOOK_URL?: string;
 }
 
 // ── Constantes sécurité ─────────────────────────────────────
 const SESSION_DURATION_HOURS = 24;
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOGIN_WINDOW_HOURS = 1;
+const MAX_LEAD_ATTEMPTS = 10;
+const LEAD_WINDOW_HOURS = 1;
+const MIN_FORM_FILL_MS = 3000;        // < 3 s = bot suspect
 const MAX_INPUT_LENGTH = 500;
 
+// ── CSP : sources autorisées ────────────────────────────────
+// Les images des assets distants (logo Serujan, hero) viennent de
+// filesafe.space ; la vidéo Elev8 vient de wpdns.site ; Calendly +
+// Google Analytics sont chargés au runtime.
+const CSP_DIRECTIVES = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://assets.calendly.com https://*.googletagmanager.com https://*.google-analytics.com",
+  "style-src 'self' 'unsafe-inline' https://assets.calendly.com",
+  "img-src 'self' data: blob: https://assets.cdn.filesafe.space https://*.calendly.com https://*.google-analytics.com https://*.googletagmanager.com",
+  "font-src 'self' data:",
+  "media-src 'self' https://o6xngqfgnt.wpdns.site",
+  "connect-src 'self' https://*.calendly.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+  "frame-src https://calendly.com https://*.calendly.com https://open.spotify.com",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join('; ');
+
+const SECURITY_HEADERS: Record<string, string> = {
+  'Content-Security-Policy': CSP_DIRECTIVES,
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+  'Cross-Origin-Opener-Policy': 'same-origin',
+  'X-DNS-Prefetch-Control': 'on',
+};
+
 // ── Sanitization ────────────────────────────────────────────
-// Échappe les caractères HTML dangereux (protection XSS pour les emails)
 function sanitizeHtml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -28,53 +63,92 @@ function sanitizeHtml(str: string): string {
     .replace(/'/g, '&#39;');
 }
 
-// Nettoie un input utilisateur : trim + limite de longueur
 function sanitizeInput(str: string | undefined, maxLen = MAX_INPUT_LENGTH): string {
   if (!str) return '';
   return str.trim().slice(0, maxLen);
 }
 
-// Validation email côté serveur (RFC 5322 simplifié)
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 200;
 }
 
+// ── Fetch principal ─────────────────────────────────────────
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     // Routage API
-    if (url.pathname === '/api/leads' && request.method === 'POST') {
-      return handleLeads(request, env);
-    }
-    if (url.pathname === '/api/admin/login' && request.method === 'POST') {
-      return handleAdminLogin(request, env);
-    }
-    if (url.pathname === '/api/admin/logout' && request.method === 'POST') {
-      return handleAdminLogout(request, env);
-    }
-    if (url.pathname === '/api/admin/leads' && request.method === 'GET') {
-      return handleAdminLeads(request, env);
+    if (url.pathname.startsWith('/api/')) {
+      const apiResponse = await handleApi(url.pathname, request, env);
+      return withSecurityHeaders(apiResponse);
     }
 
-    // Les assets statiques sont servis automatiquement — ce return ne devrait jamais être atteint
-    return new Response('Not Found', { status: 404 });
+    // Tout le reste → SPA (Vite build dans /dist)
+    const assetResponse = await env.ASSETS.fetch(request);
+    return withSecurityHeaders(assetResponse);
   },
 } satisfies ExportedHandler<Env>;
+
+async function handleApi(pathname: string, request: Request, env: Env): Promise<Response> {
+  if (pathname === '/api/leads' && request.method === 'POST') {
+    return handleLeads(request, env);
+  }
+  if (pathname === '/api/admin/login' && request.method === 'POST') {
+    return handleAdminLogin(request, env);
+  }
+  if (pathname === '/api/admin/logout' && request.method === 'POST') {
+    return handleAdminLogout(request, env);
+  }
+  if (pathname === '/api/admin/leads' && request.method === 'GET') {
+    return handleAdminLeads(request, env);
+  }
+  return json({ error: 'Endpoint inconnu' }, 404);
+}
 
 // ── POST /api/leads ──────────────────────────────────────────
 async function handleLeads(request: Request, env: Env): Promise<Response> {
   try {
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+
+    // Rate limit : max 10 soumissions par IP par heure
+    const windowStart = new Date(Date.now() - LEAD_WINDOW_HOURS * 60 * 60 * 1000).toISOString();
+    const { results: attempts } = await env.DB.prepare(
+      'SELECT COUNT(*) as count FROM lead_attempts WHERE ip = ? AND attempted_at > ?'
+    ).bind(ip, windowStart).all();
+
+    const attemptCount = (attempts?.[0]?.count as number) || 0;
+    if (attemptCount >= MAX_LEAD_ATTEMPTS) {
+      return json({ error: 'Trop de demandes. Réessayez dans 1 heure.' }, 429);
+    }
+
     const body = await request.json() as {
-      name: string; email: string; phone?: string;
-      project_type?: string; estimated_amount?: string; message?: string;
+      name: string;
+      email: string;
+      phone?: string;
+      project_type?: string;
+      estimated_amount?: string;
+      message?: string;
+      elapsed_ms?: number;
+      hp?: string; // honeypot
     };
+
+    // Honeypot : si rempli, c'est un bot
+    if (body.hp && body.hp.trim().length > 0) {
+      // On enregistre pour le rate limit mais on retourne success pour ne pas le notifier
+      await env.DB.prepare('INSERT INTO lead_attempts (ip) VALUES (?)').bind(ip).run();
+      return json({ success: true, id: 'silent' });
+    }
+
+    // Timing : form rempli en < 3 s = bot quasi-certain
+    if (typeof body.elapsed_ms === 'number' && body.elapsed_ms < MIN_FORM_FILL_MS) {
+      await env.DB.prepare('INSERT INTO lead_attempts (ip) VALUES (?)').bind(ip).run();
+      return json({ success: true, id: 'silent' });
+    }
 
     if (!body.email || !body.name) {
       return json({ error: 'Nom et email requis' }, 400);
     }
 
-    // Sanitisation des inputs
     const cleanName = sanitizeInput(body.name, 100);
     const cleanEmail = sanitizeInput(body.email, 200);
     const cleanPhone = sanitizeInput(body.phone, 30);
@@ -82,13 +156,8 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
     const cleanAmount = sanitizeInput(body.estimated_amount, 100);
     const cleanMessage = sanitizeInput(body.message, 1000);
 
-    // Validation : nom min. 2 caractères, email valide
-    if (cleanName.length < 2) {
-      return json({ error: 'Nom trop court' }, 400);
-    }
-    if (!isValidEmail(cleanEmail)) {
-      return json({ error: 'Email invalide' }, 400);
-    }
+    if (cleanName.length < 2) return json({ error: 'Nom trop court' }, 400);
+    if (!isValidEmail(cleanEmail)) return json({ error: 'Email invalide' }, 400);
 
     const id = crypto.randomUUID();
 
@@ -96,33 +165,30 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
       'INSERT INTO leads (id, name, email, phone, project_type, estimated_amount, message) VALUES (?, ?, ?, ?, ?, ?, ?)'
     ).bind(id, cleanName, cleanEmail, cleanPhone, cleanProjectType, cleanAmount, cleanMessage).run();
 
-    // Notification email au courtier (best-effort)
+    // Enregistrement de la tentative pour le rate limit
+    await env.DB.prepare('INSERT INTO lead_attempts (ip) VALUES (?)').bind(ip).run();
+
+    // Notification email (best-effort)
     try {
       const resend = new Resend(env.RESEND_API_KEY);
       await resend.emails.send({
         from: CLIENT.emailFrom,
         to: [CLIENT.email],
-        subject: `🔔 Nouveau lead commercial — ${sanitizeHtml(cleanName)}`,
-        html: `
-          <div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:500px;margin:0 auto;padding:24px;border:1px solid #333;border-radius:12px;background:#1a1a1a;color:#fff;">
-            <h2 style="color:#d4af37;margin:0 0 16px;">Nouveau lead commercial</h2>
-            <table style="width:100%;border-collapse:collapse;font-size:14px;">
-              <tr><td style="padding:8px 0;color:#999;width:120px;">Nom</td><td style="padding:8px 0;font-weight:bold;color:#fff;">${sanitizeHtml(cleanName)}</td></tr>
-              <tr><td style="padding:8px 0;color:#999;">Téléphone</td><td style="padding:8px 0;"><a href="tel:${cleanPhone}" style="color:#d4af37;text-decoration:none;font-weight:bold;">${sanitizeHtml(cleanPhone)}</a></td></tr>
-              <tr><td style="padding:8px 0;color:#999;">Email</td><td style="padding:8px 0;"><a href="mailto:${cleanEmail}" style="color:#d4af37;text-decoration:none;">${sanitizeHtml(cleanEmail)}</a></td></tr>
-              <tr><td style="padding:8px 0;color:#999;">Type de projet</td><td style="padding:8px 0;color:#fff;">${sanitizeHtml(cleanProjectType || '—')}</td></tr>
-              <tr><td style="padding:8px 0;color:#999;">Montant estimé</td><td style="padding:8px 0;color:#fff;">${sanitizeHtml(cleanAmount || '—')}</td></tr>
-              ${cleanMessage ? `<tr><td style="padding:8px 0;color:#999;vertical-align:top;">Message</td><td style="padding:8px 0;color:#fff;">${sanitizeHtml(cleanMessage)}</td></tr>` : ''}
-            </table>
-            <p style="margin:16px 0 0;font-size:12px;color:#666;">Reçu le ${new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' })}</p>
-          </div>
-        `,
+        subject: `Nouveau lead commercial — ${sanitizeHtml(cleanName)}`,
+        html: renderEmailHtml({
+          name: cleanName,
+          email: cleanEmail,
+          phone: cleanPhone,
+          projectType: cleanProjectType,
+          amount: cleanAmount,
+          message: cleanMessage,
+        }),
       });
     } catch (emailErr) {
       console.warn('Échec notification email:', emailErr);
     }
 
-    // Webhook GoHighLevel (best-effort)
+    // Webhook GHL (best-effort)
     if (env.GHL_WEBHOOK_URL) {
       try {
         await fetch(env.GHL_WEBHOOK_URL, {
@@ -135,11 +201,11 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
             project_type: cleanProjectType,
             estimated_amount: cleanAmount,
             message: cleanMessage,
-            source: 'Site Intralys Commercial',
+            source: 'Site Serujan',
           }),
         });
       } catch {
-        // GHL indisponible → pas grave, le lead est safe en D1
+        // GHL indisponible → non bloquant
       }
     }
 
@@ -150,13 +216,38 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
   }
 }
 
+// Email HTML noir/or — extrait pour lisibilité
+function renderEmailHtml(d: {
+  name: string; email: string; phone: string;
+  projectType: string; amount: string; message: string;
+}): string {
+  const row = (label: string, value: string) =>
+    `<tr><td style="padding:10px 0;color:#9a9a9a;width:140px;font-size:13px;">${label}</td>` +
+    `<td style="padding:10px 0;color:#f5f5f5;font-weight:500;">${value}</td></tr>`;
+
+  return `
+    <div style="font-family:'Inter',Helvetica,Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;border:1px solid #2a2a2a;border-radius:16px;background:#0e0e10;color:#f5f5f5;">
+      <div style="border-bottom:1px solid #2a2a2a;padding-bottom:16px;margin-bottom:20px;">
+        <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#d4af37;font-weight:600;">Nouveau lead</div>
+        <h2 style="margin:8px 0 0;font-family:Georgia,serif;font-weight:400;font-size:22px;color:#f5f5f5;">${sanitizeHtml(d.name)}</h2>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">
+        ${d.phone ? row('Téléphone', `<a href="tel:${d.phone}" style="color:#d4af37;text-decoration:none;">${sanitizeHtml(d.phone)}</a>`) : ''}
+        ${row('Email', `<a href="mailto:${d.email}" style="color:#d4af37;text-decoration:none;">${sanitizeHtml(d.email)}</a>`)}
+        ${row('Type de projet', sanitizeHtml(d.projectType || '—'))}
+        ${row('Montant estimé', sanitizeHtml(d.amount || '—'))}
+        ${d.message ? `<tr><td style="padding:14px 0 6px;color:#9a9a9a;font-size:13px;vertical-align:top;">Message</td><td style="padding:14px 0 6px;color:#f5f5f5;line-height:1.6;">${sanitizeHtml(d.message)}</td></tr>` : ''}
+      </table>
+      <p style="margin:20px 0 0;font-size:11px;color:#6a6a6a;letter-spacing:0.05em;">Reçu le ${new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' })}</p>
+    </div>
+  `;
+}
+
 // ── POST /api/admin/login ────────────────────────────────────
-// Sécurité : rate limiting + token stocké en D1 avec expiration
 async function handleAdminLogin(request: Request, env: Env): Promise<Response> {
   try {
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
 
-    // ── Rate limiting : max 5 tentatives par IP par heure ────
     const windowStart = new Date(Date.now() - LOGIN_WINDOW_HOURS * 60 * 60 * 1000).toISOString();
     const { results: attempts } = await env.DB.prepare(
       'SELECT COUNT(*) as count FROM login_attempts WHERE ip = ? AND attempted_at > ?'
@@ -169,30 +260,27 @@ async function handleAdminLogin(request: Request, env: Env): Promise<Response> {
 
     const { password } = await request.json() as { password: string };
 
-    // Enregistrer la tentative (succès ou échec)
-    await env.DB.prepare(
-      'INSERT INTO login_attempts (ip, attempted_at) VALUES (?, datetime(\'now\'))'
-    ).bind(ip).run();
+    await env.DB.prepare('INSERT INTO login_attempts (ip) VALUES (?)').bind(ip).run();
 
     if (!password || password !== env.ADMIN_PASSWORD) {
       return json({ error: 'Mot de passe incorrect' }, 401);
     }
 
-    // ── Générer un token sécurisé et le stocker en D1 ────────
     const token = crypto.randomUUID();
     const expiresAt = new Date(Date.now() + SESSION_DURATION_HOURS * 60 * 60 * 1000).toISOString();
 
     await env.DB.prepare(
-      'INSERT INTO admin_sessions (token, created_at, expires_at) VALUES (?, datetime(\'now\'), ?)'
+      'INSERT INTO admin_sessions (token, expires_at) VALUES (?, ?)'
     ).bind(token, expiresAt).run();
 
-    // Nettoyer les sessions et tentatives expirées (best-effort)
+    // Cleanup best-effort des anciennes traces
     try {
       await env.DB.prepare('DELETE FROM admin_sessions WHERE expires_at < datetime(\'now\')').run();
       const cleanupWindow = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
       await env.DB.prepare('DELETE FROM login_attempts WHERE attempted_at < ?').bind(cleanupWindow).run();
+      await env.DB.prepare('DELETE FROM lead_attempts WHERE attempted_at < ?').bind(cleanupWindow).run();
     } catch {
-      // Nettoyage non critique
+      // non critique
     }
 
     return json({ success: true, token });
@@ -212,7 +300,7 @@ async function handleAdminLogout(request: Request, env: Env): Promise<Response> 
     return json({ success: true });
   } catch (error) {
     console.error('Erreur logout admin:', error);
-    return json({ success: true }); // On déconnecte quand même côté client
+    return json({ success: true });
   }
 }
 
@@ -220,11 +308,8 @@ async function handleAdminLogout(request: Request, env: Env): Promise<Response> 
 async function handleAdminLeads(request: Request, env: Env): Promise<Response> {
   try {
     const token = extractToken(request);
-    if (!token) {
-      return json({ error: 'Non autorisé' }, 401);
-    }
+    if (!token) return json({ error: 'Non autorisé' }, 401);
 
-    // Vérifier le token dans D1 + vérifier l'expiration
     const { results } = await env.DB.prepare(
       'SELECT token FROM admin_sessions WHERE token = ? AND expires_at > datetime(\'now\')'
     ).bind(token).all();
@@ -245,7 +330,6 @@ async function handleAdminLeads(request: Request, env: Env): Promise<Response> {
 }
 
 // ── Helpers ──────────────────────────────────────────────────
-
 function extractToken(request: Request): string | null {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
@@ -256,6 +340,22 @@ function extractToken(request: Request): string | null {
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+    },
+  });
+}
+
+function withSecurityHeaders(response: Response): Response {
+  // On clone car les headers d'une Response servie par ASSETS sont parfois immuables
+  const headers = new Headers(response.headers);
+  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+    headers.set(key, value);
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
   });
 }
