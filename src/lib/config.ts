@@ -81,10 +81,6 @@ export const clientConfig = {
 
   // ── Email notification (worker.ts) ─────────────────────
   emailFrom: "Équipe Serujan <onboarding@resend.dev>",
-  emailSubject: {
-    fr: "🏢 Nouvelle demande d'évaluation de projet",
-    en: "🏢 New project evaluation request",
-  },
 } as const;
 
 // ── Types exportés ──────────────────────────────────────

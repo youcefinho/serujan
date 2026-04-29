@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 
 # SWAP: Remplacer l'URL du sitemap
-Sitemap: https://gatineau.intralysqc.workers.dev/sitemap.xml
+Sitemap: https://serujan.intralysqc.workers.dev/sitemap.xml

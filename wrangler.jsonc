@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  // SWAP: Remplacer par le nom du worker du client (ex: "gatineau", "montreal", etc.)
-  "name": "NOM-CLIENT",
+  // SWAP: Remplacer par le nom du worker du client (ex: "serujan", "courtier-x", etc.)
+  "name": "serujan",
   "main": "src/worker.ts",
   "compatibility_date": "2025-04-01",
   "assets": {
@@ -12,9 +12,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "NOM-CLIENT-leads",
+      "database_name": "serujan-leads",
       "database_id": "REMPLACER-PAR-LE-VRAI-ID-DEPUIS-CLOUDFLARE-DASHBOARD"
     }
   ]
 }
-

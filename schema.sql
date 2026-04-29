@@ -1,5 +1,5 @@
--- Cloudflare D1 — Schéma complet pour un site client Intralys
--- Exécuter via : npx wrangler d1 execute NOM-DB-LEADS --file=./schema.sql
+-- Cloudflare D1 — Schéma pour un site client commercial Intralys
+-- Exécuter via : npx wrangler d1 execute NOM-DB-LEADS --file=./schema.sql --remote
 
 -- Table principale : leads (contacts entrants)
 CREATE TABLE IF NOT EXISTS leads (
@@ -7,12 +7,9 @@ CREATE TABLE IF NOT EXISTS leads (
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT DEFAULT '',
+  project_type TEXT DEFAULT '',
+  estimated_amount TEXT DEFAULT '',
   message TEXT DEFAULT '',
-  type TEXT CHECK (type IN ('buy', 'sell')) DEFAULT 'buy',
-  budget TEXT DEFAULT '',
-  timeline TEXT DEFAULT '',
-  address TEXT DEFAULT '',
-  property_type TEXT DEFAULT '',
   created_at TEXT DEFAULT (datetime('now'))
 );
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * Scroll progress bar — thin crimson line at the very top of the page.
+ * Scroll progress bar — thin gold accent line at the very top of the page.
  * Purely CSS-driven width via scaleX for GPU-accelerated performance.
  */
 export function ScrollProgressBar() {

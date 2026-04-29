@@ -3,26 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- SWAP: Titre du site -->
     <title>Serujan Kaneshalingam | Courtage Hypothécaire Commercial | Montréal</title>
 
+    <!-- SWAP: URL du site (canonical + hreflang) -->
     <link rel="canonical" href="https://serujan.intralysqc.workers.dev/" />
     <link rel="alternate" hreflang="fr-CA" href="https://serujan.intralysqc.workers.dev/" />
 
-    <meta name="description" content="Financement commercial d'exception. 500M$+ financés, 95% taux d'approbation. Structures sur mesure pour acquisitions, refinancements et développements au Québec." />
-    <meta name="keywords" content="courtier hypothécaire commercial Montréal, financement commercial Québec, hypothèque commerciale, prêt commercial, Serujan, Elev8, investissement immobilier" />
+    <!-- SWAP: Description SEO -->
+    <meta name="description" content="Serujan Kaneshalingam — Courtier hypothécaire commercial à Montréal. Financement sur mesure pour projets commerciaux, multi-résidentiels et développement. 500M$+ financés, 95% approbation." />
+    <!-- SWAP: Mots-clés SEO -->
+    <meta name="keywords" content="Serujan Kaneshalingam, courtier hypothécaire commercial Montréal, financement commercial, prêt commercial, hypothèque commerciale, Elev8, financement immobilier Québec" />
 
-    <!-- Open Graph -->
+    <!-- SWAP: Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://serujan.intralysqc.workers.dev/" />
-    <meta property="og:title" content="Serujan Kaneshalingam | Courtage Hypothécaire Commercial" />
-    <meta property="og:description" content="Financement commercial d'exception. Structures sur mesure, négociations d'expert, résultats garantis." />
+    <meta property="og:title" content="Serujan Kaneshalingam | Courtage Hypothécaire Commercial | Montréal" />
+    <meta property="og:description" content="L'excellence en financement commercial. Structures sur mesure, résultats garantis." />
+    <meta property="og:image" content="https://serujan.intralysqc.workers.dev/icon-512.png" />
 
-    <!-- Twitter Card -->
+    <!-- SWAP: Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Serujan Kaneshalingam | Courtage Hypothécaire Commercial" />
-    <meta name="twitter:description" content="500M$+ financés, 95% approbation. Courtage hypothécaire commercial à Montréal." />
+    <meta name="twitter:title" content="Serujan Kaneshalingam | Courtage Hypothécaire Commercial | Montréal" />
+    <meta name="twitter:description" content="L'excellence en financement commercial" />
+    <meta name="twitter:image" content="https://serujan.intralysqc.workers.dev/icon-512.png" />
 
-    <!-- GA4 placeholder -->
+    <!-- SWAP: Google Analytics 4 ID -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -31,26 +37,35 @@
       gtag('config', 'G-XXXXXXXXXX');
     </script>
 
-    <!-- PWA -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
+    <!-- SWAP: Favicon du courtier -->
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="icon" href="/favicon.ico" />
+    <!-- SWAP: Couleur theme — or #d4af37 par défaut -->
     <meta name="theme-color" content="#d4af37" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Équipe Serujan" />
+    <!-- SWAP: Nom de l'app mobile -->
+    <meta name="apple-mobile-web-app-title" content="Serujan Kaneshalingam" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
 
-    <!-- Fonts : Montserrat (titres) + Inter (corps) -->
+    <!-- SWAP: Polices — Montserrat + Inter par défaut (changer selon le client) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://assets.calendly.com" />
+    <link rel="preconnect" href="https://assets.calendly.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet" /></noscript>
 
-    <!-- JSON-LD Schema.org — FinancialService -->
+    <!-- SWAP: JSON-LD Schema.org — FinancialService au lieu de RealEstateAgent -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "FinancialService",
-      "name": "Serujan Kaneshalingam — Courtage Hypothécaire Commercial",
+      "name": "Serujan Kaneshalingam",
       "jobTitle": "Courtier hypothécaire commercial",
       "telephone": "+1-514-701-6171",
       "email": "expert@serujan.com",
@@ -64,7 +79,7 @@
       },
       "areaServed": [
         { "@type": "City", "name": "Montréal" },
-        { "@type": "Place", "name": "Québec" }
+        { "@type": "State", "name": "Québec" }
       ],
       "knowsLanguage": ["fr", "en"],
       "sameAs": [
@@ -72,14 +87,21 @@
         "https://www.facebook.com/serujanhypotheque",
         "https://www.linkedin.com/in/serujan-kaneshalingam-911a3b112/"
       ],
-      "description": "Courtage hypothécaire commercial d'exception. 500M$+ financés, 95% taux d'approbation. Montages financiers sur mesure au Québec."
+      "priceRange": "$$$",
+      "description": "Courtier hypothécaire commercial à Montréal. Financement sur mesure pour projets commerciaux, multi-résidentiels et développement. 500M$+ financés, 95% approbation."
     }
     </script>
 
-    <!-- Loading spinner (noir/or) -->
+    <!-- Calendly popup widget (non-render-blocking) -->
+    <link rel="preload" as="style" href="https://assets.calendly.com/assets/external/widget.css" />
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" /></noscript>
+    <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+    <!-- Loading spinner — SWAP: Couleurs noir/or -->
     <style>
-      #app-loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#0a0a0f;transition:opacity .3s}
-      .app-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.05);border-top-color:#d4af37;border-radius:50%;animation:spin .6s linear infinite}
+      #app-loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#111;transition:opacity .3s}
+      .app-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.08);border-top-color:#d4af37;border-radius:50%;animation:spin .6s linear infinite}
       @keyframes spin{to{transform:rotate(360deg)}}
     </style>
   </head>

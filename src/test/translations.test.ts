@@ -3,7 +3,6 @@ import { translations } from "../lib/translations";
 
 // Vérifie que TOUTES les clés de traduction ont les deux langues (FR et EN)
 
-// Fonction récursive pour vérifier les clés de traduction
 function checkTranslationKeys(
   obj: Record<string, unknown>,
   path = ""
@@ -21,7 +20,6 @@ function checkTranslationKeys(
       "fr" in value &&
       "en" in value
     ) {
-      // C'est une paire de traduction { fr, en }
       const pair = value as { fr: unknown; en: unknown };
 
       if (pair.fr === undefined || pair.fr === null || pair.fr === "") {
@@ -36,7 +34,6 @@ function checkTranslationKeys(
       !Array.isArray(value) &&
       !("fr" in value)
     ) {
-      // C'est un objet imbriqué — descendre
       errors.push(
         ...checkTranslationKeys(value as Record<string, unknown>, currentPath)
       );
@@ -46,7 +43,7 @@ function checkTranslationKeys(
   return errors;
 }
 
-describe("Système i18n — Intégrité des traductions", () => {
+describe("Système i18n — Intégrité des traductions (Serujan)", () => {
   it("toutes les clés de traduction ont une version FR et EN", () => {
     const errors = checkTranslationKeys(
       translations as unknown as Record<string, unknown>
@@ -59,24 +56,20 @@ describe("Système i18n — Intégrité des traductions", () => {
     expect(errors).toHaveLength(0);
   });
 
-  it("les sections principales existent", () => {
+  it("les sections commerciales principales existent", () => {
     const requiredSections = [
       "hero",
-      "about",
+      "approche",
       "footer",
-      "faq",
-      "testimonials",
-      "pillars",
+      "valueCards",
+      "services",
       "process",
-      "fears",
-      "triggers",
-      "enemy",
-      "manifesto",
-      "leadMagnet",
+      "calculator",
+      "freeConsultation",
+      "leadForm",
       "statsBar",
-      "marketStats",
-      "team",
-      "instagram",
+      "nav",
+      "exitIntent",
     ];
 
     for (const section of requiredSections) {
@@ -93,29 +86,13 @@ describe("Système i18n — Intégrité des traductions", () => {
     expect(translations.hero.title.fr).not.toBe(translations.hero.title.en);
   });
 
-  it("les tableaux FR et EN ont la même longueur", () => {
-    // Vérifier les FAQ
-    if (translations.faq?.items) {
-      const frItems = translations.faq.items.fr;
-      const enItems = translations.faq.items.en;
-      if (Array.isArray(frItems) && Array.isArray(enItems)) {
-        expect(
-          frItems.length,
-          "FAQ: nombre d'items FR ≠ EN"
-        ).toBe(enItems.length);
-      }
-    }
+  it("les value cards ont 3 items en FR et EN", () => {
+    expect(translations.valueCards.cards.fr).toHaveLength(3);
+    expect(translations.valueCards.cards.en).toHaveLength(3);
+  });
 
-    // Vérifier les témoignages
-    if (translations.testimonials?.items) {
-      const frItems = translations.testimonials.items.fr;
-      const enItems = translations.testimonials.items.en;
-      if (Array.isArray(frItems) && Array.isArray(enItems)) {
-        expect(
-          frItems.length,
-          "Testimonials: nombre d'items FR ≠ EN"
-        ).toBe(enItems.length);
-      }
-    }
+  it("le process a 4 étapes en FR et EN", () => {
+    expect(translations.process.steps.fr).toHaveLength(4);
+    expect(translations.process.steps.en).toHaveLength(4);
   });
 });

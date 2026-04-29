@@ -1,5 +1,5 @@
 // Worker principal — Route les requêtes API vers les handlers
-// Les fichiers statiques (assets) sont servis automatiquement par Cloudflare
+// Template Commercial Intralys — Pas de Lead Magnet, pas de newsletter
 
 import { Resend } from 'resend';
 import { clientConfig as CLIENT } from './lib/config';
@@ -42,9 +42,6 @@ export default {
     if (url.pathname === '/api/leads' && request.method === 'POST') {
       return handleLeads(request, env);
     }
-    if (url.pathname === '/api/send-guide' && request.method === 'POST') {
-      return handleSendGuide(request, env);
-    }
     if (url.pathname === '/api/admin/login' && request.method === 'POST') {
       return handleAdminLogin(request, env);
     }
@@ -63,118 +60,56 @@ export default {
 // ── POST /api/leads ──────────────────────────────────────────
 async function handleLeads(request: Request, env: Env): Promise<Response> {
   try {
-    const { name, email, phone, message, type, budget, timeline, address, property_type } = await request.json() as {
-      name: string; email: string; phone?: string; message?: string; type?: string;
-      budget?: string; timeline?: string; address?: string; property_type?: string;
+    const body = await request.json() as {
+      name: string; email: string; phone?: string;
+      project_type?: string; estimated_amount?: string; message?: string;
     };
 
-    if (!email || !name) {
+    if (!body.email || !body.name) {
       return json({ error: 'Nom et email requis' }, 400);
     }
 
     // Sanitisation des inputs
-    const cleanName = sanitizeInput(name, 100);
-    const cleanEmail = sanitizeInput(email, 200);
-    const cleanPhone = sanitizeInput(phone, 30);
-    const cleanMessage = sanitizeInput(message, 1000);
-    const cleanType = type === 'sell' ? 'sell' : 'buy';
-    const cleanBudget = sanitizeInput(budget, 100);
-    const cleanTimeline = sanitizeInput(timeline, 100);
-    const cleanAddress = sanitizeInput(address, 300);
-    const cleanPropertyType = sanitizeInput(property_type, 100);
+    const cleanName = sanitizeInput(body.name, 100);
+    const cleanEmail = sanitizeInput(body.email, 200);
+    const cleanPhone = sanitizeInput(body.phone, 30);
+    const cleanProjectType = sanitizeInput(body.project_type, 100);
+    const cleanAmount = sanitizeInput(body.estimated_amount, 100);
+    const cleanMessage = sanitizeInput(body.message, 1000);
 
     const id = crypto.randomUUID();
 
-    // INSERT résilient — tente avec toutes les colonnes, fallback sur les colonnes de base
-    try {
-      await env.DB.prepare(
-        'INSERT INTO leads (id, name, email, phone, message, type, budget, timeline, address, property_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-      ).bind(id, cleanName, cleanEmail, cleanPhone, cleanMessage, cleanType, cleanBudget, cleanTimeline, cleanAddress, cleanPropertyType).run();
-    } catch {
-      // Colonnes manquantes — auto-migration puis fallback
-      try {
-        await env.DB.prepare('ALTER TABLE leads ADD COLUMN budget TEXT DEFAULT \'\'').run();
-        await env.DB.prepare('ALTER TABLE leads ADD COLUMN timeline TEXT DEFAULT \'\'').run();
-        await env.DB.prepare('ALTER TABLE leads ADD COLUMN address TEXT DEFAULT \'\'').run();
-        await env.DB.prepare('ALTER TABLE leads ADD COLUMN property_type TEXT DEFAULT \'\'').run();
-      } catch {
-        // Colonnes déjà ajoutées ou autre erreur — ignorer
-      }
-      // Retry avec toutes les colonnes, sinon fallback basique
-      try {
-        await env.DB.prepare(
-          'INSERT INTO leads (id, name, email, phone, message, type, budget, timeline, address, property_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        ).bind(id, cleanName, cleanEmail, cleanPhone, cleanMessage, cleanType, cleanBudget, cleanTimeline, cleanAddress, cleanPropertyType).run();
-      } catch {
-        await env.DB.prepare(
-          'INSERT INTO leads (id, name, email, phone, message, type) VALUES (?, ?, ?, ?, ?, ?)'
-        ).bind(id, cleanName, cleanEmail, cleanPhone, cleanMessage, cleanType).run();
-      }
-    }
+    await env.DB.prepare(
+      'INSERT INTO leads (id, name, email, phone, project_type, estimated_amount, message) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).bind(id, cleanName, cleanEmail, cleanPhone, cleanProjectType, cleanAmount, cleanMessage).run();
 
-    // Déterminer si c'est une inscription newsletter (PropertyAlerts)
-    const isNewsletter = cleanName === 'Alerte Propriété';
-
-    // Notification email au courtier (best-effort — ne bloque pas la réponse)
+    // Notification email au courtier (best-effort)
     try {
       const resend = new Resend(env.RESEND_API_KEY);
-
-      if (isNewsletter) {
-        // Notification courtier — inscription newsletter
-        await resend.emails.send({
-          from: CLIENT.emailFrom,
-          to: [CLIENT.email],
-          subject: `📬 Nouvelle inscription alertes propriétés — ${sanitizeHtml(cleanEmail)}`,
-          html: `
-            <div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:500px;margin:0 auto;padding:24px;border:1px solid #e0e0e0;border-radius:12px;">
-              <h2 style="color:#E63946;margin:0 0 16px;">📬 Nouvelle inscription alertes</h2>
-              <p style="font-size:14px;color:#666;">Un visiteur s'est inscrit aux alertes propriétés exclusives.</p>
-              <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                <tr><td style="padding:8px 0;color:#666;width:100px;">Email</td><td style="padding:8px 0;font-weight:bold;"><a href="mailto:${cleanEmail}" style="color:#E63946;text-decoration:none;">${sanitizeHtml(cleanEmail)}</a></td></tr>
-              </table>
-              <p style="margin:16px 0 0;font-size:12px;color:#999;">Reçu le ${new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' })}</p>
-            </div>
-          `,
-        });
-
-        // Email de bienvenue au subscriber
-        await resend.emails.send({
-          from: CLIENT.emailFrom,
-          to: [cleanEmail],
-          subject: `🏠 Bienvenue dans nos alertes propriétés exclusives — ${CLIENT.banner.name}`,
-          html: buildNewsletterWelcomeEmail(),
-        });
-      } else {
-        // Notification courtier — lead classique (achat/vente)
-        const typeLabel = cleanType === 'buy' ? 'Acheteur' : 'Vendeur';
-        const details = cleanType === 'buy'
-          ? `Budget: ${cleanBudget || '—'} | Échéancier: ${cleanTimeline || '—'}`
-          : `Adresse: ${cleanAddress || '—'} | Type: ${cleanPropertyType || '—'}`;
-
-        await resend.emails.send({
-          from: CLIENT.emailFrom,
-          to: [CLIENT.email],
-          subject: `🔔 Nouveau lead ${typeLabel} — ${sanitizeHtml(cleanName)}`,
-          html: `
-            <div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:500px;margin:0 auto;padding:24px;border:1px solid #e0e0e0;border-radius:12px;">
-              <h2 style="color:#E63946;margin:0 0 16px;">Nouveau lead ${typeLabel}</h2>
-              <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                <tr><td style="padding:8px 0;color:#666;width:100px;">Nom</td><td style="padding:8px 0;font-weight:bold;">${sanitizeHtml(cleanName)}</td></tr>
-                <tr><td style="padding:8px 0;color:#666;">Téléphone</td><td style="padding:8px 0;"><a href="tel:${cleanPhone}" style="color:#E63946;text-decoration:none;font-weight:bold;">${sanitizeHtml(cleanPhone)}</a></td></tr>
-                <tr><td style="padding:8px 0;color:#666;">Email</td><td style="padding:8px 0;"><a href="mailto:${cleanEmail}" style="color:#E63946;text-decoration:none;">${sanitizeHtml(cleanEmail)}</a></td></tr>
-                <tr><td style="padding:8px 0;color:#666;">Détails</td><td style="padding:8px 0;">${sanitizeHtml(details)}</td></tr>
-                ${cleanMessage ? `<tr><td style="padding:8px 0;color:#666;vertical-align:top;">Message</td><td style="padding:8px 0;">${sanitizeHtml(cleanMessage)}</td></tr>` : ''}
-              </table>
-              <p style="margin:16px 0 0;font-size:12px;color:#999;">Reçu le ${new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' })}</p>
-            </div>
-          `,
-        });
-      }
+      await resend.emails.send({
+        from: CLIENT.emailFrom,
+        to: [CLIENT.email],
+        subject: `🔔 Nouveau lead commercial — ${sanitizeHtml(cleanName)}`,
+        html: `
+          <div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:500px;margin:0 auto;padding:24px;border:1px solid #333;border-radius:12px;background:#1a1a1a;color:#fff;">
+            <h2 style="color:#d4af37;margin:0 0 16px;">Nouveau lead commercial</h2>
+            <table style="width:100%;border-collapse:collapse;font-size:14px;">
+              <tr><td style="padding:8px 0;color:#999;width:120px;">Nom</td><td style="padding:8px 0;font-weight:bold;color:#fff;">${sanitizeHtml(cleanName)}</td></tr>
+              <tr><td style="padding:8px 0;color:#999;">Téléphone</td><td style="padding:8px 0;"><a href="tel:${cleanPhone}" style="color:#d4af37;text-decoration:none;font-weight:bold;">${sanitizeHtml(cleanPhone)}</a></td></tr>
+              <tr><td style="padding:8px 0;color:#999;">Email</td><td style="padding:8px 0;"><a href="mailto:${cleanEmail}" style="color:#d4af37;text-decoration:none;">${sanitizeHtml(cleanEmail)}</a></td></tr>
+              <tr><td style="padding:8px 0;color:#999;">Type de projet</td><td style="padding:8px 0;color:#fff;">${sanitizeHtml(cleanProjectType || '—')}</td></tr>
+              <tr><td style="padding:8px 0;color:#999;">Montant estimé</td><td style="padding:8px 0;color:#fff;">${sanitizeHtml(cleanAmount || '—')}</td></tr>
+              ${cleanMessage ? `<tr><td style="padding:8px 0;color:#999;vertical-align:top;">Message</td><td style="padding:8px 0;color:#fff;">${sanitizeHtml(cleanMessage)}</td></tr>` : ''}
+            </table>
+            <p style="margin:16px 0 0;font-size:12px;color:#666;">Reçu le ${new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' })}</p>
+          </div>
+        `,
+      });
     } catch (emailErr) {
       console.warn('Échec notification email:', emailErr);
     }
 
-    // Webhook GoHighLevel (best-effort — ne bloque pas la réponse)
+    // Webhook GoHighLevel (best-effort)
     if (env.GHL_WEBHOOK_URL) {
       try {
         await fetch(env.GHL_WEBHOOK_URL, {
@@ -184,12 +119,10 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
             name: cleanName,
             email: cleanEmail,
             phone: cleanPhone,
+            project_type: cleanProjectType,
+            estimated_amount: cleanAmount,
             message: cleanMessage,
-            type: cleanType === 'buy' ? 'Acheteur' : 'Vendeur',
-            source: 'Site Intralys',
-            ...(cleanType === 'buy'
-              ? { budget: cleanBudget, timeline: cleanTimeline }
-              : { address: cleanAddress, property_type: cleanPropertyType }),
+            source: 'Site Intralys Commercial',
           }),
         });
       } catch {
@@ -201,144 +134,6 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
   } catch (error) {
     console.error('Erreur sauvegarde lead:', error);
     return json({ error: 'Erreur serveur' }, 500);
-  }
-}
-
-// ── Email de bienvenue newsletter (HTML premium) ─────────────
-function buildNewsletterWelcomeEmail(): string {
-  const city = CLIENT.address.city;
-  const team = CLIENT.banner.name;
-  const phone = CLIENT.phone.display;
-  const siteUrl = CLIENT.siteUrl;
-
-  return `
-    <div style="background-color:#0d1b2a;color:#ffffff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;border-radius:12px;overflow:hidden;">
-      <!-- Header -->
-      <div style="background:linear-gradient(135deg,#E63946 0%,#c62828 100%);padding:40px 32px;text-align:center;">
-        <h1 style="margin:0;font-size:28px;font-weight:900;letter-spacing:2px;text-transform:uppercase;">🏠 Bienvenue!</h1>
-        <p style="margin:12px 0 0;font-size:15px;opacity:0.9;">Vous faites maintenant partie de notre réseau exclusif</p>
-      </div>
-
-      <!-- Corps -->
-      <div style="padding:32px;">
-        <p style="font-size:16px;line-height:1.7;margin:0 0 24px;color:#e0e0e0;">
-          Merci de vous être inscrit(e) aux <strong style="color:#E63946;">alertes propriétés exclusives</strong> de <strong>${team}</strong>.
-        </p>
-
-        <p style="font-size:16px;line-height:1.7;margin:0 0 24px;color:#e0e0e0;">
-          Vous recevrez en priorité nos nouvelles inscriptions à <strong>${city}</strong> — avant même qu'elles soient affichées publiquement.
-        </p>
-
-        <!-- Ce que vous recevrez -->
-        <div style="background-color:#1b2838;border:1px solid #2a3a4a;border-radius:10px;padding:24px;margin:0 0 28px;">
-          <p style="margin:0 0 16px;font-weight:bold;font-size:14px;text-transform:uppercase;letter-spacing:1.5px;color:#E63946;">Ce que vous recevrez :</p>
-          <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:8px 0;font-size:15px;color:#e0e0e0;">🏡</td><td style="padding:8px 0 8px 12px;font-size:15px;color:#e0e0e0;">Nouvelles propriétés en exclusivité</td></tr>
-            <tr><td style="padding:8px 0;font-size:15px;color:#e0e0e0;">📊</td><td style="padding:8px 0 8px 12px;font-size:15px;color:#e0e0e0;">Analyses du marché immobilier à ${city}</td></tr>
-            <tr><td style="padding:8px 0;font-size:15px;color:#e0e0e0;">💡</td><td style="padding:8px 0 8px 12px;font-size:15px;color:#e0e0e0;">Conseils d'experts pour vos projets</td></tr>
-            <tr><td style="padding:8px 0;font-size:15px;color:#e0e0e0;">🔔</td><td style="padding:8px 0 8px 12px;font-size:15px;color:#e0e0e0;">Opportunités d'investissement</td></tr>
-          </table>
-        </div>
-
-        <!-- CTA -->
-        <div style="text-align:center;margin:0 0 28px;">
-          <a href="${siteUrl}#contact" target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg,#E63946 0%,#c62828 100%);color:#ffffff;padding:16px 40px;text-decoration:none;border-radius:8px;font-weight:bold;display:inline-block;font-size:14px;text-transform:uppercase;letter-spacing:1.5px;">
-            Planifier une rencontre gratuite
-          </a>
-        </div>
-
-        <p style="font-size:14px;line-height:1.6;color:#999;margin:0 0 28px;text-align:center;">
-          Vous avez des questions ? Appelez-nous au <a href="tel:${phone.replace(/-/g, '')}" style="color:#E63946;text-decoration:none;font-weight:bold;">${phone}</a>
-        </p>
-      </div>
-
-      <!-- Footer -->
-      <div style="background-color:#0a1628;padding:24px 32px;border-top:1px solid #1b2838;text-align:center;">
-        <p style="margin:0 0 4px;font-weight:bold;font-size:16px;">${team}</p>
-        <p style="margin:0;font-size:13px;color:#666;">Courtiers immobiliers — ${city}</p>
-        <p style="margin:12px 0 0;font-size:11px;color:#555;">
-          <a href="${siteUrl}" style="color:#E63946;text-decoration:none;">${siteUrl.replace('https://', '')}</a>
-        </p>
-      </div>
-    </div>
-  `;
-}
-
-// ── POST /api/send-guide ─────────────────────────────────────
-async function handleSendGuide(request: Request, env: Env): Promise<Response> {
-  try {
-    const { prenom, email } = await request.json() as { prenom?: string; email?: string };
-
-    if (!email) {
-      return json({ error: 'Email requis' }, 400);
-    }
-
-    // Diagnostic : vérifier les bindings
-    const diagnostics: string[] = [];
-    if (!env.DB) diagnostics.push('DB binding manquant');
-    if (!env.RESEND_API_KEY) diagnostics.push('RESEND_API_KEY manquant');
-
-    if (diagnostics.length > 0) {
-      return json({ error: `Configuration manquante: ${diagnostics.join(', ')}` }, 500);
-    }
-
-    // Sanitisation des inputs
-    const cleanPrenom = sanitizeInput(prenom, 100);
-    const cleanEmail = sanitizeInput(email, 200);
-    // Version HTML-safe pour injection dans le template email
-    const safePrenom = sanitizeHtml(cleanPrenom);
-
-    // Sauvegarder le lead dans D1 (best-effort)
-    try {
-      const id = crypto.randomUUID();
-      await env.DB.prepare(
-        'INSERT INTO leads (id, name, email, phone, message, type) VALUES (?, ?, ?, ?, ?, ?)'
-      ).bind(id, cleanPrenom || 'Lead Magnet', cleanEmail, '', 'Guide Gratuit du Premier Acheteur — téléchargé via Lead Magnet', 'buy').run();
-    } catch (dbErr) {
-      console.warn('Échec sauvegarde lead D1:', dbErr);
-    }
-
-    // Envoyer l'email via Resend
-    const resend = new Resend(env.RESEND_API_KEY);
-    const { data, error } = await resend.emails.send({
-      from: CLIENT.emailFrom,
-      to: [cleanEmail],
-      subject: CLIENT.emailSubject.fr,
-      html: `
-        <div style="background-color:#ffffff;color:#1a1a1a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:40px 20px;max-width:600px;margin:0 auto;line-height:1.6;border:1px solid #f0f0f0;border-radius:12px;">
-          <h2 style="color:#1a1a1a;font-size:22px;margin-bottom:24px;font-weight:bold;">Bonjour ${safePrenom || ''},</h2>
-          <p style="margin-bottom:24px;font-size:16px;">Merci de votre intérêt ! Votre guide gratuit est prêt à être consulté.</p>
-          <div style="background-color:#f9f9f9;padding:24px;border-radius:8px;margin-bottom:32px;">
-            <p style="margin:0 0 12px;font-weight:bold;color:#1a1a1a;">À l'intérieur vous trouverez :</p>
-            <ul style="list-style:none;padding:0;margin:0;">
-              <li style="margin-bottom:10px;">✅ Les 5 erreurs les plus courantes à éviter</li>
-              <li style="margin-bottom:10px;">✅ Le vrai coût d'achat à ${CLIENT.address.city}</li>
-              <li style="margin-bottom:0;">✅ Le processus étape par étape pour acheter sereinement</li>
-            </ul>
-          </div>
-          <div style="text-align:center;margin-bottom:32px;">
-            <a href="${CLIENT.guideUrl}" target="_blank" rel="noopener noreferrer" style="background-color:#E63946;color:#ffffff;padding:18px 36px;text-decoration:none;border-radius:8px;font-weight:bold;display:inline-block;font-size:16px;">
-              Accéder à mon guide gratuit
-            </a>
-          </div>
-          <p style="margin-bottom:32px;font-size:15px;color:#4a4a4a;">Ce guide a été préparé spécialement pour vous aider à réussir votre premier achat immobilier à ${CLIENT.address.city}.</p>
-          <div style="border-top:1px solid #eeeeee;padding-top:24px;">
-            <p style="margin:0;font-weight:bold;color:#1a1a1a;">À très bientôt,</p>
-            <p style="margin:4px 0 0;font-size:16px;color:#1a1a1a;"><strong>${CLIENT.name}</strong></p>
-            <p style="margin:2px 0 0;color:#666666;font-size:14px;">${CLIENT.title.fr} — ${CLIENT.address.city}</p>
-          </div>
-        </div>
-      `,
-    });
-
-    if (error) {
-      return json({ error: `Resend: ${JSON.stringify(error)}` }, 500);
-    }
-
-    return json({ success: true, data });
-  } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return json({ error: `Erreur: ${msg}` }, 500);
   }
 }
 
@@ -395,7 +190,6 @@ async function handleAdminLogin(request: Request, env: Env): Promise<Response> {
 }
 
 // ── POST /api/admin/logout ───────────────────────────────────
-// Supprime le token de session de D1
 async function handleAdminLogout(request: Request, env: Env): Promise<Response> {
   try {
     const token = extractToken(request);
@@ -410,7 +204,6 @@ async function handleAdminLogout(request: Request, env: Env): Promise<Response> 
 }
 
 // ── GET /api/admin/leads ─────────────────────────────────────
-// Sécurité : vérifie que le token existe en D1 ET n'est pas expiré
 async function handleAdminLeads(request: Request, env: Env): Promise<Response> {
   try {
     const token = extractToken(request);
