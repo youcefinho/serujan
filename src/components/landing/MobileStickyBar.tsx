@@ -3,7 +3,7 @@ import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { motion, AnimatePresence } from "motion/react";
 import { Phone, ArrowRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useScrollThreshold } from "@/hooks/useScrollThreshold";
 
 // ═══════════════════════════════════════════════════════════
 // MobileStickyBar v2 — Apparition fluide après 600px de scroll
@@ -11,13 +11,7 @@ import { useState, useEffect } from "react";
 
 export default function MobileStickyBar() {
   const { t } = useLanguage();
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 600);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const visible = useScrollThreshold(600);
 
   return (
     <AnimatePresence>

@@ -1,6 +1,6 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
-import { motion, useInView, AnimatePresence } from "motion/react";
+import { motion, useInView } from "motion/react";
 import { useRef, useState } from "react";
 import { Plus, ArrowRight } from "lucide-react";
 
@@ -83,13 +83,13 @@ export default function Faq() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.35 + i * 0.06, ease }}
-                className={`glass rounded-xl overflow-hidden transition-colors duration-300 ${
-                  isOpen ? "border-gold/35" : ""
+                className={`rounded-xl overflow-hidden bg-black-elevated/40 border transition-colors duration-300 ${
+                  isOpen ? "border-gold/35" : "border-gold/10"
                 }`}
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 md:py-6 text-left transition-colors hover:bg-black-elevated/30"
+                  className="w-full flex items-center justify-between gap-6 px-6 md:px-8 py-5 md:py-6 text-left transition-colors hover:bg-black-elevated/60"
                   aria-expanded={isOpen}
                   aria-controls={`faq-panel-${i}`}
                 >
@@ -97,7 +97,7 @@ export default function Faq() {
                     {item.q}
                   </h3>
                   <span
-                    className={`flex-shrink-0 w-9 h-9 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center transition-all duration-500 ${
+                    className={`flex-shrink-0 w-9 h-9 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center transition-transform duration-300 ${
                       isOpen ? "rotate-45 bg-gold/20 border-gold/50" : ""
                     }`}
                     aria-hidden
@@ -106,29 +106,28 @@ export default function Faq() {
                   </span>
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      key="content"
-                      id={`faq-panel-${i}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.45, ease }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-6 md:px-8 pb-6 md:pb-7 pt-1">
-                        <div
-                          className="h-px bg-gradient-to-r from-gold/30 via-gold/15 to-transparent mb-5"
-                          aria-hidden
-                        />
-                        <p className="text-foreground/70 leading-[1.7] text-[15px] md:text-base text-pretty">
-                          {item.a}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* Animation grid-rows : GPU-friendly, pas de reflow par frame */}
+                <div
+                  id={`faq-panel-${i}`}
+                  className="grid transition-[grid-template-rows,opacity] duration-300 ease-out"
+                  style={{
+                    gridTemplateRows: isOpen ? "1fr" : "0fr",
+                    opacity: isOpen ? 1 : 0,
+                  }}
+                  aria-hidden={!isOpen}
+                >
+                  <div className="overflow-hidden min-h-0">
+                    <div className="px-6 md:px-8 pb-6 md:pb-7 pt-1">
+                      <div
+                        className="h-px bg-gradient-to-r from-gold/30 via-gold/15 to-transparent mb-5"
+                        aria-hidden
+                      />
+                      <p className="text-foreground/70 leading-[1.7] text-[15px] md:text-base text-pretty">
+                        {item.a}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </motion.li>
             );
           })}

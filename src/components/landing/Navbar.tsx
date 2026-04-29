@@ -2,8 +2,9 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { LanguageToggle } from "./LanguageToggle";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Phone, ExternalLink } from "lucide-react";
+import { useScrollThreshold } from "@/hooks/useScrollThreshold";
 
 // ═══════════════════════════════════════════════════════════
 // Navbar — Navigation premium noir/or pour Serujan
@@ -21,13 +22,7 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const isScrolled = useScrollThreshold(50);
 
   return (
     <nav

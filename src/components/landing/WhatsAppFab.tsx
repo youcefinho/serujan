@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
+import { useScrollThreshold } from "@/hooks/useScrollThreshold";
 
 // ═══════════════════════════════════════════════════════════
 // WhatsAppFab — bouton flottant WhatsApp en bas à gauche.
@@ -13,14 +13,7 @@ import { clientConfig } from "@/lib/config";
 
 export function WhatsAppFab() {
   const { t, lang } = useLanguage();
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 800);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const visible = useScrollThreshold(800);
 
   const message =
     lang === "en"
