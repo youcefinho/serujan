@@ -82,34 +82,34 @@
   --gold-light: oklch(0.86 0.14 85); /* Hover/glow */
   --gold-deep: oklch(0.62 0.14 75);  /* Or sourd, ombres */
 
-  /* ── Noirs profonds bleutés (chaleur subtile) ─────────────── */
-  --black-deep: oklch(0.10 0.005 260);     /* Fond principal — adouci */
-  --black-surface: oklch(0.14 0.008 260);  /* Sections alternées */
-  --black-elevated: oklch(0.19 0.012 260); /* Cards élevées */
+  /* ── Noirs charbon chauds (axe orange, plus doux) ─────────── */
+  --black-deep: oklch(0.14 0.008 70);      /* Fond principal — charbon chaud */
+  --black-surface: oklch(0.18 0.012 70);   /* Sections alternées */
+  --black-elevated: oklch(0.23 0.014 70);  /* Cards élevées */
 
   /* ── Crème éditorial ─────────────────────────────────────── */
   --cream: oklch(0.94 0.02 85);
   --cream-muted: oklch(0.78 0.015 85);
 
-  /* ── Sections claires (alternance avec sombre) ────────────── */
-  --off-white: oklch(0.98 0.005 85);          /* Fond clair principal */
-  --off-white-elevated: oklch(0.94 0.008 85); /* Cards sur fond clair */
-  --ink: oklch(0.18 0.008 260);                /* Noir mat de texte */
-  --ink-muted: oklch(0.42 0.012 260);          /* Texte secondaire */
-  --ink-soft: oklch(0.58 0.012 260);           /* Texte tertiaire / labels */
+  /* ── Sections claires — beige ivoire premium (chaleur Loro Piana) */
+  --off-white: oklch(0.94 0.018 80);           /* Fond clair principal — ivoire chaud */
+  --off-white-elevated: oklch(0.97 0.013 82);  /* Cards en élévation — papier crème */
+  --ink: oklch(0.22 0.012 50);                 /* Charbon chaud pour texte */
+  --ink-muted: oklch(0.45 0.015 50);           /* Texte secondaire */
+  --ink-soft: oklch(0.60 0.014 55);            /* Texte tertiaire / labels */
 
   /* ── Tokens shadcn ──────────────────────────────────────── */
   --background: var(--black-deep);
-  --foreground: oklch(0.96 0.005 85);
-  --card: oklch(0.16 0.01 260);
-  --card-foreground: oklch(0.96 0.005 85);
-  --popover: oklch(0.13 0.01 260);
-  --popover-foreground: oklch(0.96 0.005 85);
+  --foreground: oklch(0.96 0.008 85);
+  --card: oklch(0.20 0.012 70);
+  --card-foreground: oklch(0.96 0.008 85);
+  --popover: oklch(0.17 0.010 70);
+  --popover-foreground: oklch(0.96 0.008 85);
   --primary: var(--gold);
-  --primary-foreground: oklch(0.08 0 0);
-  --secondary: oklch(0.18 0.01 260);
-  --secondary-foreground: oklch(0.96 0.005 85);
-  --muted: oklch(0.20 0.01 260);
+  --primary-foreground: oklch(0.10 0.005 70);
+  --secondary: oklch(0.21 0.012 70);
+  --secondary-foreground: oklch(0.96 0.008 85);
+  --muted: oklch(0.23 0.014 70);
   --muted-foreground: oklch(0.62 0.015 85);
   --accent: var(--gold);
   --accent-foreground: oklch(0.08 0 0);
@@ -124,8 +124,8 @@
   --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
 
   /* ── Gradients ───────────────────────────────────────────── */
-  --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.18 0.02 85 / 0.25) 0%, transparent 60%),
-                   radial-gradient(ellipse at top right, oklch(0.14 0.012 260) 0%, var(--black-deep) 50%, oklch(0.05 0.005 260) 100%);
+  --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.22 0.025 85 / 0.30) 0%, transparent 60%),
+                   radial-gradient(ellipse at top right, oklch(0.18 0.014 75) 0%, var(--black-deep) 50%, oklch(0.10 0.008 70) 100%);
   --gradient-gold: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
   --gradient-gold-subtle: linear-gradient(135deg, oklch(0.78 0.13 82 / 0.10) 0%, oklch(0.78 0.13 82 / 0.02) 100%);
   --gradient-sheen: linear-gradient(110deg, transparent 30%, oklch(0.95 0.05 85 / 0.18) 50%, transparent 70%);
@@ -202,11 +202,11 @@
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: var(--black-deep); }
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.25 0.01 260);
+    background: oklch(0.30 0.014 70);
     border-radius: 5px;
     border: 2px solid var(--black-deep);
   }
-  ::-webkit-scrollbar-thumb:hover { background: oklch(0.35 0.02 85); }
+  ::-webkit-scrollbar-thumb:hover { background: oklch(0.42 0.04 80); }
 
   img, video, svg {
     max-width: 100%;
@@ -326,7 +326,7 @@
 
   /* Glassmorphism — pour cards éditoriales sur fonds sombres */
   .glass {
-    background: oklch(0.10 0.008 260 / 0.55);
+    background: oklch(0.16 0.010 70 / 0.55);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border: 1px solid oklch(1 0 0 / 0.06);
@@ -335,13 +335,13 @@
       0 30px 80px -30px oklch(0 0 0 / 0.55);
   }
   .glass-light {
-    background: oklch(0.99 0.005 85 / 0.65);
+    background: oklch(0.96 0.018 80 / 0.65);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border: 1px solid oklch(0.62 0.14 75 / 0.18);
     box-shadow:
       0 1px 0 0 oklch(1 0 0 / 0.45) inset,
-      0 24px 60px -25px oklch(0.18 0.008 260 / 0.18);
+      0 24px 60px -25px oklch(0.22 0.012 50 / 0.16);
   }
 
   /* Surbrillance animée — un filet doré qui se trace sous le texte au reveal */
@@ -564,11 +564,11 @@
 .bg-grad-anim {
   background: linear-gradient(
     135deg,
-    oklch(0.07 0.005 260) 0%,
-    oklch(0.11 0.012 260) 30%,
-    oklch(0.13 0.018 75) 55%,
-    oklch(0.11 0.012 260) 80%,
-    oklch(0.07 0.005 260) 100%
+    oklch(0.12 0.008 70) 0%,
+    oklch(0.16 0.012 75) 30%,
+    oklch(0.20 0.022 78) 55%,
+    oklch(0.16 0.012 75) 80%,
+    oklch(0.12 0.008 70) 100%
   );
   background-size: 220% 220%;
   animation: bg-grad-pan 18s ease-in-out infinite;

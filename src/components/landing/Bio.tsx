@@ -95,7 +95,7 @@ export default function Bio() {
                 className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
                 style={{
                   background:
-                    "linear-gradient(to top, oklch(0.07 0.005 260 / 0.7) 0%, transparent 100%)",
+                    "linear-gradient(to top, oklch(0.12 0.008 70 / 0.7) 0%, transparent 100%)",
                 }}
                 aria-hidden
               />

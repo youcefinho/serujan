@@ -71,7 +71,7 @@ export default function About() {
             transition={{ duration: 0.9, delay: 0.2, ease }}
             className="lg:col-span-5 relative"
           >
-            <div className="relative p-8 md:p-10 rounded-2xl bg-white border border-gold-deep/20 shadow-[0_30px_80px_-30px_oklch(0.18_0.008_260/0.18)]">
+            <div className="relative p-8 md:p-10 rounded-2xl bg-off-white-elevated border border-gold-deep/20 shadow-[0_30px_80px_-30px_oklch(0.22_0.012_50/0.18)]">
               <Quote
                 className="absolute -top-3 -left-3 w-8 h-8 text-gold-deep fill-gold/30"
                 strokeWidth={1.5}
@@ -112,7 +112,7 @@ export default function About() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.7, delay: 0.5 + i * 0.08, ease }}
-                className="group relative flex gap-5 p-6 md:p-7 rounded-xl bg-white border border-gold-deep/15 transition-all duration-500 hover:border-gold-deep/30 hover:shadow-[0_20px_60px_-20px_oklch(0.18_0.008_260/0.15)] hover:-translate-y-0.5"
+                className="group relative flex gap-5 p-6 md:p-7 rounded-xl bg-off-white-elevated border border-gold-deep/15 transition-all duration-500 hover:border-gold-deep/30 hover:shadow-[0_20px_60px_-20px_oklch(0.22_0.012_50/0.15)] hover:-translate-y-0.5"
               >
                 <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gold/15 border border-gold-deep/25 flex items-center justify-center group-hover:bg-gold/25 group-hover:border-gold-deep/40 transition-all duration-500">
                   <Icon className="w-5 h-5 text-gold-deep" strokeWidth={1.5} />

@@ -41,7 +41,7 @@ function Donut({ percents }: { percents: { mortgage: number; tax: number; insura
         cy="100"
         r={RADIUS}
         fill="none"
-        stroke="oklch(0.18 0.008 260 / 0.08)"
+        stroke="oklch(0.22 0.012 50 / 0.10)"
         strokeWidth={STROKE}
       />
 
@@ -143,7 +143,7 @@ function GoldSlider({
       </div>
       <div className="relative h-1.5">
         {/* Track */}
-        <div className="absolute inset-0 rounded-full bg-[oklch(0.18_0.008_260/0.08)]" />
+        <div className="absolute inset-0 rounded-full bg-[oklch(0.22_0.012_50/0.08)]" />
         {/* Fill or */}
         <div
           className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-gold-deep via-gold to-gold-light"
@@ -272,7 +272,7 @@ export default function Calculator() {
             initial={{ opacity: 0, x: -24 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.3, ease }}
-            className="p-8 md:p-10 rounded-2xl bg-white border border-gold-deep/15 shadow-[0_30px_80px_-30px_oklch(0.18_0.008_260/0.12)] space-y-7"
+            className="p-8 md:p-10 rounded-2xl bg-off-white-elevated border border-gold-deep/15 shadow-[0_30px_80px_-30px_oklch(0.22_0.012_50/0.12)] space-y-7"
           >
             <GoldSlider
               label={t(translations.calculator.loanAmount)}
@@ -334,7 +334,7 @@ export default function Calculator() {
             className="space-y-6"
           >
             {/* Donut + total mensuel */}
-            <div className="relative p-8 md:p-10 rounded-2xl bg-white border border-gold-deep/25 shadow-[0_30px_80px_-30px_oklch(0.18_0.008_260/0.18)]">
+            <div className="relative p-8 md:p-10 rounded-2xl bg-off-white-elevated border border-gold-deep/25 shadow-[0_30px_80px_-30px_oklch(0.22_0.012_50/0.18)]">
               <div className="flex flex-col md:flex-row items-center gap-8">
                 <Donut
                   percents={{
@@ -358,7 +358,7 @@ export default function Calculator() {
             </div>
 
             {/* Ventilation */}
-            <div className="p-6 md:p-7 rounded-2xl bg-white border border-gold-deep/15 shadow-[0_20px_60px_-25px_oklch(0.18_0.008_260/0.10)] space-y-4">
+            <div className="p-6 md:p-7 rounded-2xl bg-off-white-elevated border border-gold-deep/15 shadow-[0_20px_60px_-25px_oklch(0.22_0.012_50/0.10)] space-y-4">
               <Breakdown
                 label={t(translations.calculator.mortgage)}
                 value={fmt(calc.monthlyMortgage)}
@@ -420,7 +420,7 @@ function Breakdown({
         </span>
         <span className="font-display text-ink tabular-nums">{value}</span>
       </div>
-      <div className="relative h-1 rounded-full bg-[oklch(0.18_0.008_260/0.08)] overflow-hidden">
+      <div className="relative h-1 rounded-full bg-[oklch(0.22_0.012_50/0.08)] overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percent}%` }}
