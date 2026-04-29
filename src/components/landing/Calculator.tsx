@@ -91,30 +91,57 @@ function Donut({ percents }: { percents: { mortgage: number; tax: number; insura
   );
 }
 
-// Slider custom or
+// Slider custom or — avec input number éditable synchronisé
 function GoldSlider({
   label,
   value,
-  format,
   min,
   max,
   step,
   onChange,
+  unit,
+  inputWidth = "w-28",
 }: {
   label: string;
   value: number;
-  format: string;
   min: number;
   max: number;
   step: number;
   onChange: (n: number) => void;
+  unit?: string;
+  inputWidth?: string;
 }) {
   const percent = ((value - min) / (max - min)) * 100;
+  const clamp = (n: number) => Math.min(max, Math.max(min, n));
   return (
     <div>
-      <div className="flex justify-between items-baseline mb-2.5">
-        <label className="text-xs uppercase tracking-[0.18em] text-foreground/55">{label}</label>
-        <span className="font-display text-base text-gold tabular-nums">{format}</span>
+      <div className="flex justify-between items-baseline mb-2.5 gap-3">
+        <label className="text-xs uppercase tracking-[0.18em] text-foreground/55 flex-shrink-0">
+          {label}
+        </label>
+        <div className="flex items-baseline gap-1.5 min-w-0">
+          <input
+            type="number"
+            value={value}
+            min={min}
+            max={max}
+            step={step}
+            onChange={(e) => {
+              const n = Number(e.target.value);
+              if (!Number.isNaN(n)) onChange(clamp(n));
+            }}
+            onBlur={(e) => {
+              const n = Number(e.target.value);
+              if (Number.isNaN(n)) onChange(min);
+              else onChange(clamp(n));
+            }}
+            aria-label={label}
+            className={`font-display text-base text-gold tabular-nums bg-transparent border-b border-gold/15 hover:border-gold/40 focus:border-gold/60 outline-none text-right ${inputWidth} transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+          />
+          {unit && (
+            <span className="text-xs text-foreground/60 flex-shrink-0 tabular-nums">{unit}</span>
+          )}
+        </div>
       </div>
       <div className="relative h-1.5">
         {/* Track */}
@@ -191,7 +218,7 @@ export default function Calculator() {
     <section
       id="simulateur"
       ref={ref}
-      className="relative py-28 md:py-36 px-6 bg-black-surface overflow-hidden"
+      className="relative py-28 md:py-36 px-6 bg-black-surface bg-stars overflow-hidden"
     >
       {/* Halo */}
       <div
@@ -252,47 +279,52 @@ export default function Calculator() {
             <GoldSlider
               label={t(translations.calculator.loanAmount)}
               value={loanAmount}
-              format={fmt(loanAmount)}
               min={500_000}
               max={50_000_000}
               step={100_000}
               onChange={setLoanAmount}
+              unit="$ CAD"
+              inputWidth="w-32"
             />
             <GoldSlider
               label={t(translations.calculator.interestRate)}
               value={interestRate}
-              format={`${interestRate.toFixed(1)} %`}
               min={1}
               max={15}
               step={0.1}
               onChange={setInterestRate}
+              unit="%"
+              inputWidth="w-20"
             />
             <GoldSlider
               label={t(translations.calculator.amortization)}
               value={amortization}
-              format={`${amortization} ${t(translations.common.years)}`}
               min={5}
               max={30}
               step={1}
               onChange={setAmortization}
+              unit={t(translations.common.years)}
+              inputWidth="w-20"
             />
             <GoldSlider
               label={t(translations.calculator.propertyTax)}
               value={propertyTax}
-              format={fmt(propertyTax)}
               min={5_000}
               max={200_000}
               step={1_000}
               onChange={setPropertyTax}
+              unit="$ CAD"
+              inputWidth="w-28"
             />
             <GoldSlider
               label={t(translations.calculator.insurance)}
               value={insurance}
-              format={fmt(insurance)}
               min={1_000}
               max={50_000}
               step={500}
               onChange={setInsurance}
+              unit="$ CAD"
+              inputWidth="w-28"
             />
           </motion.div>
 

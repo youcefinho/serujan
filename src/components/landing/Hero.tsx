@@ -29,7 +29,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[100svh] flex items-center overflow-hidden bg-gradient-hero"
+      className="relative min-h-[100svh] flex items-center overflow-hidden bg-gradient-hero bg-stars-hero"
     >
       {/* Image de fond très atténuée */}
       {clientConfig.heroImageUrl && (

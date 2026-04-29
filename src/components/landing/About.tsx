@@ -22,7 +22,7 @@ export default function About() {
     <section
       id="approche"
       ref={ref}
-      className="relative py-28 md:py-36 px-6 bg-black-surface overflow-hidden"
+      className="relative py-28 md:py-36 px-6 bg-black-surface bg-stars overflow-hidden"
     >
       {/* Halo doré central */}
       <div
