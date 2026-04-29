@@ -1,6 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Search, Phone, Mail, X, Briefcase, DollarSign, Download } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Loader2, Search, Phone, Mail, X, Briefcase,
+  DollarSign, Download, Calendar, Inbox, TrendingUp,
+} from "lucide-react";
 
 interface Lead {
   id: string;
@@ -17,9 +21,10 @@ export const Route = createFileRoute("/admin/leads")({
   component: AdminLeadsPage,
 });
 
+const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
 function exportCSV(leads: Lead[]) {
   if (leads.length === 0) return;
-
   const headers = ["Date", "Nom", "Téléphone", "Courriel", "Type de projet", "Montant estimé", "Message"];
   const escape = (v: string | null) => {
     if (!v) return "";
@@ -76,7 +81,7 @@ function AdminLeadsPage() {
 
         if (!response.ok) throw new Error(`Erreur serveur (${response.status})`);
 
-        const { data } = await response.json() as { data: Lead[] };
+        const { data } = (await response.json()) as { data: Lead[] };
         setLeads(data ?? []);
       } catch (err) {
         console.error("Erreur chargement leads:", err);
@@ -89,32 +94,31 @@ function AdminLeadsPage() {
 
   const filtered = useMemo(() => {
     return leads.filter((l) => {
-      if (search) {
-        const q = search.toLowerCase();
-        return (
-          l.name.toLowerCase().includes(q) ||
-          l.email.toLowerCase().includes(q) ||
-          l.phone.toLowerCase().includes(q) ||
-          (l.project_type?.toLowerCase().includes(q) ?? false)
-        );
-      }
-      return true;
+      if (!search) return true;
+      const q = search.toLowerCase();
+      return (
+        l.name.toLowerCase().includes(q) ||
+        l.email.toLowerCase().includes(q) ||
+        l.phone.toLowerCase().includes(q) ||
+        (l.project_type?.toLowerCase().includes(q) ?? false)
+      );
     });
   }, [leads, search]);
 
   const stats = useMemo(() => {
     const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const monthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
     return {
       total: leads.length,
       week: leads.filter((l) => new Date(l.created_at).getTime() > weekAgo).length,
+      month: leads.filter((l) => new Date(l.created_at).getTime() > monthAgo).length,
       withProject: leads.filter((l) => l.project_type && l.project_type.length > 0).length,
-      withAmount: leads.filter((l) => l.estimated_amount && l.estimated_amount.length > 0).length,
     };
   }, [leads]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
+      <div className="flex items-center justify-center py-32">
         <Loader2 className="w-6 h-6 animate-spin text-gold" />
       </div>
     );
@@ -122,12 +126,12 @@ function AdminLeadsPage() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <div className="text-gold text-lg font-bold">Erreur</div>
-        <p className="text-sm text-muted-foreground">{error}</p>
+      <div className="flex flex-col items-center justify-center py-32 gap-4">
+        <div className="font-display text-2xl text-gold">Erreur</div>
+        <p className="text-sm text-foreground/55">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-gold text-primary-foreground rounded-md text-sm font-bold hover:bg-gold/90 transition"
+          className="px-5 py-2.5 bg-gold text-black-deep rounded-md text-sm font-semibold hover:bg-gold-light transition"
         >
           Réessayer
         </button>
@@ -137,63 +141,79 @@ function AdminLeadsPage() {
 
   return (
     <div>
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease }}
+        className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4"
+      >
         <div>
-          <h1 className="text-3xl font-bold">Leads commerciaux</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Toutes les demandes reçues via le formulaire
+          <div className="flex items-center gap-3 mb-3">
+            <span className="w-6 h-px bg-gold/50" aria-hidden />
+            <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-gold-light">
+              Tableau de bord
+            </span>
+          </div>
+          <h1 className="font-display text-4xl md:text-5xl tracking-tight text-foreground">
+            Leads commerciaux
+          </h1>
+          <p className="mt-2 text-sm text-foreground/55">
+            Toutes les demandes reçues via le formulaire d'évaluation
           </p>
         </div>
+
         <button
           onClick={() => exportCSV(leads)}
           disabled={leads.length === 0}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-card border border-border rounded-md text-sm font-semibold hover:border-gold transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-2 px-5 py-3 bg-black-elevated/60 border border-gold/15 hover:border-gold/40 rounded-md text-sm font-medium text-foreground transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Exporter les leads en CSV"
         >
-          <Download className="w-4 h-4" />
-          Exporter CSV
+          <Download className="w-4 h-4 text-gold" />
+          <span>Exporter CSV</span>
         </button>
-      </div>
+      </motion.div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Total" value={stats.total} />
-        <StatCard label="Cette semaine" value={stats.week} accent />
-        <StatCard label="Type projet" value={stats.withProject} icon={<Briefcase className="w-4 h-4" />} />
-        <StatCard label="Montant estimé" value={stats.withAmount} icon={<DollarSign className="w-4 h-4" />} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <StatCard label="Total" value={stats.total} icon={<Inbox className="w-4 h-4" />} />
+        <StatCard label="Cette semaine" value={stats.week} accent icon={<TrendingUp className="w-4 h-4" />} />
+        <StatCard label="30 derniers jours" value={stats.month} icon={<Calendar className="w-4 h-4" />} />
+        <StatCard label="Avec type de projet" value={stats.withProject} icon={<Briefcase className="w-4 h-4" />} />
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Rechercher par nom, email, téléphone, type de projet..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-md focus:border-gold focus:outline-none transition text-sm"
-            aria-label="Rechercher dans les leads"
-          />
-        </div>
+      {/* Search */}
+      <div className="mb-6 relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gold/60" />
+        <input
+          type="text"
+          placeholder="Rechercher par nom, email, téléphone, type de projet…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full pl-11 pr-4 py-3 bg-black-elevated/40 border border-gold/15 rounded-md focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all text-sm placeholder-foreground/40"
+          aria-label="Rechercher dans les leads"
+        />
       </div>
 
       {/* Table */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-black-elevated/40 border border-gold/15 rounded-xl overflow-hidden">
         {filtered.length === 0 ? (
-          <div className="p-12 text-center text-muted-foreground">
-            Aucun lead {search && `pour "${search}"`}.
+          <div className="p-16 text-center">
+            <Inbox className="w-10 h-10 text-gold/30 mx-auto mb-4" strokeWidth={1.2} />
+            <p className="text-foreground/50 text-sm">
+              Aucun lead {search && `pour "${search}"`}
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-black-surface text-xs uppercase tracking-widest text-muted-foreground">
+              <thead className="bg-black-deep/60 text-[10px] uppercase tracking-[0.2em] text-foreground/45 border-b border-gold/10">
                 <tr>
-                  <th className="px-4 py-3 text-left">Date</th>
-                  <th className="px-4 py-3 text-left">Nom</th>
-                  <th className="px-4 py-3 text-left hidden md:table-cell">Contact</th>
-                  <th className="px-4 py-3 text-left hidden lg:table-cell">Projet</th>
-                  <th className="px-4 py-3 text-left hidden lg:table-cell">Montant</th>
+                  <th className="px-5 py-4 text-left font-medium">Date</th>
+                  <th className="px-5 py-4 text-left font-medium">Nom</th>
+                  <th className="px-5 py-4 text-left font-medium hidden md:table-cell">Contact</th>
+                  <th className="px-5 py-4 text-left font-medium hidden lg:table-cell">Projet</th>
+                  <th className="px-5 py-4 text-left font-medium hidden lg:table-cell">Montant</th>
                 </tr>
               </thead>
               <tbody>
@@ -201,9 +221,9 @@ function AdminLeadsPage() {
                   <tr
                     key={l.id}
                     onClick={() => setSelected(l)}
-                    className="border-t border-border cursor-pointer hover:bg-black-surface/50 transition"
+                    className="border-t border-gold/5 cursor-pointer hover:bg-gold/[0.03] transition-colors"
                   >
-                    <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
+                    <td className="px-5 py-4 text-xs text-foreground/55 whitespace-nowrap tabular-nums">
                       {new Date(l.created_at).toLocaleDateString("fr-CA", {
                         day: "2-digit",
                         month: "short",
@@ -211,20 +231,20 @@ function AdminLeadsPage() {
                         minute: "2-digit",
                       })}
                     </td>
-                    <td className="px-4 py-3 font-semibold">{l.name}</td>
-                    <td className="px-4 py-3 hidden md:table-cell text-muted-foreground text-xs">
+                    <td className="px-5 py-4 font-display tracking-tight text-foreground">{l.name}</td>
+                    <td className="px-5 py-4 hidden md:table-cell text-foreground/55 text-xs">
                       <div>{l.email}</div>
-                      <div>{l.phone}</div>
+                      <div className="tabular-nums">{l.phone}</div>
                     </td>
-                    <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground text-xs">
+                    <td className="px-5 py-4 hidden lg:table-cell">
                       {l.project_type ? (
-                        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-gold border border-gold/30">
+                        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider bg-gold/10 text-gold border border-gold/25">
                           {l.project_type}
                         </span>
-                      ) : "—"}
+                      ) : <span className="text-foreground/30">—</span>}
                     </td>
-                    <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground text-xs">
-                      {l.estimated_amount || "—"}
+                    <td className="px-5 py-4 hidden lg:table-cell text-foreground/65 text-xs">
+                      {l.estimated_amount || <span className="text-foreground/30">—</span>}
                     </td>
                   </tr>
                 ))}
@@ -234,106 +254,109 @@ function AdminLeadsPage() {
         )}
       </div>
 
-      {/* Detail modal */}
-      {selected && <LeadDetailModal lead={selected} onClose={() => setSelected(null)} />}
+      {/* Modal détail */}
+      <AnimatePresence>
+        {selected && <LeadDetailModal lead={selected} onClose={() => setSelected(null)} />}
+      </AnimatePresence>
     </div>
   );
 }
 
 function StatCard({
-  label,
-  value,
-  accent,
-  icon,
-}: {
-  label: string;
-  value: number;
-  accent?: boolean;
-  icon?: React.ReactNode;
-}) {
+  label, value, accent, icon,
+}: { label: string; value: number; accent?: boolean; icon?: React.ReactNode }) {
   return (
-    <div
-      className={`rounded-xl border p-5 ${
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease }}
+      className={`relative rounded-xl border p-5 ${
         accent
-          ? "bg-gradient-gold border-transparent text-primary-foreground"
-          : "bg-card border-border"
+          ? "bg-gradient-gold border-transparent text-black-deep"
+          : "bg-black-elevated/50 border-gold/15"
       }`}
     >
-      <div className="flex items-center justify-between">
-        <span className="text-xs uppercase tracking-widest opacity-80">{label}</span>
-        {icon}
+      <div className="flex items-center justify-between mb-3">
+        <span className={`text-[10px] uppercase tracking-[0.22em] ${accent ? "text-black-deep/70" : "text-foreground/45"}`}>
+          {label}
+        </span>
+        <span className={accent ? "text-black-deep/70" : "text-gold/60"}>{icon}</span>
       </div>
-      <div className="mt-2 text-3xl font-bold">{value}</div>
-    </div>
+      <div className={`font-display text-3xl md:text-4xl tabular-nums leading-none ${accent ? "text-black-deep" : "text-foreground"}`}>
+        {value}
+      </div>
+    </motion.div>
   );
 }
 
 function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void }) {
   return (
-    <div
-      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 bg-black-deep/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6"
       onClick={onClose}
     >
-      <div
+      <motion.div
+        initial={{ y: 60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 60, opacity: 0 }}
+        transition={{ duration: 0.4, ease }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-card border border-border rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+        className="bg-black-elevated border border-gold/20 rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-elevate"
       >
-        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-black-elevated border-b border-gold/15 px-6 py-5 flex items-center justify-between">
           <div>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground">
+            <span className="text-[10px] uppercase tracking-[0.22em] text-gold-light/70">
               Lead commercial
             </span>
-            <h2 className="text-xl font-bold">{lead.name}</h2>
+            <h2 className="font-display text-2xl text-foreground tracking-tight mt-0.5">{lead.name}</h2>
           </div>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground"
+            className="w-8 h-8 rounded-lg border border-gold/15 flex items-center justify-center text-foreground/50 hover:text-gold hover:border-gold/40 transition-all"
             aria-label="Fermer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         <div className="p-6 space-y-5">
           <Field label="Date">
-            {new Date(lead.created_at).toLocaleString("fr-CA", {
-              dateStyle: "long",
-              timeStyle: "short",
-            })}
+            {new Date(lead.created_at).toLocaleString("fr-CA", { dateStyle: "long", timeStyle: "short" })}
           </Field>
           {lead.phone && (
             <Field label="Téléphone">
-              <a
-                href={`tel:${lead.phone}`}
-                className="inline-flex items-center gap-2 text-gold hover:underline font-semibold"
-              >
-                <Phone className="w-4 h-4" />
+              <a href={`tel:${lead.phone}`} className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors font-medium tabular-nums">
+                <Phone className="w-3.5 h-3.5" />
                 {lead.phone}
               </a>
             </Field>
           )}
           <Field label="Courriel">
-            <a
-              href={`mailto:${lead.email}`}
-              className="inline-flex items-center gap-2 text-gold hover:underline font-semibold break-all"
-            >
-              <Mail className="w-4 h-4" />
+            <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors font-medium break-all">
+              <Mail className="w-3.5 h-3.5" />
               {lead.email}
             </a>
           </Field>
-          <Field label="Type de projet">{lead.project_type || "—"}</Field>
-          <Field label="Montant estimé">{lead.estimated_amount || "—"}</Field>
+          <Field label="Type de projet">
+            {lead.project_type || <span className="text-foreground/30">—</span>}
+          </Field>
+          <Field label="Montant estimé" icon={<DollarSign className="w-3 h-3 text-gold/60" />}>
+            {lead.estimated_amount || <span className="text-foreground/30">—</span>}
+          </Field>
           {lead.message && (
             <Field label="Message">
-              <div className="whitespace-pre-wrap text-foreground/90">{lead.message}</div>
+              <div className="whitespace-pre-wrap text-foreground/85 leading-relaxed">{lead.message}</div>
             </Field>
           )}
 
-          <div className="flex gap-2 pt-4 border-t border-border">
+          <div className="flex gap-2 pt-5 border-t border-gold/10">
             {lead.phone && (
               <a
                 href={`tel:${lead.phone}`}
-                className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-gold text-primary-foreground rounded-md font-bold text-sm"
+                className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-gold text-black-deep rounded-md font-semibold text-sm shadow-gold-sm hover:shadow-gold transition-all"
               >
                 <Phone className="w-4 h-4" />
                 Appeler
@@ -341,23 +364,24 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
             )}
             <a
               href={`mailto:${lead.email}`}
-              className="flex-1 inline-flex items-center justify-center gap-2 py-3 border border-border text-foreground rounded-md font-bold text-sm hover:border-gold"
+              className="flex-1 inline-flex items-center justify-center gap-2 py-3 border border-gold/30 text-foreground rounded-md font-semibold text-sm hover:border-gold hover:bg-gold/10 transition-all"
             >
               <Mail className="w-4 h-4" />
               Courriel
             </a>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, icon, children }: { label: string; icon?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold mb-1">
-        {label}
+      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-foreground/45 font-medium mb-1.5">
+        {icon}
+        <span>{label}</span>
       </div>
       <div className="text-sm">{children}</div>
     </div>

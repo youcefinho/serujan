@@ -1,107 +1,152 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2, Phone, Mail, ArrowLeft } from "lucide-react";
+import { CheckCircle2, Phone, Mail, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { motion } from "motion/react";
 import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 
 export const Route = createFileRoute("/merci")({
   component: MerciPage,
+  head: () => ({
+    meta: [{ title: "Merci — Serujan Kaneshalingam" }],
+  }),
 });
 
-const tr = {
-  badge: { fr: "Demande reçue", en: "Request received" },
-  title: { fr: "Merci pour votre confiance.", en: "Thank you for your trust." },
-  description: {
-    fr: "Votre demande a bien été enregistrée.",
-    en: "Your request has been successfully recorded.",
-  },
-  callbackBold: {
-    fr: `${clientConfig.name} vous contactera personnellement ${clientConfig.merci.callbackDelay.fr}`,
-    en: `${clientConfig.name} will personally contact you ${clientConfig.merci.callbackDelay.en}`,
-  },
-  callbackEnd: {
-    fr: "(heures d'ouverture) pour discuter de votre projet.",
-    en: "(business hours) to discuss your project.",
-  },
-  call: { fr: "Appeler", en: "Call" },
-  email: { fr: "Courriel", en: "Email" },
-  followText: {
-    fr: `En attendant, suivez ${clientConfig.name} sur Instagram pour des insights exclusifs`,
-    en: `In the meantime, follow ${clientConfig.name} on Instagram for exclusive insights`,
-  },
-  back: { fr: "Retour à l'accueil", en: "Back to home" },
-};
+const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 function MerciPage() {
   const { t } = useLanguage();
 
   return (
-    <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-6 py-20">
-      <div className="max-w-2xl w-full text-center">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-gold mb-8 shadow-gold">
-          <CheckCircle2 className="w-10 h-10 text-black-deep" strokeWidth={2.5} />
-        </div>
+    <main className="relative min-h-screen bg-black-deep text-foreground flex items-center justify-center px-6 py-20 overflow-hidden">
+      {/* Halo doré */}
+      <div
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44rem] h-[44rem] rounded-full pointer-events-none opacity-50"
+        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.10) 0%, transparent 60%)", filter: "blur(80px)" }}
+        aria-hidden
+      />
 
-        <span className="text-gold text-sm font-bold uppercase tracking-widest">
-          {t(tr.badge)}
-        </span>
-        <h1 className="mt-3 text-4xl md:text-5xl font-bold">
-          {t(tr.title)}
-        </h1>
-        <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-          {t(tr.description)}{" "}
-          <span className="text-foreground font-semibold">
-            {t(tr.callbackBold)}
-          </span>{" "}
-          {t(tr.callbackEnd)}
-        </p>
+      <article className="relative max-w-2xl w-full text-center">
+        {/* Icône succès */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, ease, delay: 0.05 }}
+          className="relative inline-flex items-center justify-center w-20 h-20 rounded-full bg-gold/15 border border-gold/40 mb-10 shadow-gold-sm"
+        >
+          <CheckCircle2 className="w-10 h-10 text-gold" strokeWidth={2} />
+          <span className="absolute inset-0 rounded-full border border-gold/30 animate-pulse-gold" aria-hidden />
+        </motion.div>
 
-        <div className="mt-10 grid sm:grid-cols-2 gap-3 max-w-md mx-auto">
+        {/* Eyebrow */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease, delay: 0.15 }}
+          className="flex items-center justify-center gap-3 mb-6"
+        >
+          <span className="w-8 h-px bg-gold/50" aria-hidden />
+          <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+            {t(translations.merci.badge)}
+          </span>
+          <span className="w-8 h-px bg-gold/50" aria-hidden />
+        </motion.div>
+
+        {/* Titre */}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease, delay: 0.2 }}
+          className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance"
+        >
+          <span className="text-foreground">{t(translations.merci.title)} </span>
+          <span className="text-gold-gradient italic font-display-italic">
+            {t(translations.merci.titleEmphasis)}
+          </span>
+        </motion.h1>
+
+        {/* Description */}
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease, delay: 0.35 }}
+          className="mt-8 text-lg text-foreground/65 leading-relaxed text-pretty max-w-xl mx-auto"
+        >
+          {t(translations.merci.description)}
+        </motion.p>
+
+        {/* CTA contact direct */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease, delay: 0.5 }}
+          className="mt-12 grid sm:grid-cols-2 gap-3 max-w-md mx-auto"
+        >
           <a
-            href={`tel:${clientConfig.phone.raw}`}
-            className="flex flex-col items-center gap-2 p-5 bg-card border border-border rounded-xl hover:border-gold transition"
+            href={`tel:+${clientConfig.phone.international}`}
+            className="group flex flex-col items-center gap-2 p-5 rounded-xl bg-black-elevated/50 border border-gold/15 hover:border-gold/40 hover:bg-black-elevated/80 transition-all duration-300"
           >
-            <Phone className="w-6 h-6 text-gold" />
-            <span className="text-xs uppercase tracking-widest text-muted-foreground">
-              {t(tr.call)}
+            <Phone className="w-5 h-5 text-gold" strokeWidth={1.5} />
+            <span className="text-[10px] uppercase tracking-[0.2em] text-foreground/50">
+              {t(translations.merci.callLabel)}
             </span>
-            <span className="text-sm font-bold">{clientConfig.phone.display}</span>
+            <span className="font-display text-sm text-foreground tabular-nums">
+              {clientConfig.phone.display}
+            </span>
           </a>
           <a
             href={`mailto:${clientConfig.email}`}
-            className="flex flex-col items-center gap-2 p-5 bg-card border border-border rounded-xl hover:border-gold transition"
+            className="group flex flex-col items-center gap-2 p-5 rounded-xl bg-black-elevated/50 border border-gold/15 hover:border-gold/40 hover:bg-black-elevated/80 transition-all duration-300"
           >
-            <Mail className="w-6 h-6 text-gold" />
-            <span className="text-xs uppercase tracking-widest text-muted-foreground">
-              {t(tr.email)}
+            <Mail className="w-5 h-5 text-gold" strokeWidth={1.5} />
+            <span className="text-[10px] uppercase tracking-[0.2em] text-foreground/50">
+              {t(translations.merci.emailLabel)}
             </span>
-            <span className="text-sm font-bold break-all">{clientConfig.email}</span>
+            <span className="font-display text-sm text-foreground break-all">
+              {clientConfig.email}
+            </span>
           </a>
-        </div>
+        </motion.div>
 
+        {/* Instagram */}
         {clientConfig.socials.instagram && (
-          <div className="mt-12 pt-8 border-t border-border">
-            <p className="text-sm text-muted-foreground mb-4">
-              {t(tr.followText)}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.7 }}
+            className="mt-14 pt-10 border-t border-gold/10"
+          >
+            <p className="text-sm text-foreground/55 mb-4 text-pretty">
+              {t(translations.merci.followText)}
             </p>
             <a
               href={clientConfig.socials.instagram.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-gold hover:underline font-semibold"
+              className="group inline-flex items-center gap-1.5 text-gold hover:text-gold-light transition-colors font-display italic"
             >
-              {clientConfig.socials.instagram.handle}
+              <span>{clientConfig.socials.instagram.handle}</span>
+              <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
-          </div>
+          </motion.div>
         )}
 
-        <Link
-          to="/"
-          className="mt-12 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition"
+        {/* Retour accueil */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.85 }}
+          className="mt-16"
         >
-          <ArrowLeft className="w-4 h-4" />
-          {t(tr.back)}
-        </Link>
-      </div>
+          <Link
+            to="/"
+            className="group inline-flex items-center gap-2 text-sm text-foreground/55 hover:text-gold transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
+            <span>{t(translations.merci.backHome)}</span>
+          </Link>
+        </motion.div>
+      </article>
     </main>
   );
 }

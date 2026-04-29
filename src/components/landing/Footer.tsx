@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
@@ -148,12 +149,12 @@ export default function Footer() {
             {t(translations.footer.madeIn)}
           </p>
           <div className="flex gap-5">
-            <span className="hover:text-gold transition-colors cursor-default">
+            <Link to="/mentions-legales" className="hover:text-gold transition-colors">
               {t(translations.footer.mentions)}
-            </span>
-            <span className="hover:text-gold transition-colors cursor-default">
+            </Link>
+            <Link to="/confidentialite" className="hover:text-gold transition-colors">
               {t(translations.footer.confidentialite)}
-            </span>
+            </Link>
           </div>
         </div>
       </div>

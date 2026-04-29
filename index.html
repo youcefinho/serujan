@@ -3,73 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- SWAP: Titre du site -->
-    <title>Serujan Kaneshalingam | Courtage Hypothécaire Commercial | Montréal</title>
+    <title>Serujan Kaneshalingam — Courtage hypothécaire commercial · Montréal</title>
 
-    <!-- SWAP: URL du site (canonical + hreflang) -->
     <link rel="canonical" href="https://serujan.intralysqc.workers.dev/" />
     <link rel="alternate" hreflang="fr-CA" href="https://serujan.intralysqc.workers.dev/" />
+    <link rel="alternate" hreflang="en-CA" href="https://serujan.intralysqc.workers.dev/" />
 
-    <!-- SWAP: Description SEO -->
-    <meta name="description" content="Serujan Kaneshalingam — Courtier hypothécaire commercial à Montréal. Financement sur mesure pour projets commerciaux, multi-résidentiels et développement. 500M$+ financés, 95% approbation." />
-    <!-- SWAP: Mots-clés SEO -->
-    <meta name="keywords" content="Serujan Kaneshalingam, courtier hypothécaire commercial Montréal, financement commercial, prêt commercial, hypothèque commerciale, Elev8, financement immobilier Québec" />
+    <meta name="description" content="Le financement qui ouvre les portes fermées aux autres. Acquisitions, refinancements, développements et construction. 500M$+ financés, 95% d'approbation." />
+    <meta name="keywords" content="Serujan Kaneshalingam, courtier hypothécaire commercial Montréal, financement commercial, prêt commercial, hypothèque commerciale, acquisition immobilière, refinancement, développement immobilier, Elev8, Québec" />
+    <meta name="author" content="Serujan Kaneshalingam" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
 
-    <!-- SWAP: Open Graph -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_CA" />
+    <meta property="og:locale:alternate" content="en_CA" />
     <meta property="og:url" content="https://serujan.intralysqc.workers.dev/" />
-    <meta property="og:title" content="Serujan Kaneshalingam | Courtage Hypothécaire Commercial | Montréal" />
-    <meta property="og:description" content="L'excellence en financement commercial. Structures sur mesure, résultats garantis." />
+    <meta property="og:title" content="Serujan Kaneshalingam — Courtage hypothécaire commercial" />
+    <meta property="og:description" content="Le financement qui ouvre les portes fermées aux autres. Structures sur mesure, négociations d'expert, résultats garantis." />
     <meta property="og:image" content="https://serujan.intralysqc.workers.dev/icon-512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:site_name" content="Serujan Kaneshalingam" />
 
-    <!-- SWAP: Twitter Card -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Serujan Kaneshalingam | Courtage Hypothécaire Commercial | Montréal" />
-    <meta name="twitter:description" content="L'excellence en financement commercial" />
+    <meta name="twitter:title" content="Serujan Kaneshalingam — Courtage hypothécaire commercial" />
+    <meta name="twitter:description" content="Le financement qui ouvre les portes fermées aux autres." />
     <meta name="twitter:image" content="https://serujan.intralysqc.workers.dev/icon-512.png" />
 
-    <!-- SWAP: Google Analytics 4 ID -->
+    <!-- Google Analytics 4 — SWAP: remplacer par l'ID GA4 réel -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
+      gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
     </script>
 
-    <!-- PWA Manifest -->
+    <!-- PWA + favicons -->
     <link rel="manifest" href="/manifest.json" />
-    <!-- SWAP: Favicon du courtier -->
     <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="icon" href="/favicon.ico" />
-    <!-- SWAP: Couleur theme — or #d4af37 par défaut -->
+    <link rel="apple-touch-icon" href="/icon-192.png" />
     <meta name="theme-color" content="#d4af37" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <!-- SWAP: Nom de l'app mobile -->
-    <meta name="apple-mobile-web-app-title" content="Serujan Kaneshalingam" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <meta name="apple-mobile-web-app-title" content="Serujan" />
 
-    <!-- SWAP: Polices — Montserrat + Inter par défaut (changer selon le client) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="dns-prefetch" href="https://assets.calendly.com" />
+    <!-- Préconnexions ressources externes -->
     <link rel="preconnect" href="https://assets.calendly.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet" /></noscript>
 
-    <!-- SWAP: JSON-LD Schema.org — FinancialService au lieu de RealEstateAgent -->
+    <!-- JSON-LD Schema.org : FinancialService -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "FinancialService",
+      "@id": "https://serujan.intralysqc.workers.dev/#service",
       "name": "Serujan Kaneshalingam",
+      "alternateName": "Équipe Serujan",
       "jobTitle": "Courtier hypothécaire commercial",
       "telephone": "+1-514-701-6171",
       "email": "expert@serujan.com",
       "url": "https://serujan.intralysqc.workers.dev",
+      "image": "https://serujan.intralysqc.workers.dev/icon-512.png",
+      "logo": "https://serujan.intralysqc.workers.dev/icon-512.png",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "111 Rue Chabanel O, Suite 617",
@@ -81,27 +80,32 @@
         { "@type": "City", "name": "Montréal" },
         { "@type": "State", "name": "Québec" }
       ],
-      "knowsLanguage": ["fr", "en"],
+      "knowsLanguage": ["fr-CA", "en-CA"],
       "sameAs": [
         "https://www.instagram.com/serujan.k/",
         "https://www.facebook.com/serujanhypotheque",
         "https://www.linkedin.com/in/serujan-kaneshalingam-911a3b112/"
       ],
       "priceRange": "$$$",
-      "description": "Courtier hypothécaire commercial à Montréal. Financement sur mesure pour projets commerciaux, multi-résidentiels et développement. 500M$+ financés, 95% approbation."
+      "description": "Courtier hypothécaire commercial à Montréal. Financement sur mesure pour acquisitions, refinancements, développements et construction. 500M$+ financés, 95% d'approbation.",
+      "serviceType": [
+        "Financement hypothécaire commercial",
+        "Optimisation de portefeuille immobilier",
+        "Accès aux prêteurs institutionnels"
+      ]
     }
     </script>
 
-    <!-- Calendly popup widget (non-render-blocking) -->
+    <!-- Calendly widget (différé) -->
     <link rel="preload" as="style" href="https://assets.calendly.com/assets/external/widget.css" />
     <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" /></noscript>
     <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
-    <!-- Loading spinner — SWAP: Couleurs noir/or -->
+    <!-- Loading spinner premium -->
     <style>
-      #app-loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#111;transition:opacity .3s}
-      .app-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.08);border-top-color:#d4af37;border-radius:50%;animation:spin .6s linear infinite}
+      #app-loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:oklch(0.07 0.005 260);transition:opacity .3s}
+      .app-spinner{width:38px;height:38px;border:2px solid oklch(1 0 0 / 0.06);border-top-color:#d4af37;border-radius:50%;animation:spin .7s linear infinite}
       @keyframes spin{to{transform:rotate(360deg)}}
     </style>
   </head>

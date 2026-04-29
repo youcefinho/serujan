@@ -4,6 +4,16 @@
 
 import { Resend } from 'resend';
 import { clientConfig as CLIENT } from './lib/config';
+import {
+  sanitizeHtml,
+  sanitizeInput,
+  isValidEmail,
+  isLikelyBot,
+  buildSecurityHeaders,
+  CSP_DIRECTIVES,
+  MAX_LEAD_ATTEMPTS,
+  LEAD_WINDOW_HOURS,
+} from './lib/security';
 
 interface Env {
   DB: D1Database;
@@ -13,64 +23,12 @@ interface Env {
   GHL_WEBHOOK_URL?: string;
 }
 
-// ── Constantes sécurité ─────────────────────────────────────
+// ── Constantes sécurité spécifiques worker ───────────────
 const SESSION_DURATION_HOURS = 24;
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOGIN_WINDOW_HOURS = 1;
-const MAX_LEAD_ATTEMPTS = 10;
-const LEAD_WINDOW_HOURS = 1;
-const MIN_FORM_FILL_MS = 3000;        // < 3 s = bot suspect
-const MAX_INPUT_LENGTH = 500;
 
-// ── CSP : sources autorisées ────────────────────────────────
-// Les images des assets distants (logo Serujan, hero) viennent de
-// filesafe.space ; la vidéo Elev8 vient de wpdns.site ; Calendly +
-// Google Analytics sont chargés au runtime.
-const CSP_DIRECTIVES = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://assets.calendly.com https://*.googletagmanager.com https://*.google-analytics.com",
-  "style-src 'self' 'unsafe-inline' https://assets.calendly.com",
-  "img-src 'self' data: blob: https://assets.cdn.filesafe.space https://*.calendly.com https://*.google-analytics.com https://*.googletagmanager.com",
-  "font-src 'self' data:",
-  "media-src 'self' https://o6xngqfgnt.wpdns.site",
-  "connect-src 'self' https://*.calendly.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
-  "frame-src https://calendly.com https://*.calendly.com https://open.spotify.com",
-  "frame-ancestors 'none'",
-  "form-action 'self'",
-  "base-uri 'self'",
-  "object-src 'none'",
-  "upgrade-insecure-requests",
-].join('; ');
-
-const SECURITY_HEADERS: Record<string, string> = {
-  'Content-Security-Policy': CSP_DIRECTIVES,
-  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
-  'Cross-Origin-Opener-Policy': 'same-origin',
-  'X-DNS-Prefetch-Control': 'on',
-};
-
-// ── Sanitization ────────────────────────────────────────────
-function sanitizeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function sanitizeInput(str: string | undefined, maxLen = MAX_INPUT_LENGTH): string {
-  if (!str) return '';
-  return str.trim().slice(0, maxLen);
-}
-
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 200;
-}
+const SECURITY_HEADERS = buildSecurityHeaders(CSP_DIRECTIVES);
 
 // ── Fetch principal ─────────────────────────────────────────
 export default {
@@ -132,15 +90,8 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
       hp?: string; // honeypot
     };
 
-    // Honeypot : si rempli, c'est un bot
-    if (body.hp && body.hp.trim().length > 0) {
-      // On enregistre pour le rate limit mais on retourne success pour ne pas le notifier
-      await env.DB.prepare('INSERT INTO lead_attempts (ip) VALUES (?)').bind(ip).run();
-      return json({ success: true, id: 'silent' });
-    }
-
-    // Timing : form rempli en < 3 s = bot quasi-certain
-    if (typeof body.elapsed_ms === 'number' && body.elapsed_ms < MIN_FORM_FILL_MS) {
+    // Anti-bot : honeypot + timing
+    if (isLikelyBot({ elapsed_ms: body.elapsed_ms, hp: body.hp })) {
       await env.DB.prepare('INSERT INTO lead_attempts (ip) VALUES (?)').bind(ip).run();
       return json({ success: true, id: 'silent' });
     }

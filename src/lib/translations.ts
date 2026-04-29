@@ -393,6 +393,146 @@ export const translations = {
     office: { fr: "Bureau", en: "Office" },
   },
 
+  // --- Pages légales ---
+  legal: {
+    backToHome: { fr: "Retour à l'accueil", en: "Back to home" },
+    lastUpdate: { fr: "Dernière mise à jour", en: "Last update" },
+    mentions: {
+      title: { fr: "Mentions légales", en: "Legal notice" },
+      eyebrow: { fr: "Information légale", en: "Legal information" },
+      sections: {
+        fr: [
+          {
+            heading: "Éditeur du site",
+            body: "Ce site est édité par Serujan Kaneshalingam, courtier hypothécaire commercial à Montréal, exerçant en tant que représentant indépendant.\n\nAdresse : 111 Rue Chabanel O, Suite 617, Montréal, QC, Canada\nTéléphone : (514) 701-6171\nCourriel : expert@serujan.com",
+          },
+          {
+            heading: "Hébergement",
+            body: "Le site est hébergé par Cloudflare, Inc. — 101 Townsend St, San Francisco, CA 94107, États-Unis. L'infrastructure utilise les services Cloudflare Workers et Cloudflare D1 (base de données serverless).",
+          },
+          {
+            heading: "Propriété intellectuelle",
+            body: "L'ensemble du contenu présent sur ce site — textes, images, logos, mise en page et structure — est protégé par le droit d'auteur. Toute reproduction, distribution, modification ou adaptation sans autorisation écrite préalable est strictement interdite.",
+          },
+          {
+            heading: "Limitation de responsabilité",
+            body: "Les informations communiquées sur ce site sont à titre indicatif. Les estimations issues de la calculatrice hypothécaire ne constituent pas une offre de financement. Toute décision de financement nécessite une analyse personnalisée et la signature d'un mandat formel.",
+          },
+          {
+            heading: "Liens externes",
+            body: "Ce site contient des liens vers des ressources externes (Elev8 Event, Elev8 Academy, réseaux sociaux). Serujan Kaneshalingam ne peut être tenu responsable du contenu de ces sites tiers.",
+          },
+          {
+            heading: "Droit applicable",
+            body: "Le présent site est soumis au droit québécois et canadien. Tout litige sera porté devant les tribunaux compétents de la province du Québec, district de Montréal.",
+          },
+        ],
+        en: [
+          {
+            heading: "Site editor",
+            body: "This site is edited by Serujan Kaneshalingam, commercial mortgage broker in Montreal, operating as an independent representative.\n\nAddress: 111 Rue Chabanel O, Suite 617, Montréal, QC, Canada\nPhone: (514) 701-6171\nEmail: expert@serujan.com",
+          },
+          {
+            heading: "Hosting",
+            body: "The site is hosted by Cloudflare, Inc. — 101 Townsend St, San Francisco, CA 94107, USA. The infrastructure runs on Cloudflare Workers and Cloudflare D1 (serverless database).",
+          },
+          {
+            heading: "Intellectual property",
+            body: "All content on this site — texts, images, logos, layout and structure — is protected by copyright. Any reproduction, distribution, modification or adaptation without prior written authorization is strictly forbidden.",
+          },
+          {
+            heading: "Liability limitation",
+            body: "Information shared on this site is indicative. Estimates from the mortgage calculator do not constitute a financing offer. Any financing decision requires a personalized analysis and the signing of a formal mandate.",
+          },
+          {
+            heading: "External links",
+            body: "This site contains links to external resources (Elev8 Event, Elev8 Academy, social networks). Serujan Kaneshalingam cannot be held responsible for the content of these third-party sites.",
+          },
+          {
+            heading: "Applicable law",
+            body: "This site is subject to Quebec and Canadian law. Any dispute shall be brought before the competent courts of the Province of Quebec, district of Montreal.",
+          },
+        ],
+      },
+    },
+    privacy: {
+      title: { fr: "Politique de confidentialité", en: "Privacy policy" },
+      eyebrow: { fr: "Vos données, vos droits", en: "Your data, your rights" },
+      sections: {
+        fr: [
+          {
+            heading: "Données collectées",
+            body: "Nous collectons uniquement les informations que vous fournissez volontairement via le formulaire de contact : nom, courriel, téléphone, type de projet, montant estimé et message. Aucune donnée bancaire n'est collectée sur ce site.",
+          },
+          {
+            heading: "Utilisation des données",
+            body: "Vos données servent exclusivement à : (1) répondre à votre demande de consultation, (2) vous transmettre des informations relatives à votre projet de financement commercial, (3) améliorer notre service. Elles ne sont jamais vendues, louées ou partagées avec des tiers à des fins commerciales.",
+          },
+          {
+            heading: "Conservation",
+            body: "Vos données sont conservées tant que vous restez en contact actif avec Serujan Kaneshalingam, ou pendant une durée maximale de 5 ans après le dernier échange. Vous pouvez demander leur suppression à tout moment.",
+          },
+          {
+            heading: "Sécurité",
+            body: "Les données sont stockées sur Cloudflare D1 (base SQL chiffrée au repos) avec accès restreint par authentification. Le site applique une politique de sécurité de contenu (CSP) stricte, le protocole HTTPS partout, et un rate-limiting automatique des soumissions.",
+          },
+          {
+            heading: "Cookies et analytics",
+            body: "Le site utilise un cookie technique pour mémoriser votre choix de langue. Si Google Analytics 4 est activé, il dépose des cookies anonymisés à des fins statistiques (pas de tracking publicitaire). Vous pouvez les bloquer via votre navigateur.",
+          },
+          {
+            heading: "Vos droits",
+            body: "Conformément à la Loi 25 du Québec, vous disposez d'un droit d'accès, de rectification, de portabilité et de suppression de vos données. Pour exercer ces droits : expert@serujan.com",
+          },
+        ],
+        en: [
+          {
+            heading: "Data collected",
+            body: "We collect only the information you voluntarily provide through the contact form: name, email, phone, project type, estimated amount and message. No banking data is collected on this site.",
+          },
+          {
+            heading: "Use of data",
+            body: "Your data is used exclusively to: (1) respond to your consultation request, (2) provide information related to your commercial financing project, (3) improve our service. It is never sold, rented or shared with third parties for commercial purposes.",
+          },
+          {
+            heading: "Retention",
+            body: "Your data is kept as long as you remain in active contact with Serujan Kaneshalingam, or for a maximum of 5 years after the last exchange. You can request its deletion at any time.",
+          },
+          {
+            heading: "Security",
+            body: "Data is stored on Cloudflare D1 (SQL database encrypted at rest) with access restricted by authentication. The site enforces a strict Content Security Policy (CSP), HTTPS everywhere, and automatic rate-limiting on submissions.",
+          },
+          {
+            heading: "Cookies and analytics",
+            body: "The site uses a technical cookie to remember your language preference. If Google Analytics 4 is enabled, it sets anonymized cookies for statistical purposes (no advertising tracking). You can block them via your browser.",
+          },
+          {
+            heading: "Your rights",
+            body: "Under Quebec's Law 25, you have the right to access, rectify, port and delete your data. To exercise these rights: expert@serujan.com",
+          },
+        ],
+      },
+    },
+  },
+
+  // --- Page Merci ---
+  merci: {
+    badge: { fr: "Demande reçue", en: "Request received" },
+    title: { fr: "Merci pour votre", en: "Thank you for your" },
+    titleEmphasis: { fr: "confiance.", en: "trust." },
+    description: {
+      fr: "Votre demande a bien été enregistrée. Serujan vous contactera personnellement dans les 24 prochaines heures (heures d'ouverture) pour discuter de votre projet.",
+      en: "Your request has been recorded. Serujan will personally contact you within the next 24 hours (business hours) to discuss your project.",
+    },
+    callLabel: { fr: "Appeler", en: "Call" },
+    emailLabel: { fr: "Courriel", en: "Email" },
+    followText: {
+      fr: "En attendant, suivez Serujan sur Instagram pour des insights exclusifs",
+      en: "In the meantime, follow Serujan on Instagram for exclusive insights",
+    },
+    backHome: { fr: "Retour à l'accueil", en: "Back to home" },
+  },
+
   // --- Footer ---
   footer: {
     desc: {

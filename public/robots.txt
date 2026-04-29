@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin
 Disallow: /admin/
+Disallow: /api/
 
-# SWAP: Remplacer l'URL du sitemap
 Sitemap: https://serujan.intralysqc.workers.dev/sitemap.xml
