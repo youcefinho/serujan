@@ -64,8 +64,10 @@ export const clientConfig = {
   siteUrl: "https://serujan.intralysqc.workers.dev",
 
   // ── Assets ─────────────────────────────────────────────
-  logoUrl:
-    "https://assets.cdn.filesafe.space/uE8otTz2VFBFG6lqzsmK/media/68b7fd5c7f707b51d1928b4d.png",
+  // Logo officiel "Équipe Serujan" — version recolorée (charbon-friendly)
+  // ÉQUIPE en or #D4AF37 + SERUJAN en blanc + monogramme SK
+  // Servi en local via Cloudflare ASSETS (asset versionné au build)
+  logoUrl: "/logo-equipe-serujan.png",
   heroImageUrl: "/serujan-stage.webp",
   bioImageUrl: "/serujan-elev8.jpg",
   elev8VideoUrl: "https://o6xngqfgnt.wpdns.site/wp-content/uploads/2025/07/Video-elev8.mp4",

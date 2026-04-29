@@ -41,7 +41,7 @@ export default function Navbar() {
               alt={clientConfig.teamName}
               decoding="async"
               fetchPriority="high"
-              className="h-10 w-auto"
+              className="h-12 md:h-14 w-auto"
             />
           ) : (
             <span className="text-xl font-bold text-gold uppercase tracking-wider">

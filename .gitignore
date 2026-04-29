@@ -41,3 +41,6 @@ post-deploy.cjs
 # Claude Code / Antigravity local state
 .claude/
 .lovable/
+
+# Design handoff Claude Design (extrait local du zip — ne pas polluer le repo)
+/serujan/

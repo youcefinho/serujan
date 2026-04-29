@@ -35,7 +35,7 @@ export default function Footer() {
                 alt={clientConfig.teamName}
                 loading="lazy"
                 decoding="async"
-                className="h-12 w-auto mb-6 opacity-90"
+                className="h-16 md:h-20 w-auto mb-6 opacity-95"
               />
             )}
             <p className="font-display text-xl md:text-2xl leading-tight text-foreground/85 max-w-md text-balance">
