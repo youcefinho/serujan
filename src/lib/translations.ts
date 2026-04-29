@@ -124,8 +124,12 @@ export const translations = {
     },
     eventTitle: { fr: "Elev8 2026", en: "Elev8 2026" },
     eventTagline: {
-      fr: "L'événement de référence en investissement immobilier",
-      en: "The benchmark event in real estate investing",
+      fr: "La conférence immobilière n°1 au Canada",
+      en: "Canada's #1 real estate conference",
+    },
+    eventSpeakers: {
+      fr: "Avec Ryan Serhant, Andy Elliott et Olivier Primeau",
+      en: "With Ryan Serhant, Andy Elliott and Olivier Primeau",
     },
     eventDescription: {
       fr: "Conférences magistrales, panels d'experts, rencontres privilégiées. Un seul jour pour repartir avec un réseau, des stratégies et la clarté qu'il faut pour propulser vos projets.",
@@ -320,7 +324,7 @@ export const translations = {
         {
           metric: "Podcast",
           label: "Les courtiers du Québec",
-          desc: "Plateforme d'interviews des leaders du courtage et de l'immobilier",
+          desc: "Animateur recevant Patrick Bet-David et Ryan Serhant parmi ses invités",
         },
       ],
       en: [
@@ -342,7 +346,7 @@ export const translations = {
         {
           metric: "Podcast",
           label: "Les courtiers du Québec",
-          desc: "Interview platform with the leaders of brokerage and real estate",
+          desc: "Hosting Patrick Bet-David and Ryan Serhant among notable guests",
         },
       ],
     },
@@ -632,7 +636,7 @@ export const translations = {
         },
         {
           title: "EXPERTISE RECONNUE",
-          desc: "Spécialiste des stratégies de financement alternatives en commercial — courtier hypothécaire depuis 2016.",
+          desc: "Spécialiste des stratégies de financement alternatives, y compris structures 100% sans mise de fonds — courtier hypothécaire depuis 2016.",
         },
         {
           title: "RÉSULTATS GARANTIS",
@@ -646,7 +650,7 @@ export const translations = {
         },
         {
           title: "RECOGNIZED EXPERTISE",
-          desc: "Specialist in alternative commercial financing strategies — mortgage broker since 2016.",
+          desc: "Specialist in alternative commercial financing strategies, including 100% no-down-payment structures — mortgage broker since 2016.",
         },
         {
           title: "GUARANTEED RESULTS",

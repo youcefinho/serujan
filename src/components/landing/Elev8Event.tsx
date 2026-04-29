@@ -163,8 +163,11 @@ export default function Elev8() {
             <h3 className="font-display text-3xl md:text-4xl text-foreground tracking-tight mb-3">
               {t(translations.elev8.eventTitle)}
             </h3>
-            <p className="text-gold-light/80 text-sm tracking-wide mb-5">
+            <p className="text-gold-light/80 text-sm tracking-wide mb-3">
               {t(translations.elev8.eventTagline)}
+            </p>
+            <p className="text-[11px] uppercase tracking-[0.18em] text-foreground/55 mb-6">
+              {t(translations.elev8.eventSpeakers)}
             </p>
             <p className="text-foreground/65 leading-relaxed mb-8 text-pretty">
               {t(translations.elev8.eventDescription)}
