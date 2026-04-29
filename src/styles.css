@@ -83,9 +83,9 @@
   --gold-deep: oklch(0.62 0.14 75);  /* Or sourd, ombres */
 
   /* ── Noirs profonds bleutés (chaleur subtile) ─────────────── */
-  --black-deep: oklch(0.07 0.005 260);     /* Fond principal */
-  --black-surface: oklch(0.11 0.008 260);  /* Sections alternées */
-  --black-elevated: oklch(0.16 0.012 260); /* Cards élevées */
+  --black-deep: oklch(0.10 0.005 260);     /* Fond principal — adouci */
+  --black-surface: oklch(0.14 0.008 260);  /* Sections alternées */
+  --black-elevated: oklch(0.19 0.012 260); /* Cards élevées */
 
   /* ── Crème éditorial ─────────────────────────────────────── */
   --cream: oklch(0.94 0.02 85);
@@ -101,7 +101,7 @@
   /* ── Tokens shadcn ──────────────────────────────────────── */
   --background: var(--black-deep);
   --foreground: oklch(0.96 0.005 85);
-  --card: oklch(0.13 0.01 260);
+  --card: oklch(0.16 0.01 260);
   --card-foreground: oklch(0.96 0.005 85);
   --popover: oklch(0.13 0.01 260);
   --popover-foreground: oklch(0.96 0.005 85);
@@ -250,6 +250,118 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+  }
+
+  /* ── Étoiles dorées — points scintillants sur les fonds ──── */
+  /* Fond sombre : étoiles or claires */
+  .bg-stars {
+    position: relative;
+  }
+  .bg-stars::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, oklch(0.78 0.13 82 / 0.5) 50%, transparent 50%),
+      radial-gradient(1px 1px at 45% 35%, oklch(0.86 0.14 85 / 0.4) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 70% 15%, oklch(0.78 0.13 82 / 0.6) 50%, transparent 50%),
+      radial-gradient(1px 1px at 85% 55%, oklch(0.86 0.14 85 / 0.35) 50%, transparent 50%),
+      radial-gradient(1px 1px at 25% 65%, oklch(0.78 0.13 82 / 0.3) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 55% 80%, oklch(0.86 0.14 85 / 0.5) 50%, transparent 50%),
+      radial-gradient(1px 1px at 90% 25%, oklch(0.78 0.13 82 / 0.4) 50%, transparent 50%),
+      radial-gradient(1px 1px at 10% 85%, oklch(0.86 0.14 85 / 0.3) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 35% 45%, oklch(0.78 0.13 82 / 0.35) 50%, transparent 50%),
+      radial-gradient(1px 1px at 65% 70%, oklch(0.86 0.14 85 / 0.45) 50%, transparent 50%),
+      radial-gradient(1px 1px at 80% 90%, oklch(0.78 0.13 82 / 0.3) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 50% 10%, oklch(0.86 0.14 85 / 0.55) 50%, transparent 50%),
+      radial-gradient(1px 1px at 5% 45%, oklch(0.78 0.13 82 / 0.25) 50%, transparent 50%),
+      radial-gradient(1px 1px at 95% 75%, oklch(0.86 0.14 85 / 0.4) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 40% 95%, oklch(0.78 0.13 82 / 0.5) 50%, transparent 50%);
+    animation: twinkle 6s ease-in-out infinite alternate;
+  }
+
+  /* Fond clair : étoiles or sombres */
+  .bg-stars-light {
+    position: relative;
+  }
+  .bg-stars-light::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 25%, oklch(0.62 0.14 75 / 0.35) 50%, transparent 50%),
+      radial-gradient(1px 1px at 50% 40%, oklch(0.62 0.14 75 / 0.25) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 75% 18%, oklch(0.62 0.14 75 / 0.4) 50%, transparent 50%),
+      radial-gradient(1px 1px at 88% 60%, oklch(0.62 0.14 75 / 0.2) 50%, transparent 50%),
+      radial-gradient(1px 1px at 30% 70%, oklch(0.62 0.14 75 / 0.3) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 60% 85%, oklch(0.62 0.14 75 / 0.35) 50%, transparent 50%),
+      radial-gradient(1px 1px at 12% 50%, oklch(0.62 0.14 75 / 0.2) 50%, transparent 50%),
+      radial-gradient(1px 1px at 42% 92%, oklch(0.62 0.14 75 / 0.3) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 82% 35%, oklch(0.62 0.14 75 / 0.25) 50%, transparent 50%),
+      radial-gradient(1px 1px at 68% 72%, oklch(0.62 0.14 75 / 0.3) 50%, transparent 50%);
+    animation: twinkle 8s ease-in-out infinite alternate;
+  }
+
+  /* Variante animée — gradient or qui glisse en boucle (effet shimmer texte premium) */
+  .text-gold-gradient-animated {
+    background: linear-gradient(
+      110deg,
+      var(--gold-deep) 0%,
+      var(--gold) 30%,
+      var(--gold-light) 50%,
+      var(--gold) 70%,
+      var(--gold-deep) 100%
+    );
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: gradient-shimmer 8s ease-in-out infinite;
+  }
+
+  /* Glassmorphism — pour cards éditoriales sur fonds sombres */
+  .glass {
+    background: oklch(0.10 0.008 260 / 0.55);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid oklch(1 0 0 / 0.06);
+    box-shadow:
+      0 1px 0 0 oklch(1 0 0 / 0.04) inset,
+      0 30px 80px -30px oklch(0 0 0 / 0.55);
+  }
+  .glass-light {
+    background: oklch(0.99 0.005 85 / 0.65);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid oklch(0.62 0.14 75 / 0.18);
+    box-shadow:
+      0 1px 0 0 oklch(1 0 0 / 0.45) inset,
+      0 24px 60px -25px oklch(0.18 0.008 260 / 0.18);
+  }
+
+  /* Surbrillance animée — un filet doré qui se trace sous le texte au reveal */
+  .highlight-underline {
+    position: relative;
+    display: inline-block;
+  }
+  .highlight-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.08em;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 50%, transparent 100%);
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: underline-trace 1.4s var(--ease-out-expo) forwards;
+    animation-delay: 0.6s;
+    border-radius: 2px;
   }
 
   /* Chiffres tabulaires (pour stats, calculatrice) */
@@ -439,6 +551,32 @@
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+@keyframes gradient-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes underline-trace {
+  to { transform: scaleX(1); }
+}
+@keyframes shine-pass {
+  0%   { transform: translateX(-130%) skewX(-18deg); opacity: 0; }
+  20%  { opacity: 1; }
+  60%  { opacity: 1; }
+  100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: var(--shadow-gold-sm), 0 0 0 0 oklch(0.78 0.13 82 / 0); }
+  50%      { box-shadow: var(--shadow-gold), 0 0 28px 4px oklch(0.78 0.13 82 / 0.35); }
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes bg-grad-pan {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
 .animate-fade-in { animation: fade-in 0.4s var(--ease-out-expo) forwards; }
 .animate-fade-up { animation: fade-up 0.7s var(--ease-out-expo) forwards; }
@@ -463,6 +601,80 @@
   background-position: 200% 0;
 }
 
+/* Shine continu — bande lumineuse qui balaye un CTA en boucle (4s) */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-shine::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 35%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.0) 30%,
+    oklch(1 0 0 / 0.45) 50%,
+    oklch(1 0 0 / 0.0) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  animation: shine-pass 4.2s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+.btn-shine > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Glow pulsé au hover — pour CTA primaires premium */
+.btn-glow:hover {
+  animation: glow-pulse 1.8s ease-in-out infinite;
+}
+
+/* Particle flottante (translateY douce) — utilisée par bg-stars-floating */
+.bg-stars-floating::before {
+  animation: float-y 9s ease-in-out infinite;
+}
+.bg-stars-floating::after {
+  animation: float-y 11s ease-in-out infinite reverse, twinkle 5s ease-in-out infinite;
+}
+
+/* Gradient animé — fond éditorial qui pulse lentement (utiliser parcimonieusement) */
+.bg-grad-anim {
+  background: linear-gradient(
+    135deg,
+    oklch(0.07 0.005 260) 0%,
+    oklch(0.11 0.012 260) 30%,
+    oklch(0.13 0.018 75) 55%,
+    oklch(0.11 0.012 260) 80%,
+    oklch(0.07 0.005 260) 100%
+  );
+  background-size: 220% 220%;
+  animation: bg-grad-pan 18s ease-in-out infinite;
+}
+
+/* Reduced motion : on coupe les boucles continues */
+@media (prefers-reduced-motion: reduce) {
+  .text-gold-gradient-animated,
+  .btn-shine::before,
+  .btn-glow:hover,
+  .bg-stars-floating::before,
+  .bg-stars-floating::after,
+  .bg-grad-anim {
+    animation: none;
+  }
+  .highlight-underline::after {
+    transform: scaleX(1);
+    animation: none;
+  }
+}
+
 /* Délais staggered pour révélation séquentielle */
 .stagger-1 { animation-delay: 80ms; }
 .stagger-2 { animation-delay: 160ms; }
@@ -470,3 +682,46 @@
 .stagger-4 { animation-delay: 320ms; }
 .stagger-5 { animation-delay: 400ms; }
 .stagger-6 { animation-delay: 480ms; }
+
+/* ══════════════════════════════════════════════════════════════
+   KEYFRAMES — Toutes les animations du design system
+   ══════════════════════════════════════════════════════════════ */
+
+@keyframes twinkle {
+  0%   { opacity: 0.4; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+@keyframes gradient-shimmer {
+  0%   { background-position: 100% 50%; }
+  50%  { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@keyframes underline-trace {
+  0%   { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+@keyframes shine-pass {
+  0%   { transform: translateX(-120%); }
+  20%  { transform: translateX(350%); }
+  100% { transform: translateX(350%); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px oklch(0.78 0.13 82 / 0.3); }
+  50%      { box-shadow: 0 0 40px oklch(0.78 0.13 82 / 0.55); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes bg-grad-pan {
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}

@@ -26,7 +26,7 @@ export default function Services() {
     <section
       id="services"
       ref={ref}
-      className="relative py-28 md:py-36 px-6 bg-black-deep overflow-hidden"
+      className="relative py-28 md:py-36 px-6 bg-black-deep bg-stars overflow-hidden"
     >
       {/* Lueur dorée discrète à gauche */}
       <div

@@ -57,7 +57,7 @@ export default function Elev8() {
     <section
       id="elev8"
       ref={ref}
-      className="relative py-28 md:py-36 px-6 bg-black-deep overflow-hidden"
+      className="relative py-28 md:py-36 px-6 bg-black-deep bg-stars overflow-hidden"
     >
       {/* Halo */}
       <div
