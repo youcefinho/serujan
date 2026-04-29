@@ -230,6 +230,47 @@ Voir `DEPLOYMENT.md` pour les étapes Cloudflare D1 + secrets + deploy.
 8. **Sécurité** — CSP stricte, rate limits, sanitisation serveur
 9. **Français** — réponses, commits, commentaires en français
 10. **Polices self-hosted** — jamais de Google Fonts (CSP)
+11. **Discipline de commits** — voir section 9.bis ci-dessous
+
+---
+
+## 9.bis Discipline de commits & GitHub
+
+Repo : `https://github.com/youcefinho/serujan`. Branche principale : `main`.
+
+### Pattern de commits obligatoire
+
+| Quand | Préfixe | Exemple |
+|---|---|---|
+| **Avant** une modification importante (sécurité = rollback facile) | `checkpoint:` | `checkpoint: avant refonte navbar` |
+| Tâche terminée et validée | `feat:` / `fix:` / `refactor:` / `docs:` / `chore:` / `style:` | `feat: effets visuels étoiles ajoutés` |
+
+Toujours en français. Toujours après `bun run build` 0 erreur + `bun run test` qui passe.
+
+### Workflow type pour une nouvelle modification
+
+```bash
+# 1. Avant de toucher quoi que ce soit
+git commit --allow-empty -m "checkpoint: avant <description>"
+
+# 2. Travail + validation utilisateur
+# (modif du code, build, test visuel)
+
+# 3. Commit final propre
+git add <fichiers ciblés>
+git commit -m "feat: <description claire>"
+
+# 4. Push
+git push origin main
+```
+
+### Rollback en cas de problème
+
+```bash
+git log --oneline      # repérer le hash du checkpoint
+git reset --hard <hash-checkpoint>   # destructif, perd les modifs locales
+git push --force-with-lease origin main   # uniquement si tu es seul sur le repo
+```
 
 ---
 

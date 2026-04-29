@@ -37,3 +37,7 @@ post-deploy.cjs
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code / Antigravity local state
+.claude/
+.lovable/
