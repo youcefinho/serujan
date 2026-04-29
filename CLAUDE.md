@@ -253,5 +253,5 @@ Voir `DEPLOYMENT.md` pour les étapes Cloudflare D1 + secrets + deploy.
 - **Site demo référence visuelle** : https://demo.intralys.com/serujan
 - **Config client** : `src/lib/config.ts`
 - **Traductions** : `src/lib/translations.ts`
-- **Helpers sécurité testables** : `src/lib/security.ts`
+- **Helpers sécurité testables** : `src/lib/security.ts` — `sanitizeHtml`, `sanitizeInput`, `isValidEmail`, `isValidPhone`, `isLikelyBot`, `buildSecurityHeaders`, `CSP_DIRECTIVES`
 - **Migrations** : `migrations/001`, `002`, `003`
