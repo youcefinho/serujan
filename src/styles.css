@@ -274,6 +274,9 @@
     inset: 0;
     pointer-events: none;
     z-index: 0;
+    /* Pré-promotion en compositing layer — l'animation twinkle ne déclenche
+       plus de promotion à la volée au premier scroll. */
+    transform: translateZ(0);
     background-image:
       radial-gradient(1px 1px at 15% 20%, oklch(0.78 0.13 82 / 0.5) 50%, transparent 50%),
       radial-gradient(1px 1px at 45% 35%, oklch(0.86 0.14 85 / 0.4) 50%, transparent 50%),
@@ -303,6 +306,7 @@
     inset: 0;
     pointer-events: none;
     z-index: 0;
+    transform: translateZ(0);
     background-image:
       radial-gradient(1px 1px at 20% 25%, oklch(0.62 0.14 75 / 0.35) 50%, transparent 50%),
       radial-gradient(1px 1px at 50% 40%, oklch(0.62 0.14 75 / 0.25) 50%, transparent 50%),
@@ -335,24 +339,29 @@
     animation: gradient-shimmer 8s ease-in-out infinite;
   }
 
-  /* Glassmorphism — pour cards éditoriales sur fonds sombres */
+  /* Glassmorphism — pour cards éditoriales sur fonds sombres
+     Note perf : translateZ(0) force la création du compositing layer dès le
+     mount, ce qui évite le freeze au premier scroll (sinon le browser doit
+     promouvoir le layer + recalculer le backdrop-filter à la volée). */
   .glass {
     background: oklch(0.16 0.010 70 / 0.55);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
     border: 1px solid oklch(1 0 0 / 0.06);
     box-shadow:
       0 1px 0 0 oklch(1 0 0 / 0.04) inset,
       0 30px 80px -30px oklch(0 0 0 / 0.55);
+    transform: translateZ(0);
   }
   .glass-light {
     background: oklch(0.96 0.018 80 / 0.65);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
     border: 1px solid oklch(0.62 0.14 75 / 0.18);
     box-shadow:
       0 1px 0 0 oklch(1 0 0 / 0.45) inset,
       0 24px 60px -25px oklch(0.22 0.012 50 / 0.16);
+    transform: translateZ(0);
   }
 
   /* Surbrillance animée — un filet doré qui se trace sous le texte au reveal */
@@ -397,6 +406,9 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  /* Pré-promotion en layer GPU — Hero étant la 1ère section visible,
+     ça évite le freeze de premier scroll (le layer est déjà chaud). */
+  transform: translateZ(0);
 }
 .bg-stars-hero::before {
   background-image:

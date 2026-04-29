@@ -43,21 +43,27 @@ export default function Hero() {
       id="hero"
       className="relative min-h-[100svh] flex items-center overflow-hidden bg-gradient-hero bg-stars-hero"
     >
-      {/* Image de fond très atténuée — parallax */}
+      {/* Image de fond très atténuée — parallax (will-change pour pré-composite GPU) */}
       {clientConfig.heroImageUrl && (
         <motion.div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.18]"
-          style={{ backgroundImage: `url(${clientConfig.heroImageUrl})`, y: bgY }}
+          style={{
+            backgroundImage: `url(${clientConfig.heroImageUrl})`,
+            y: bgY,
+            willChange: "transform",
+          }}
           aria-hidden
         />
       )}
 
-      {/* Halo doré derrière le titre */}
+      {/* Halo doré derrière le titre — blur réduit 60→40px + translateZ
+          force la promotion GPU au mount (évite freeze au 1er scroll) */}
       <div
         className="absolute top-1/4 right-0 w-[42rem] h-[42rem] rounded-full pointer-events-none"
         style={{
           background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.10) 0%, transparent 60%)",
-          filter: "blur(60px)",
+          filter: "blur(40px)",
+          transform: "translateZ(0)",
         }}
         aria-hidden
       />
