@@ -56,6 +56,10 @@
     <link rel="dns-prefetch" href="https://assets.cdn.filesafe.space" />
     <link rel="preconnect" href="https://assets.cdn.filesafe.space" crossorigin />
 
+    <!-- Preload fonts critiques — évite le FOIT (flash texte invisible) -->
+    <link rel="preload" as="font" href="/fonts/inter-latin-wght-normal.woff2" type="font/woff2" crossorigin />
+    <link rel="preload" as="font" href="/fonts/fraunces-latin-wght-normal.woff2" type="font/woff2" crossorigin />
+
     <!-- Preload de l'image hero pour LCP -->
     <link rel="preload" as="image" href="/serujan-stage.webp" type="image/webp" fetchpriority="high" />
 

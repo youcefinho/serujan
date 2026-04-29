@@ -3,6 +3,7 @@ import { translations } from "@/lib/translations";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { Network, Award, Trophy, ArrowRight } from "lucide-react";
+import { CountUp } from "@/components/ui/CountUp";
 
 // ═══════════════════════════════════════════════════════════
 // WhySerujan — 3 cartes "trust signals" entre Hero et Services.
@@ -18,7 +19,11 @@ export default function WhySerujan() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.2 });
 
-  const cards = ta(translations.whySerujan.cards) as Array<{ title: string; desc: string }>;
+  const cards = ta(translations.whySerujan.cards) as Array<{
+    metric: string;
+    title: string;
+    desc: string;
+  }>;
 
   return (
     <section
@@ -55,7 +60,7 @@ export default function WhySerujan() {
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease }}
-            className="font-display text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-tight text-balance"
+            className="font-display text-3xl md:text-4xl lg:text-5xl leading-[1.15] tracking-tight text-balance"
           >
             <span className="text-foreground">{t(translations.whySerujan.titleLead)} </span>
             <span className="text-gold-gradient italic font-display-italic">
@@ -93,6 +98,12 @@ export default function WhySerujan() {
                     strokeWidth={1.5}
                   />
                 </div>
+
+                {/* Chiffre-clé — impact visuel immédiat */}
+                <CountUp
+                  value={card.metric}
+                  className="font-display text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums mb-4"
+                />
 
                 <h3 className="font-display text-lg md:text-xl tracking-tight text-foreground mb-3 text-balance">
                   {card.title}

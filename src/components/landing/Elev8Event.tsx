@@ -16,7 +16,8 @@ const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 function useCountdown(target: Date) {
   const [t, setT] = useState(getTimeLeft(target));
   useEffect(() => {
-    const id = setInterval(() => setT(getTimeLeft(target)), 1000);
+    // Update toutes les 60s — les secondes sont inutiles pour un event dans 6 mois
+    const id = setInterval(() => setT(getTimeLeft(target)), 60_000);
     return () => clearInterval(id);
   }, [target]);
   return t;
@@ -24,12 +25,11 @@ function useCountdown(target: Date) {
 
 function getTimeLeft(target: Date) {
   const d = target.getTime() - Date.now();
-  if (d < 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  if (d < 0) return { days: 0, hours: 0, minutes: 0 };
   return {
     days: Math.floor(d / 86_400_000),
     hours: Math.floor((d % 86_400_000) / 3_600_000),
     minutes: Math.floor((d % 3_600_000) / 60_000),
-    seconds: Math.floor((d % 60_000) / 1000),
   };
 }
 
@@ -50,7 +50,6 @@ export default function Elev8() {
     { value: countdown.days, label: t(translations.elev8.days) },
     { value: countdown.hours, label: t(translations.elev8.hours) },
     { value: countdown.minutes, label: t(translations.elev8.minutes) },
-    { value: countdown.seconds, label: t(translations.elev8.seconds) },
   ];
 
   return (
@@ -88,7 +87,7 @@ export default function Elev8() {
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease }}
-            className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance"
+            className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-balance"
           >
             <span className="text-foreground">{t(translations.elev8.titleLead)} </span>
             <span className="text-gold-gradient-animated italic font-display-italic">
@@ -174,7 +173,7 @@ export default function Elev8() {
             </p>
 
             {/* Countdown compact */}
-            <div className="grid grid-cols-4 gap-2 md:gap-3 mb-8 max-w-md">
+            <div className="grid grid-cols-3 gap-2 md:gap-3 mb-8 max-w-md">
               {cd.map((c, i) => (
                 <div key={i} className="text-center">
                   <div className="font-display text-2xl md:text-3xl tabular-nums text-gold-gradient leading-none mb-1.5">

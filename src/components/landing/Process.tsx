@@ -62,7 +62,7 @@ export default function Process() {
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease }}
-            className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance"
+            className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-balance"
           >
             <span className="text-foreground">{t(translations.process.titleLead)} </span>
             <span className="text-gold-gradient italic font-display-italic">

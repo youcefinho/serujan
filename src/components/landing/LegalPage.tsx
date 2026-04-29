@@ -69,7 +69,7 @@ export function LegalPage({ eyebrow, title, sections }: Props) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1, ease }}
-          className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance mb-4"
+          className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-balance mb-4"
         >
           {title}
         </motion.h1>

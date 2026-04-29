@@ -41,6 +41,16 @@ export default {
       if (!env.DB || !env.ADMIN_PASSWORD) {
         return withSecurityHeaders(json({ error: "Configuration manquante" }, 500));
       }
+
+      // Bloquer les requêtes POST sans Content-Type JSON
+      // (empêche les form submissions cross-origin CSRF)
+      if (request.method === "POST") {
+        const ct = request.headers.get("Content-Type") || "";
+        if (!ct.includes("application/json")) {
+          return withSecurityHeaders(json({ error: "Content-Type invalide" }, 415));
+        }
+      }
+
       const apiResponse = await handleApi(url.pathname, request, env);
       return withSecurityHeaders(apiResponse);
     }
@@ -236,7 +246,7 @@ async function handleAdminLogin(request: Request, env: Env): Promise<Response> {
 
     await env.DB.prepare("INSERT INTO login_attempts (ip) VALUES (?)").bind(ip).run();
 
-    if (!password || password !== env.ADMIN_PASSWORD) {
+    if (!password || !(await timingSafeEqual(password, env.ADMIN_PASSWORD))) {
       return json({ error: "Mot de passe incorrect" }, 401);
     }
 
@@ -338,4 +348,31 @@ function withSecurityHeaders(response: Response): Response {
     statusText: response.statusText,
     headers,
   });
+}
+
+/**
+ * Comparaison à temps constant — protège contre les timing attacks.
+ * Utilise crypto.subtle pour garantir un temps d'exécution fixe
+ * indépendant du contenu des chaînes comparées.
+ */
+async function timingSafeEqual(a: string, b: string): Promise<boolean> {
+  const enc = new TextEncoder();
+  const keyData = enc.encode(a);
+  const key = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sigA = await crypto.subtle.sign("HMAC", key, enc.encode(a));
+  const sigB = await crypto.subtle.sign("HMAC", key, enc.encode(b));
+  if (sigA.byteLength !== sigB.byteLength) return false;
+  const viewA = new Uint8Array(sigA);
+  const viewB = new Uint8Array(sigB);
+  let diff = 0;
+  for (let i = 0; i < viewA.length; i++) {
+    diff |= viewA[i] ^ viewB[i];
+  }
+  return diff === 0;
 }

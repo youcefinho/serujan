@@ -38,6 +38,10 @@ export const translations = {
       fr: "Acquisitions, refinancements, développements et construction. Réponse personnelle de Serujan sous 24 h.",
       en: "Acquisitions, refinancing, developments and construction. Personal response from Serujan within 24 hours.",
     },
+    urgencyBadges: {
+      fr: ["Créneaux cette semaine", "Réponse personnelle < 24h", "Confidentiel"],
+      en: ["Openings this week", "Personal response < 24h", "Confidential"],
+    },
     ctaPrimary: { fr: "Évaluer mon projet", en: "Evaluate my project" },
     ctaCall: { fr: "Parler à Serujan", en: "Speak with Serujan" },
     statFunded: { fr: "Financés", en: "Funded" },
@@ -666,28 +670,34 @@ export const translations = {
     cards: {
       fr: [
         {
+          metric: "40+",
           title: "RÉSEAU EXCLUSIF",
           desc: "Accès privilégié aux décideurs des plus grandes institutions financières du Québec et du Canada.",
         },
         {
+          metric: "2016",
           title: "EXPERTISE RECONNUE",
           desc: "Spécialiste des stratégies de financement alternatives, y compris structures 100% sans mise de fonds — courtier hypothécaire depuis 2016.",
         },
         {
+          metric: "500M$+",
           title: "RÉSULTATS GARANTIS",
           desc: "Plus de 500 M$ financés en stratégies de financement commercial sur mesure.",
         },
       ],
       en: [
         {
+          metric: "40+",
           title: "EXCLUSIVE NETWORK",
           desc: "Privileged access to decision-makers at the largest financial institutions in Quebec and Canada.",
         },
         {
+          metric: "2016",
           title: "RECOGNIZED EXPERTISE",
           desc: "Specialist in alternative commercial financing strategies, including 100% no-down-payment structures — mortgage broker since 2016.",
         },
         {
+          metric: "$500M+",
           title: "GUARANTEED RESULTS",
           desc: "Over $500M financed in custom commercial financing strategies.",
         },
@@ -890,14 +900,14 @@ export const translations = {
 
   // --- MidPageCTA (bandeau capture rapide entre sections) ---
   midPageCTA: {
-    label: { fr: "Rappel rapide", en: "Quick callback" },
+    label: { fr: "Créneaux limités cette semaine", en: "Limited openings this week" },
     title: {
-      fr: "Pas le temps de remplir un long formulaire ?",
-      en: "No time for a long form?",
+      fr: "Parlons de votre projet maintenant.",
+      en: "Let's talk about your project now.",
     },
     subtitle: {
-      fr: "Laissez vos coordonnées. Serujan vous rappelle personnellement sous 1 h ouvrée.",
-      en: "Leave your details. Serujan personally calls you back within 1 business hour.",
+      fr: "Laissez vos coordonnées — Serujan vous rappelle personnellement sous 1 h ouvrée. Sans engagement.",
+      en: "Leave your details — Serujan personally calls you back within 1 business hour. No commitment.",
     },
     name: { fr: "Nom", en: "Name" },
     phone: { fr: "Téléphone", en: "Phone" },

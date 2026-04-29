@@ -1,4 +1,5 @@
 import { useLanguage } from "@/lib/LanguageContext";
+import { useNavigate } from "@tanstack/react-router";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { trackLeadFormSubmit } from "@/lib/analytics";
@@ -29,6 +30,7 @@ export default function LeadForm() {
   const { t, ta } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.1 });
+  const navigate = useNavigate();
 
   // Timestamp de mount pour anti-bot timing
   const mountTimeRef = useRef<number>(Date.now());
@@ -113,6 +115,10 @@ export default function LeadForm() {
         message: "",
         hp: "",
       });
+      // Redirection vers /merci pour tracking conversion
+      setTimeout(() => {
+        navigate({ to: "/merci" });
+      }, 800);
     } catch {
       setStatus("error");
       toast.error(t(translations.leadForm.error), {
@@ -164,7 +170,7 @@ export default function LeadForm() {
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease }}
-            className="font-display text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.05] tracking-tight text-balance"
+            className="font-display text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.15] tracking-tight text-balance"
           >
             <span className="text-foreground">{t(translations.leadForm.titleLead)} </span>
             <span className="text-gold-gradient-animated italic font-display-italic">
@@ -291,6 +297,8 @@ export default function LeadForm() {
                   aria-hidden
                 />
 
+                {/* ── 3 champs essentiels (friction minimale) ── */}
+
                 {/* Nom — obligatoire */}
                 <Field label={`${t(translations.leadForm.name)} *`} error={errors.name}>
                   <input
@@ -315,22 +323,6 @@ export default function LeadForm() {
                       placeholder="(514) 555-1234"
                     />
                   </Field>
-                  {/* Email — optionnel */}
-                  <Field
-                    label={`${t(translations.leadForm.email)} ${t(translations.leadForm.optional)}`}
-                    error={errors.email}
-                  >
-                    <input
-                      type="email"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className={inputCls}
-                      placeholder="jean@entreprise.com"
-                    />
-                  </Field>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-5 mt-5">
                   {/* Montant — obligatoire (qualification) */}
                   <Field
                     label={`${t(translations.leadForm.estimatedAmount)} *`}
@@ -350,37 +342,61 @@ export default function LeadForm() {
                       ))}
                     </select>
                   </Field>
-                  {/* Type — optionnel */}
-                  <Field
-                    label={`${t(translations.leadForm.projectType)} ${t(translations.leadForm.optional)}`}
-                  >
-                    <select
-                      value={form.projectType}
-                      onChange={(e) => setForm({ ...form, projectType: e.target.value })}
-                      className={inputCls}
-                    >
-                      <option value="">—</option>
-                      {projectTypeOptions.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  </Field>
                 </div>
 
-                <div className="mt-5">
-                  {/* Message — optionnel */}
-                  <Field label={t(translations.leadForm.message)}>
-                    <textarea
-                      rows={3}
-                      value={form.message}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      className={`${inputCls} resize-none`}
-                      placeholder=""
-                    />
-                  </Field>
-                </div>
+                {/* ── Accordéon optionnel — réduit la friction visuelle ── */}
+                <details className="mt-6 group">
+                  <summary className="cursor-pointer text-sm text-foreground/50 hover:text-gold transition-colors select-none flex items-center gap-2">
+                    <span className="w-4 h-4 rounded border border-gold/25 flex items-center justify-center text-[10px] text-gold/60 group-open:rotate-90 transition-transform duration-300">
+                      ›
+                    </span>
+                    {t(translations.leadForm.projectType)} {t(translations.leadForm.optional)}
+                  </summary>
+                  <div className="mt-4 space-y-5 animate-fade-in">
+                    <div className="grid md:grid-cols-2 gap-5">
+                      {/* Email — optionnel */}
+                      <Field
+                        label={`${t(translations.leadForm.email)} ${t(translations.leadForm.optional)}`}
+                        error={errors.email}
+                      >
+                        <input
+                          type="email"
+                          value={form.email}
+                          onChange={(e) => setForm({ ...form, email: e.target.value })}
+                          className={inputCls}
+                          placeholder="jean@entreprise.com"
+                        />
+                      </Field>
+                      {/* Type — optionnel */}
+                      <Field
+                        label={`${t(translations.leadForm.projectType)} ${t(translations.leadForm.optional)}`}
+                      >
+                        <select
+                          value={form.projectType}
+                          onChange={(e) => setForm({ ...form, projectType: e.target.value })}
+                          className={inputCls}
+                        >
+                          <option value="">—</option>
+                          {projectTypeOptions.map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                        </select>
+                      </Field>
+                    </div>
+                    {/* Message — optionnel */}
+                    <Field label={t(translations.leadForm.message)}>
+                      <textarea
+                        rows={3}
+                        value={form.message}
+                        onChange={(e) => setForm({ ...form, message: e.target.value })}
+                        className={`${inputCls} resize-none`}
+                        placeholder=""
+                      />
+                    </Field>
+                  </div>
+                </details>
 
                 {/* Submit */}
                 <button

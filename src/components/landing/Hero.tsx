@@ -88,16 +88,29 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* Titre statique tripartite — clair en 3 secondes */}
+        {/* Titre statique — QUOI + COMBIEN + OÙ en 3 secondes */}
         <h1 className="font-display text-[2.75rem] sm:text-6xl lg:text-7xl xl:text-[5.5rem] leading-[1.02] tracking-tight max-w-5xl">
           <motion.span {...fadeUp(0.08)} className="block text-foreground">
             {t(translations.hero.titleLead)}
           </motion.span>
           <motion.span
             {...fadeUp(0.18)}
-            className="block text-gold-gradient-animated italic font-display-italic min-h-[2.4em] sm:min-h-[1.2em]"
+            className="block text-gold-gradient-animated italic font-display-italic"
             style={{ fontVariationSettings: "'SOFT' 100, 'opsz' 144" }}
           >
+            {t(translations.hero.titleEmphasis)}
+          </motion.span>
+          <motion.span {...fadeUp(0.28)} className="block text-foreground/85 text-balance">
+            {t(translations.hero.titleTail)}
+          </motion.span>
+        </h1>
+
+        {/* Sous-titre — typewriter émotionnel (après que le message est clair) */}
+        <motion.div {...fadeUp(0.4)} className="mt-8 max-w-2xl">
+          <p className="text-lg md:text-xl text-foreground/70 leading-relaxed text-pretty">
+            {t(translations.hero.subtitle)}
+          </p>
+          <p className="mt-3 text-gold-gradient italic font-display-italic text-lg md:text-xl min-h-[1.6em]">
             <Typewriter
               phrases={ta(translations.hero.typewriterPhrases) as string[]}
               typeSpeed={45}
@@ -105,24 +118,13 @@ export default function Hero() {
               pauseAfterType={2200}
               pauseAfterDelete={350}
             />
-          </motion.span>
-          <motion.span {...fadeUp(0.28)} className="block text-foreground/85 text-balance">
-            {t(translations.hero.titleTail)}
-          </motion.span>
-        </h1>
-
-        {/* Sous-titre */}
-        <motion.p
-          {...fadeUp(0.4)}
-          className="mt-10 max-w-2xl text-lg md:text-xl text-foreground/70 leading-relaxed text-pretty"
-        >
-          {t(translations.hero.subtitle)}
-        </motion.p>
+          </p>
+        </motion.div>
 
         {/* CTAs */}
         <motion.div
           {...fadeUp(0.5)}
-          className="mt-12 flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+          className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
         >
           <a
             href="#contact"
@@ -142,6 +144,19 @@ export default function Hero() {
               {clientConfig.phone.display}
             </span>
           </a>
+        </motion.div>
+
+        {/* Badges d'urgence douce — rassure ET crée micro-urgence */}
+        <motion.div
+          {...fadeUp(0.58)}
+          className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] md:text-[13px] text-foreground/55"
+        >
+          {(ta(translations.hero.urgencyBadges) as string[]).map((badge) => (
+            <span key={badge} className="inline-flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-gold/70" aria-hidden />
+              {badge}
+            </span>
+          ))}
         </motion.div>
 
         {/* Stats — 4 chiffres sourcés (Elev8 + Planiprêt) */}
@@ -177,7 +192,7 @@ export default function Hero() {
 
       {/* Indicateur scroll */}
       <a
-        href="#services"
+        href="#pourquoi"
         className="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-foreground/40 hover:text-gold transition-colors"
         aria-label={t(translations.hero.scrollHint)}
       >

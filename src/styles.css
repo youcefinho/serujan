@@ -161,6 +161,8 @@
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
     overflow-x: hidden;
+    /* Aide le navigateur à planifier les animations avant le premier scroll */
+    text-rendering: optimizeSpeed;
   }
 
   body {
@@ -198,9 +200,16 @@
     font-feature-settings: "ss01", "ss02";
     font-optical-sizing: auto;
     letter-spacing: -0.02em;
-    line-height: 1.05;
+    line-height: 1.15;
     overflow-wrap: break-word;
     word-break: break-word;
+  }
+
+  /* Content-visibility : le navigateur skip le rendering des sections hors viewport.
+     Gain majeur sur les vieux téléphones — réduit le travail de layout initial. */
+  section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
   }
 
   /* Sélection custom — chaude et discrète */

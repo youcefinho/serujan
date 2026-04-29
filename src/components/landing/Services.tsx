@@ -59,7 +59,7 @@ export default function Services() {
             initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease }}
-            className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance"
+            className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-balance"
           >
             <span className="text-foreground">{t(translations.services.titleLead)} </span>
             <span className="text-gold-gradient italic font-display-italic">
@@ -158,11 +158,9 @@ export default function Services() {
         >
           <a
             href="#contact"
-            className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-gold transition-colors group"
+            className="group inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold-sm hover:shadow-gold transition-all duration-300 hover:-translate-y-0.5 btn-shine btn-glow"
           >
-            <span className="border-b border-gold/30 group-hover:border-gold pb-0.5 transition-colors">
-              {t(translations.services.learnMore)}
-            </span>
+            <span>{t(translations.services.learnMore)}</span>
             <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         </motion.div>
