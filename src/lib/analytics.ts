@@ -22,14 +22,6 @@ export function trackEvent(
 
 // ── Événements prédéfinis ────────────────────────────
 
-export function trackCalendlyClick(location: string): void {
-  trackEvent("calendly_click", {
-    event_category: "conversion",
-    event_label: location,
-    cta_location: location,
-  });
-}
-
 export function trackLeadFormSubmit(projectType: string): void {
   trackEvent("lead_form_submit", {
     event_category: "conversion",

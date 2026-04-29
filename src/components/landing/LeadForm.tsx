@@ -2,6 +2,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { trackLeadFormSubmit } from "@/lib/analytics";
+import { isValidEmail, isValidPhone, sanitizeInput } from "@/lib/security";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { useState, useRef, useEffect } from "react";
 import {
@@ -22,17 +23,6 @@ import {
 // ═══════════════════════════════════════════════════════════
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-function sanitize(input: string, maxLen = 500): string {
-  return input.trim().slice(0, maxLen);
-}
-function validateEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-function validatePhone(phone: string): boolean {
-  const digits = phone.replace(/\D/g, "");
-  return digits.length >= 10 && digits.length <= 15;
-}
 
 export default function LeadForm() {
   const { t, ta } = useLanguage();
@@ -62,9 +52,10 @@ export default function LeadForm() {
 
   function validate(): boolean {
     const newErrors: Record<string, string> = {};
-    if (sanitize(form.name).length < 2) newErrors.name = t(translations.leadForm.nameRequired);
-    if (!validateEmail(form.email)) newErrors.email = t(translations.leadForm.emailInvalid);
-    if (form.phone && !validatePhone(form.phone))
+    if (sanitizeInput(form.name).length < 2)
+      newErrors.name = t(translations.leadForm.nameRequired);
+    if (!isValidEmail(form.email)) newErrors.email = t(translations.leadForm.emailInvalid);
+    if (form.phone && !isValidPhone(form.phone))
       newErrors.phone = t(translations.leadForm.phoneInvalid);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -83,12 +74,12 @@ export default function LeadForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: sanitize(form.name, 100),
-          email: sanitize(form.email, 200),
-          phone: sanitize(form.phone, 20),
-          project_type: sanitize(form.projectType, 50),
-          estimated_amount: sanitize(form.estimatedAmount, 50),
-          message: sanitize(form.message, 2000),
+          name: sanitizeInput(form.name, 100),
+          email: sanitizeInput(form.email, 200),
+          phone: sanitizeInput(form.phone, 20),
+          project_type: sanitizeInput(form.projectType, 50),
+          estimated_amount: sanitizeInput(form.estimatedAmount, 50),
+          message: sanitizeInput(form.message, 2000),
           hp: form.hp,
           elapsed_ms,
         }),

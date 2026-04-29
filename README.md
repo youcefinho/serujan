@@ -12,7 +12,7 @@ Landing page premium noir/or pour **Serujan Kaneshalingam**, courtier hypothéca
 |---|---|
 | Build (`bun run build`) | ✅ 0 erreur, ~1.7 s |
 | Type-check (`bunx tsc --noEmit`) | ✅ 0 erreur |
-| Tests (`bun run test`) | ✅ 43/43 passent |
+| Tests (`bun run test`) | ✅ 52/52 passent |
 | Sections landing | ✅ 9 sections premium (motion/react) |
 | Pages secondaires | ✅ merci, mentions-legales, confidentialite, admin |
 | i18n FR/EN | ✅ 100 % du contenu visible |
@@ -96,7 +96,6 @@ serujan/
     │   ├── LanguageContext.tsx
     │   ├── security.ts      # ⭐ Helpers sécurité (XSS, validation, anti-bot)
     │   ├── analytics.ts     # GA4 trackers
-    │   ├── calendly.ts      # Popup widget + listener
     │   └── utils.ts         # cn() helper
     ├── routes/              # Routes file-based
     │   ├── __root.tsx       # SkipLink + 404 v2
@@ -137,7 +136,7 @@ serujan/
 bun install            # Installe les dépendances
 bun run dev            # Dev server → http://localhost:5173
 bun run build          # Build production → dist/
-bun run test           # Vitest (43 tests)
+bun run test           # Vitest (52 tests)
 bun run lint           # ESLint
 bun run format         # Prettier
 bunx tsc --noEmit      # Type-check strict
@@ -162,7 +161,7 @@ wrangler deploy        # Déploiement Cloudflare (voir DEPLOYMENT.md)
 
 ## Sécurité
 
-- **CSP stricte** : whitelist Calendly + GA4 uniquement
+- **CSP stricte** : whitelist GA4 uniquement
 - **HSTS** : 1 an + includeSubDomains + preload
 - **X-Frame-Options DENY** + **frame-ancestors 'none'**
 - **Rate limit** : 10 leads/h par IP, 5 logins admin/h par IP
@@ -185,10 +184,6 @@ Voir `src/lib/security.ts` (helpers testables) et `src/worker.ts` (intégration)
 | `GHL_WEBHOOK_URL` | *(optionnel)* GoHighLevel |
 
 ### Client (`.env.local`)
-
-| Variable | Description |
-|---|---|
-| `VITE_CALENDLY_URL` | URL Calendly de Serujan |
 
 GA4 ID : à remplacer dans `index.html` (deux occurrences `G-XXXXXXXXXX`).
 

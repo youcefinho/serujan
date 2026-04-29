@@ -8,6 +8,7 @@ import {
   sanitizeHtml,
   sanitizeInput,
   isValidEmail,
+  isValidPhone,
   isLikelyBot,
   buildSecurityHeaders,
   CSP_DIRECTIVES,
@@ -35,8 +36,11 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    // Routage API
+    // Fail-fast : configuration runtime requise pour les routes API
     if (url.pathname.startsWith("/api/")) {
+      if (!env.DB || !env.ADMIN_PASSWORD) {
+        return withSecurityHeaders(json({ error: "Configuration manquante" }, 500));
+      }
       const apiResponse = await handleApi(url.pathname, request, env);
       return withSecurityHeaders(apiResponse);
     }
@@ -111,6 +115,8 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
 
     if (cleanName.length < 2) return json({ error: "Nom trop court" }, 400);
     if (!isValidEmail(cleanEmail)) return json({ error: "Email invalide" }, 400);
+    if (cleanPhone && !isValidPhone(cleanPhone))
+      return json({ error: "Numéro de téléphone invalide" }, 400);
 
     const id = crypto.randomUUID();
 

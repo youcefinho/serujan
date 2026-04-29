@@ -3,6 +3,7 @@ import {
   sanitizeHtml,
   sanitizeInput,
   isValidEmail,
+  isValidPhone,
   isLikelyBot,
   buildSecurityHeaders,
   CSP_DIRECTIVES,
@@ -75,6 +76,22 @@ describe("isValidEmail — validation RFC simplifiée", () => {
   });
 });
 
+describe("isValidPhone — validation 10 à 15 chiffres après nettoyage", () => {
+  it.each([
+    ["(514) 701-6171", true],
+    ["+1-514-701-6171", true],
+    ["5147016171", true],
+    ["514 701 6171", true],
+    ["+33 1 23 45 67 89", true],
+    ["123456789", false], // 9 chiffres
+    ["", false],
+    ["abc", false],
+    ["1".repeat(16), false], // 16 chiffres
+  ])("valide '%s' → %s", (phone, expected) => {
+    expect(isValidPhone(phone)).toBe(expected);
+  });
+});
+
 describe("isLikelyBot — détection bot par honeypot + timing", () => {
   it("retourne true si le honeypot est rempli", () => {
     expect(isLikelyBot({ hp: "spam-content" })).toBe(true);
@@ -126,9 +143,10 @@ describe("buildSecurityHeaders + CSP", () => {
     expect(CSP_DIRECTIVES).toContain("frame-ancestors 'none'");
   });
 
-  it("CSP whitelist Calendly et Google Analytics", () => {
-    expect(CSP_DIRECTIVES).toContain("https://assets.calendly.com");
+  it("CSP whitelist Google Analytics uniquement (zéro Calendly, zéro Spotify)", () => {
     expect(CSP_DIRECTIVES).toContain("https://*.google-analytics.com");
+    expect(CSP_DIRECTIVES).not.toContain("calendly");
+    expect(CSP_DIRECTIVES).not.toContain("spotify");
   });
 
   it("CSP autorise les fonts self-hosted (data: pour woff2 inline)", () => {

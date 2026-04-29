@@ -41,7 +41,6 @@ Financement commercial : acquisitions, refinancements, développements, construc
 | **Cloudflare D1** | — | SQLite serverless |
 | **Resend** | 6+ | Emails de notification |
 | **Bun** | Latest | Runtime + paquets |
-| **Calendly** | Widget JS | Popup RDV |
 
 ### Architecture worker
 
@@ -79,7 +78,6 @@ src/
 │   ├── security.ts          # ⭐ Helpers sécurité testables
 │   ├── LanguageContext.tsx
 │   ├── analytics.ts
-│   ├── calendly.ts
 │   └── utils.ts
 ├── routes/
 │   ├── __root.tsx           # SkipLink + 404 v2
@@ -172,7 +170,7 @@ Chaque section v2 commence par :
 | `/api/admin/leads` | GET | Liste leads (token Bearer requis) |
 
 ### Sécurité
-- **CSP stricte** : whitelist Calendly + GA4 + assets distants
+- **CSP stricte** : whitelist GA4 + assets distants uniquement
 - **HSTS** : 1 an + includeSubDomains + preload
 - **X-Frame-Options** : DENY
 - **Permissions-Policy** : camera/mic/geo désactivés
@@ -202,7 +200,6 @@ lead_attempts(id, ip, attempted_at)            -- rate limit form
 ### Client (`.env.local`)
 | Variable | Description |
 |---|---|
-| `VITE_CALENDLY_URL` | URL Calendly |
 | `VITE_GA4_ID` | ID GA4 (sinon mettre dans index.html directement) |
 
 ---
@@ -213,7 +210,7 @@ lead_attempts(id, ip, attempted_at)            -- rate limit form
 bun install            # Dépendances
 bun run dev            # Dev server (localhost:5173)
 bun run build          # Build production (dist/)
-bun run test           # Vitest (43 tests)
+bun run test           # Vitest (52 tests)
 bunx tsc --noEmit      # Type-check strict
 ```
 

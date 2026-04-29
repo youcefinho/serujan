@@ -1,11 +1,10 @@
 // Entrée de l'app : monte React + TanStack Router, importe les polices
-// self-hosted, attache le listener Calendly, retire le loader HTML.
+// self-hosted, retire le loader HTML.
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import { attachCalendlyListener } from "./lib/calendly";
 
 // Polices self-hosted (zéro appel réseau, immune aux blocages CSP)
 import "@fontsource-variable/fraunces/index.css";
@@ -33,9 +32,6 @@ if (loader) {
   loader.style.opacity = "0";
   setTimeout(() => loader.remove(), 300);
 }
-
-// Start listening for Calendly booking events
-attachCalendlyListener();
 
 // Mount the app
 createRoot(document.getElementById("root")!).render(

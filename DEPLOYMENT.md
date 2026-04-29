@@ -104,7 +104,7 @@ Cloudflare retourne l'URL `https://serujan.<account>.workers.dev`.
 
 ### Sécurité
 - Ouvre `https://securityheaders.com/` et entre l'URL → cible **A+**
-- Vérifie que le CSP charge bien Calendly + GA4 sans erreur console
+- Vérifie que le CSP charge bien GA4 sans erreur console
 - Teste le formulaire de contact → email reçu sur `expert@serujan.com`
 
 ### Fonctionnel

@@ -3,7 +3,7 @@
 // Courtage Hypothécaire Commercial
 // ═══════════════════════════════════════════════════════════
 // Français = langue par défaut. Choix persisté dans localStorage.
-// EN = placeholder pour Phase 2 (traductions réelles à venir)
+// FR + EN sont tous deux des traductions complètes.
 // ═══════════════════════════════════════════════════════════
 
 export type Language = "fr" | "en";
@@ -135,17 +135,6 @@ export const translations = {
     },
     academyCta: { fr: "Découvrir la méthode", en: "Discover the method" },
     videoLabel: { fr: "Aperçu vidéo", en: "Video preview" },
-  },
-
-  // --- Podcast ---
-  podcast: {
-    label: { fr: "Podcast", en: "Podcast" },
-    title: { fr: "ÉCOUTEZ LE PODCAST", en: "LISTEN TO THE PODCAST" },
-    subtitle: {
-      fr: "Insights exclusifs et stratégies d'experts",
-      en: "Exclusive insights and expert strategies",
-    },
-    cta: { fr: "Écouter maintenant", en: "Listen now" },
   },
 
   // --- Process ---
@@ -282,44 +271,6 @@ export const translations = {
     pillarCta: { fr: "Voir un cas similaire", en: "See a similar case" },
   },
 
-  // --- Elev8 Academy ---
-  elev8Academy: {
-    label: { fr: "Formation", en: "Training" },
-    title: { fr: "INVESTIR SANS MISE DE FONDS", en: "INVEST WITH NO DOWN PAYMENT" },
-    description: {
-      fr: "Découvrez les stratégies avancées de financement créatif qui permettent aux investisseurs avertis de bâtir leur portefeuille immobilier sans capital initial.",
-      en: "Discover advanced creative financing strategies that allow savvy investors to build their real estate portfolio without initial capital.",
-    },
-    features: {
-      fr: [
-        {
-          title: "Techniques de Financement Créatif",
-          desc: "Maîtrisez les stratégies les plus avancées du marché",
-        },
-        {
-          title: "Réseau de Prêteurs Privés",
-          desc: "Accès exclusif aux sources de financement alternatives",
-        },
-        {
-          title: "Accompagnement Personnalisé",
-          desc: "Mentorat direct avec Serujan et son équipe",
-        },
-      ],
-      en: [
-        {
-          title: "Creative Financing Techniques",
-          desc: "Master the most advanced market strategies",
-        },
-        {
-          title: "Private Lender Network",
-          desc: "Exclusive access to alternative financing sources",
-        },
-        { title: "Personalized Coaching", desc: "Direct mentorship with Serujan and his team" },
-      ],
-    },
-    cta: { fr: "DÉCOUVRIR LA MÉTHODE", en: "DISCOVER THE METHOD" },
-  },
-
   // --- Calculatrice hypothécaire commerciale ---
   calculator: {
     label: { fr: "Outil interactif", en: "Interactive tool" },
@@ -350,20 +301,6 @@ export const translations = {
       fr: "Ces résultats sont estimatifs et ne constituent pas une offre de financement. Les taux réels peuvent varier selon votre profil et les conditions du marché. Consultez Serujan pour une évaluation précise et personnalisée de votre projet commercial.",
       en: "These results are estimates and do not constitute a financing offer. Actual rates may vary based on your profile and market conditions. Consult Serujan for a precise and personalized evaluation of your commercial project.",
     },
-  },
-
-  // --- FreeConsultation / Contact CTA ---
-  freeConsultation: {
-    title: {
-      fr: "Chaque projet est unique.",
-      en: "Every project is unique.",
-    },
-    subtitle: {
-      fr: "Discutons de vos objectifs et explorons ensemble les meilleures solutions de financement pour concrétiser votre vision.",
-      en: "Let's discuss your goals and explore together the best financing solutions to realize your vision.",
-    },
-    ctaEmail: { fr: "ÉCRIRE UN COURRIEL", en: "SEND AN EMAIL" },
-    ctaCall: { fr: "APPELER MAINTENANT", en: "CALL NOW" },
   },
 
   // --- LeadForm ---
@@ -412,19 +349,6 @@ export const translations = {
       en: "An error occurred. Please try again or call",
     },
     honeypot: { fr: "Ne pas remplir", en: "Do not fill" },
-  },
-
-  // --- ExitIntentPopup ---
-  exitIntent: {
-    title: { fr: "Avant de partir…", en: "Before you go…" },
-    description: { fr: "Obtenez votre", en: "Get your" },
-    descriptionBold: { fr: "évaluation gratuite de projet", en: "free project evaluation" },
-    descriptionEnd: {
-      fr: "en 30 secondes. Aucun engagement.",
-      en: "in 30 seconds. No commitment.",
-    },
-    cta: { fr: "ÉVALUER MON PROJET", en: "EVALUATE MY PROJECT" },
-    callAlt: { fr: "ou appelez directement le", en: "or call directly at" },
   },
 
   // --- MobileStickyBar ---

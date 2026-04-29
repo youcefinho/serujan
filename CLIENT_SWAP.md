@@ -112,8 +112,7 @@ node post-deploy.cjs
 | 4 | Email | Texte |
 | 5 | Adresse du bureau | Texte |
 | 6 | Zone de service | Texte (ex: MONTRÉAL \| QUÉBEC) |
-| 7 | URL Calendly | URL |
-| 8 | Réseaux sociaux | URLs |
+| 7 | Réseaux sociaux | URLs |
 | 9 | Logo (couleur + blanc) | PNG transparent |
 | 10 | Photo portrait | JPG haute résolution |
 | 11 | Stats (M$ financés, % approbation, etc.) | Nombres |

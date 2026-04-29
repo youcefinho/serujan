@@ -29,6 +29,12 @@ export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 200;
 }
 
+/** Validation téléphone : 10 à 15 chiffres après nettoyage (E.164 + extension). */
+export function isValidPhone(phone: string): boolean {
+  const digits = phone.replace(/\D/g, "");
+  return digits.length >= 10 && digits.length <= 15;
+}
+
 /** True si l'input ressemble à un soumission bot (timing trop rapide). */
 export function isLikelyBot({ elapsed_ms, hp }: { elapsed_ms?: number; hp?: string }): boolean {
   if (hp && hp.trim().length > 0) return true;
@@ -50,16 +56,15 @@ export function buildSecurityHeaders(csp: string): Record<string, string> {
   };
 }
 
-/** CSP whitelist pour Serujan v2 (Calendly, GA4, assets distants). */
+/** CSP whitelist pour Serujan v2 (GA4, assets distants, vidéo Elev8). */
 export const CSP_DIRECTIVES = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://assets.calendly.com https://*.googletagmanager.com https://*.google-analytics.com",
-  "style-src 'self' 'unsafe-inline' https://assets.calendly.com",
-  "img-src 'self' data: blob: https://assets.cdn.filesafe.space https://*.calendly.com https://*.google-analytics.com https://*.googletagmanager.com",
+  "script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://*.google-analytics.com",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://assets.cdn.filesafe.space https://*.google-analytics.com https://*.googletagmanager.com",
   "font-src 'self' data:",
   "media-src 'self' https://o6xngqfgnt.wpdns.site",
-  "connect-src 'self' https://*.calendly.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
-  "frame-src https://calendly.com https://*.calendly.com https://open.spotify.com",
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
   "frame-ancestors 'none'",
   "form-action 'self'",
   "base-uri 'self'",
