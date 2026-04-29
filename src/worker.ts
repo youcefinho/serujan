@@ -8,6 +8,7 @@ interface Env {
   DB: D1Database;
   ADMIN_PASSWORD: string;
   RESEND_API_KEY: string;
+  GHL_WEBHOOK_URL?: string; // GoHighLevel — optionnel, configuré dans Dashboard Cloudflare
 }
 
 // ── Constantes sécurité ─────────────────────────────────────
@@ -171,6 +172,29 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
       }
     } catch (emailErr) {
       console.warn('Échec notification email:', emailErr);
+    }
+
+    // Webhook GoHighLevel (best-effort — ne bloque pas la réponse)
+    if (env.GHL_WEBHOOK_URL) {
+      try {
+        await fetch(env.GHL_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: cleanName,
+            email: cleanEmail,
+            phone: cleanPhone,
+            message: cleanMessage,
+            type: cleanType === 'buy' ? 'Acheteur' : 'Vendeur',
+            source: 'Site Intralys',
+            ...(cleanType === 'buy'
+              ? { budget: cleanBudget, timeline: cleanTimeline }
+              : { address: cleanAddress, property_type: cleanPropertyType }),
+          }),
+        });
+      } catch {
+        // GHL indisponible → pas grave, le lead est safe en D1
+      }
     }
 
     return json({ success: true, id });

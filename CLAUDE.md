@@ -173,8 +173,10 @@ CREATE TABLE login_attempts (
 |---|---|
 | `ADMIN_PASSWORD` | Mot de passe admin pour `/admin` |
 | `RESEND_API_KEY` | Clé API Resend (`re_...`) |
+| `GHL_WEBHOOK_URL` | *(optionnel)* URL webhook GoHighLevel pour automatisation CRM |
 
 > ⚠️ Ces variables doivent être configurées dans la section **"Variables et secrets"** du Worker (pas seulement dans le build).
+> 💡 `GHL_WEBHOOK_URL` est optionnel — si non configuré, le lead est simplement sauvegardé en D1 + email.
 
 ### Variables client (`.env.local`)
 

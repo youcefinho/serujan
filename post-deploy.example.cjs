@@ -18,6 +18,7 @@ const { execSync } = require('child_process');
 const secrets = {
   ADMIN_PASSWORD: 'REMPLACER_PAR_MOT_DE_PASSE_ADMIN',
   RESEND_API_KEY: 'REMPLACER_PAR_CLE_RESEND_re_...',
+  // GHL_WEBHOOK_URL: 'https://services.leadconnectorhq.com/hooks/VOTRE_ID',  // Optionnel — décommenter si GoHighLevel est utilisé
 };
 
 console.log('🔐 Configuration des secrets Cloudflare...\n');
