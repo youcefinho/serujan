@@ -65,8 +65,8 @@ export const clientConfig = {
   // ── Assets ─────────────────────────────────────────────
   logoUrl:
     "https://assets.cdn.filesafe.space/uE8otTz2VFBFG6lqzsmK/media/68b7fd5c7f707b51d1928b4d.png",
-  heroImageUrl:
-    "https://assets.cdn.filesafe.space/uE8otTz2VFBFG6lqzsmK/media/68b7fbbf7f707ba15b92606f.png",
+  heroImageUrl: "/serujan-stage.webp",
+  bioImageUrl: "/serujan-elev8.jpg",
   elev8VideoUrl: "https://o6xngqfgnt.wpdns.site/wp-content/uploads/2025/07/Video-elev8.mp4",
 
   // ── Page Merci ─────────────────────────────────────────

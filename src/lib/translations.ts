@@ -271,6 +271,86 @@ export const translations = {
     pillarCta: { fr: "Voir un cas similaire", en: "See a similar case" },
   },
 
+  // --- Bio Serujan ---
+  bio: {
+    label: { fr: "Qui est Serujan", en: "Who is Serujan" },
+    titleLead: { fr: "Bâtisseur d'une", en: "Building a" },
+    titleEmphasis: { fr: "communauté", en: "community" },
+    titleTail: { fr: "de courtiers d'élite.", en: "of elite brokers." },
+    intro: {
+      fr: "Diplômé de Concordia (B. Adm.) et certifié par le Collège de l'immobilier du Québec, Serujan Kaneshalingam dirige la Division Alternative chez Planiprêt. En cinq ans, il a accompagné plus de 500 courtiers et fondé Elev8 — l'événement de référence en investissement immobilier au Québec.",
+      en: "Concordia BBA graduate and certified by the Collège de l'immobilier du Québec, Serujan Kaneshalingam leads the Alternative Division at Planiprêt. In five years, he has mentored over 500 brokers and founded Elev8 — Quebec's benchmark event in real estate investing.",
+    },
+    quote: {
+      fr: "Je ne vends pas une hypothèque. Je structure une opportunité que personne d'autre ne sait monter.",
+      en: "I don't sell mortgages. I structure opportunities others can't even build.",
+    },
+    quoteAttribution: { fr: "— Serujan Kaneshalingam", en: "— Serujan Kaneshalingam" },
+    milestones: {
+      fr: [
+        {
+          metric: "500+",
+          label: "Courtiers accompagnés",
+          desc: "Mentorat sur 5 ans en banque privée et investissement immobilier",
+        },
+        {
+          metric: "900+",
+          label: "Participants Elev8",
+          desc: "Salle remplie à la première édition de l'événement fondateur",
+        },
+        {
+          metric: "Top 1%",
+          label: "Prêts alternatifs Québec",
+          desc: "Référence reconnue en financement privé et solutions hors banque",
+        },
+        {
+          metric: "Podcast",
+          label: "Les courtiers du Québec",
+          desc: "Plateforme d'interviews des leaders du courtage et de l'immobilier",
+        },
+      ],
+      en: [
+        {
+          metric: "500+",
+          label: "Brokers mentored",
+          desc: "Five years of mentorship in private banking and real estate investing",
+        },
+        {
+          metric: "900+",
+          label: "Elev8 attendees",
+          desc: "Sold-out venue at the inaugural edition of the founding event",
+        },
+        {
+          metric: "Top 1%",
+          label: "Quebec alternative lending",
+          desc: "Recognized authority in private financing and out-of-bank solutions",
+        },
+        {
+          metric: "Podcast",
+          label: "Les courtiers du Québec",
+          desc: "Interview platform with the leaders of brokerage and real estate",
+        },
+      ],
+    },
+    credentials: {
+      fr: [
+        "B. Adm., Université Concordia",
+        "Courtier hypothécaire — Collège de l'immobilier du Québec",
+        "Directeur · Division Alternative · Planiprêt",
+        "Fondateur · Elev8 Event & Elev8 Academy",
+        "Animateur · Podcast Les courtiers du Québec",
+      ],
+      en: [
+        "BBA, Concordia University",
+        "Mortgage Broker — Collège de l'immobilier du Québec",
+        "Director · Alternative Division · Planiprêt",
+        "Founder · Elev8 Event & Elev8 Academy",
+        "Host · Les courtiers du Québec Podcast",
+      ],
+    },
+    cta: { fr: "Travailler avec Serujan", en: "Work with Serujan" },
+  },
+
   // --- Calculatrice hypothécaire commerciale ---
   calculator: {
     label: { fr: "Outil interactif", en: "Interactive tool" },
