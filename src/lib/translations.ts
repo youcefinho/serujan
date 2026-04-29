@@ -95,32 +95,40 @@ export const translations = {
     ],
   },
 
-  // --- Elev8 Event ---
-  elev8Event: {
-    label: { fr: "Événement", en: "Event" },
-    title: { fr: "ELEV8 2025", en: "ELEV8 2025" },
-    description: {
-      fr: "L'événement Elev8 réunit des investisseurs, des entrepreneurs et des experts du financement commercial dans un cadre propice à l'apprentissage et au réseautage.",
-      en: "The Elev8 event brings together investors, entrepreneurs, and commercial financing experts in a setting conducive to learning and networking.",
+  // --- Elev8 (Event + Academy fusionnés) ---
+  elev8: {
+    label: { fr: "Écosystème Elev8", en: "Elev8 Ecosystem" },
+    titleLead: { fr: "Au-delà du courtage,", en: "Beyond brokerage," },
+    titleEmphasis: { fr: "une communauté", en: "a community" },
+    titleTail: { fr: "d'investisseurs.", en: "of investors." },
+    intro: {
+      fr: "Elev8, c'est l'événement annuel et la formation continue qui forment l'élite du financement immobilier au Québec. Là où les investisseurs sérieux apprennent ce que les autres ignorent.",
+      en: "Elev8 is the annual event and ongoing training that shape Quebec's elite in real estate financing. Where serious investors learn what others ignore.",
     },
-    details: {
-      fr: "Conférences magistrales, panels d'experts et rencontres privilégiées : chaque participant repart avec un arsenal d'outils pratiques, des stratégies éprouvées et un réseau de contacts stratégiques pour propulser ses projets vers de nouveaux sommets.",
-      en: "Keynote speeches, expert panels, and exclusive meetings: every participant leaves with a toolkit of practical tools, proven strategies, and a network of strategic contacts to propel their projects to new heights.",
+    eventTitle: { fr: "Elev8 2026", en: "Elev8 2026" },
+    eventTagline: { fr: "L'événement de référence en investissement immobilier", en: "The benchmark event in real estate investing" },
+    eventDescription: {
+      fr: "Conférences magistrales, panels d'experts, rencontres privilégiées. Un seul jour pour repartir avec un réseau, des stratégies et la clarté qu'il faut pour propulser vos projets.",
+      en: "Keynote speeches, expert panels, exclusive meetings. One day to leave with a network, strategies, and the clarity needed to propel your projects.",
     },
-    ctaVisit: { fr: "VISITER LA PAGE DE L'ÉVÉNEMENT", en: "VISIT THE EVENT PAGE" },
-    ctaReserve: { fr: "RÉSERVER MA PLACE MAINTENANT", en: "RESERVE MY SPOT NOW" },
-    countdownTitle: {
-      fr: "COMPTE À REBOURS ELEV8 2025",
-      en: "ELEV8 2025 COUNTDOWN",
-    },
-    countdownSubtitle: {
-      fr: "Ne manquez pas cet événement exceptionnel",
-      en: "Don't miss this exceptional event",
-    },
+    eventCta: { fr: "Réserver ma place", en: "Reserve my spot" },
+    countdownTitle: { fr: "Compte à rebours", en: "Countdown" },
     days: { fr: "jours", en: "days" },
     hours: { fr: "heures", en: "hours" },
     minutes: { fr: "minutes", en: "minutes" },
     seconds: { fr: "secondes", en: "seconds" },
+    academyTitle: { fr: "Elev8 Academy", en: "Elev8 Academy" },
+    academyTagline: { fr: "Investir sans mise de fonds", en: "Invest without down payment" },
+    academyDescription: {
+      fr: "La formation qui révèle les techniques de financement créatif que les investisseurs avertis utilisent pour bâtir leur portefeuille immobilier sans capital initial.",
+      en: "The training that reveals creative financing techniques savvy investors use to build their real estate portfolio without initial capital.",
+    },
+    academyFeatures: {
+      fr: ["Financement créatif avancé", "Réseau de prêteurs privés", "Mentorat personnalisé"],
+      en: ["Advanced creative financing", "Private lender network", "Personal mentorship"],
+    },
+    academyCta: { fr: "Découvrir la méthode", en: "Discover the method" },
+    videoLabel: { fr: "Aperçu vidéo", en: "Video preview" },
   },
 
   // --- Podcast ---
@@ -136,10 +144,13 @@ export const translations = {
 
   // --- Process ---
   process: {
-    label: { fr: "Le processus", en: "The process" },
-    title: {
-      fr: "Une approche systématique qui maximise vos chances de succès",
-      en: "A systematic approach that maximizes your chances of success",
+    label: { fr: "Méthodologie", en: "Methodology" },
+    titleLead: { fr: "De la première", en: "From the first" },
+    titleEmphasis: { fr: "discussion", en: "conversation" },
+    titleTail: { fr: "au déblocage des fonds.", en: "to fund release." },
+    subtitle: {
+      fr: "Quatre étapes maîtrisées, exécutées dans l'ordre, à chaque fois. Pas de raccourci, pas d'improvisation.",
+      en: "Four mastered steps, executed in order, every time. No shortcuts, no improvisation.",
     },
     steps: {
       fr: [
@@ -183,14 +194,18 @@ export const translations = {
 
   // --- Approche (Mon Approche) ---
   approche: {
-    label: { fr: "Mon Approche", en: "My Approach" },
-    title: {
-      fr: "LA VISION QUI TRANSFORME VOS PROJETS",
-      en: "THE VISION THAT TRANSFORMS YOUR PROJECTS",
+    label: { fr: "Mon approche", en: "My approach" },
+    titleLead: { fr: "Un partenaire", en: "A partner" },
+    titleEmphasis: { fr: "stratégique,", en: "strategic," },
+    titleTail: { fr: "pas un intermédiaire.", en: "not a middleman." },
+    quote: {
+      fr: "Quand un dossier est complexe, c'est précisément là que la valeur ajoutée d'un courtier d'élite se révèle.",
+      en: "When a file is complex, that's precisely where an elite broker's added value reveals itself.",
     },
+    quoteAttribution: { fr: "— Serujan Kaneshalingam", en: "— Serujan Kaneshalingam" },
     description: {
-      fr: "Chaque projet immobilier commercial est unique. Mon approche va au-delà du simple courtage : je deviens votre partenaire stratégique pour structurer, négocier et concrétiser vos ambitions les plus audacieuses.",
-      en: "Every commercial real estate project is unique. My approach goes beyond simple brokerage: I become your strategic partner to structure, negotiate, and realize your most ambitious goals.",
+      fr: "Chaque mandat commercial est unique. Mon rôle dépasse le simple courtage : je structure le montage, j'ouvre les portes du réseau institutionnel et je négocie les conditions que la majorité des courtiers ignorent même qu'elles existent.",
+      en: "Every commercial mandate is unique. My role goes beyond brokerage: I structure the deal, open doors to the institutional network, and negotiate terms most brokers don't even know exist.",
     },
     features: {
       fr: [
@@ -210,15 +225,14 @@ export const translations = {
 
   // --- Services (3 piliers) ---
   services: {
-    label: { fr: "Services", en: "Services" },
-    title: {
-      fr: "TROIS PILIERS D'EXPERTISE",
-      en: "THREE PILLARS OF EXPERTISE",
-    },
+    label: { fr: "Expertise", en: "Expertise" },
+    titleLead: { fr: "Trois piliers,", en: "Three pillars," },
+    titleEmphasis: { fr: "une seule exigence.", en: "one standard." },
     subtitle: {
-      fr: "Solutions complètes pour tous vos besoins en financement commercial",
-      en: "Complete solutions for all your commercial financing needs",
+      fr: "Chaque mandat est traité avec la même rigueur : structurer ce que personne d'autre ne sait structurer, négocier ce que les banques refusent en première instance, livrer dans les délais.",
+      en: "Every mandate gets the same rigor: structuring what others can't, negotiating what banks decline at first, delivering on time.",
     },
+    pillarNumber: { fr: "Pilier", en: "Pillar" },
     pillar1: {
       title: { fr: "FINANCEMENT HYPOTHÉCAIRE COMMERCIAL", en: "COMMERCIAL MORTGAGE FINANCING" },
       desc: {
@@ -240,7 +254,8 @@ export const translations = {
         en: "Exclusive network of institutional and private lenders for financing solutions inaccessible to the general public.",
       },
     },
-    learnMore: { fr: "Me contacter", en: "Contact me" },
+    learnMore: { fr: "Discuter de mon projet", en: "Discuss my project" },
+    pillarCta: { fr: "Voir un cas similaire", en: "See a similar case" },
   },
 
   // --- Elev8 Academy ---
@@ -268,11 +283,12 @@ export const translations = {
 
   // --- Calculatrice hypothécaire commerciale ---
   calculator: {
-    label: { fr: "Outil", en: "Tool" },
-    title: { fr: "SIMULATEUR HYPOTHÉCAIRE COMMERCIAL", en: "COMMERCIAL MORTGAGE SIMULATOR" },
+    label: { fr: "Outil interactif", en: "Interactive tool" },
+    titleLead: { fr: "Simulez", en: "Simulate" },
+    titleEmphasis: { fr: "votre paiement.", en: "your payment." },
     subtitle: {
-      fr: "Estimation complète avec analyse des coûts totaux et visualisation graphique",
-      en: "Complete estimate with total cost analysis and graphical visualization",
+      fr: "Ajustez les paramètres et visualisez instantanément le coût total mensuel de votre projet commercial. Estimation à titre indicatif — la structure réelle est négociée selon votre profil.",
+      en: "Adjust parameters and instantly visualize your project's total monthly cost. Estimate only — the real structure is negotiated based on your profile.",
     },
     loanAmount: { fr: "Montant du prêt", en: "Loan amount" },
     interestRate: { fr: "Taux d'intérêt", en: "Interest rate" },
@@ -310,7 +326,13 @@ export const translations = {
 
   // --- LeadForm ---
   leadForm: {
-    label: { fr: "Contact", en: "Contact" },
+    label: { fr: "Évaluation gratuite", en: "Free evaluation" },
+    titleLead: { fr: "Discutons de", en: "Let's discuss" },
+    titleEmphasis: { fr: "votre prochain projet.", en: "your next project." },
+    intro: {
+      fr: "Réponse personnelle de Serujan dans les 24h. Confidentialité garantie. Aucun engagement.",
+      en: "Personal response from Serujan within 24h. Confidentiality guaranteed. No commitment.",
+    },
     title: { fr: "Évaluons votre projet.", en: "Let's evaluate your project." },
     name: { fr: "Nom complet", en: "Full name" },
     email: { fr: "Courriel", en: "Email" },

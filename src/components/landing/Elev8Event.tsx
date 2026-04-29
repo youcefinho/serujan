@@ -1,162 +1,258 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { useState, useEffect } from "react";
-import { Calendar, ExternalLink, Play } from "lucide-react";
+import { motion, useInView } from "motion/react";
+import { useState, useEffect, useRef } from "react";
+import { Calendar, Play, ArrowUpRight, GraduationCap, Check, ExternalLink } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════
-// Elev8Event — Section événement avec vidéo + compte à rebours
+// Elev8 v2 — Fusion Event + Academy en une section unique
+// Bloc Event (vidéo + countdown) + Bloc Academy (features + CTA)
 // ═══════════════════════════════════════════════════════════
 
-// SWAP: Date de l'événement Elev8 (ISO 8601 avec fuseau EST)
 const EVENT_DATE = new Date("2026-10-17T09:00:00-04:00");
+const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-function useCountdown(targetDate: Date) {
-  const [timeLeft, setTimeLeft] = useState(getTimeLeft(targetDate));
-
+function useCountdown(target: Date) {
+  const [t, setT] = useState(getTimeLeft(target));
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(getTimeLeft(targetDate));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [targetDate]);
-
-  return timeLeft;
+    const id = setInterval(() => setT(getTimeLeft(target)), 1000);
+    return () => clearInterval(id);
+  }, [target]);
+  return t;
 }
 
-function getTimeLeft(targetDate: Date) {
-  const now = new Date().getTime();
-  const distance = targetDate.getTime() - now;
-
-  if (distance < 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-
+function getTimeLeft(target: Date) {
+  const d = target.getTime() - Date.now();
+  if (d < 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   return {
-    days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-    minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-    seconds: Math.floor((distance % (1000 * 60)) / 1000),
+    days: Math.floor(d / 86_400_000),
+    hours: Math.floor((d % 86_400_000) / 3_600_000),
+    minutes: Math.floor((d % 3_600_000) / 60_000),
+    seconds: Math.floor((d % 60_000) / 1000),
   };
 }
 
-export default function Elev8Event() {
-  const { t } = useLanguage();
-  const { ref } = useScrollReveal();
+export default function Elev8() {
+  const { t, ta } = useLanguage();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.1 });
   const countdown = useCountdown(EVENT_DATE);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
-  const countdownItems = [
-    { value: countdown.days, label: t(translations.elev8Event.days) },
-    { value: countdown.hours, label: t(translations.elev8Event.hours) },
-    { value: countdown.minutes, label: t(translations.elev8Event.minutes) },
-    { value: countdown.seconds, label: t(translations.elev8Event.seconds) },
+  const academyFeatures = ta(translations.elev8.academyFeatures) as string[];
+  const cd = [
+    { value: countdown.days, label: t(translations.elev8.days) },
+    { value: countdown.hours, label: t(translations.elev8.hours) },
+    { value: countdown.minutes, label: t(translations.elev8.minutes) },
+    { value: countdown.seconds, label: t(translations.elev8.seconds) },
   ];
 
   return (
-    <section id="elev8" className="relative py-24 px-4 bg-black-deep overflow-hidden" ref={ref}>
-      {/* Accent doré en arrière-plan */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold/3 rounded-full blur-[200px] pointer-events-none" />
+    <section id="elev8" ref={ref} className="relative py-28 md:py-36 px-6 bg-black-deep overflow-hidden">
+      {/* Halo */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[60rem] h-[60rem] rounded-full pointer-events-none opacity-50"
+        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.06) 0%, transparent 60%)", filter: "blur(80px)" }}
+        aria-hidden
+      />
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Label */}
-        <div className="text-center mb-4">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-gold/10 text-gold border border-gold/20">
-            <Calendar className="w-3.5 h-3.5" />
-            {t(translations.elev8Event.label)}
-          </span>
+      <div className="relative max-w-6xl mx-auto">
+        {/* En-tête */}
+        <div className="max-w-3xl mb-16 md:mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, ease }}
+            className="flex items-center gap-3 mb-6"
+          >
+            <span className="w-8 h-px bg-gold/50" aria-hidden />
+            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+              {t(translations.elev8.label)}
+            </span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease }}
+            className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance"
+          >
+            <span className="text-foreground">{t(translations.elev8.titleLead)} </span>
+            <span className="text-gold-gradient italic font-display-italic">
+              {t(translations.elev8.titleEmphasis)}
+            </span>
+            <span className="text-foreground/85"> {t(translations.elev8.titleTail)}</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.25, ease }}
+            className="mt-8 text-lg text-foreground/65 leading-relaxed text-pretty max-w-2xl"
+          >
+            {t(translations.elev8.intro)}
+          </motion.p>
         </div>
 
-        {/* Titre */}
-        <h2 className="text-4xl md:text-5xl font-bold text-center uppercase tracking-widest text-gold mb-8">
-          {t(translations.elev8Event.title)}
-        </h2>
+        {/* ── Bloc Event ──────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, delay: 0.3, ease }}
+          className="relative grid lg:grid-cols-12 gap-8 lg:gap-12 mb-20 md:mb-28"
+        >
+          {/* Vidéo */}
+          <div className="lg:col-span-6 relative rounded-2xl overflow-hidden border border-gold/15 aspect-video bg-black-elevated shadow-elevate">
+            {clientConfig.elev8VideoUrl && !playing ? (
+              <button
+                onClick={() => setPlaying(true)}
+                className="group absolute inset-0 flex items-center justify-center"
+                aria-label={t(translations.elev8.videoLabel)}
+              >
+                <div className="absolute inset-0 bg-black-deep/40" />
+                <div
+                  className="absolute inset-0 bg-cover bg-center opacity-50"
+                  style={{ backgroundImage: `url(${clientConfig.heroImageUrl})` }}
+                />
+                <div className="relative z-10 flex flex-col items-center gap-3">
+                  <div className="relative w-20 h-20 rounded-full bg-gold/20 border-2 border-gold flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <Play className="w-8 h-8 text-gold ml-1" fill="currentColor" />
+                    <span className="absolute inset-0 rounded-full border-2 border-gold/40 animate-pulse-gold" aria-hidden />
+                  </div>
+                  <span className="text-xs uppercase tracking-[0.24em] text-foreground/80">
+                    {t(translations.elev8.videoLabel)}
+                  </span>
+                </div>
+              </button>
+            ) : clientConfig.elev8VideoUrl ? (
+              <video src={clientConfig.elev8VideoUrl} controls autoPlay className="w-full h-full object-cover" />
+            ) : null}
+          </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-          {/* Texte */}
-          <div className="space-y-6">
-            <p className="text-lg text-foreground/90 leading-relaxed">
-              {t(translations.elev8Event.description)}
+          {/* Détails event */}
+          <div className="lg:col-span-6 flex flex-col justify-center">
+            <div className="inline-flex items-center gap-2 mb-4">
+              <Calendar className="w-3.5 h-3.5 text-gold" />
+              <span className="text-[11px] uppercase tracking-[0.24em] text-gold-light">
+                17 octobre 2026
+              </span>
+            </div>
+            <h3 className="font-display text-3xl md:text-4xl text-foreground tracking-tight mb-3">
+              {t(translations.elev8.eventTitle)}
+            </h3>
+            <p className="text-gold-light/80 text-sm tracking-wide mb-5">
+              {t(translations.elev8.eventTagline)}
             </p>
-            <p className="text-muted-foreground leading-relaxed">
-              {t(translations.elev8Event.details)}
+            <p className="text-foreground/65 leading-relaxed mb-8 text-pretty">
+              {t(translations.elev8.eventDescription)}
             </p>
+
+            {/* Countdown compact */}
+            <div className="grid grid-cols-4 gap-2 md:gap-3 mb-8 max-w-md">
+              {cd.map((c, i) => (
+                <div key={i} className="text-center">
+                  <div className="font-display text-2xl md:text-3xl tabular-nums text-gold-gradient leading-none mb-1.5">
+                    {String(c.value).padStart(2, "0")}
+                  </div>
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-foreground/50">
+                    {c.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
             <a
               href={clientConfig.elev8EventUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-gold text-black-deep font-bold uppercase tracking-widest rounded-lg shadow-gold hover:shadow-gold-sm hover:scale-[1.02] transition-all duration-300"
+              className="group inline-flex items-center gap-2 px-6 py-3.5 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold-sm hover:shadow-gold transition-all duration-300 hover:-translate-y-0.5 self-start"
             >
-              {t(translations.elev8Event.ctaVisit)}
-              <ExternalLink className="w-4 h-4" />
+              <span>{t(translations.elev8.eventCta)}</span>
+              <ExternalLink className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+          </div>
+        </motion.div>
+
+        {/* Séparateur doré */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={inView ? { scaleX: 1 } : {}}
+          transition={{ duration: 1, delay: 0.6, ease }}
+          className="h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent mb-20 md:mb-28 origin-center"
+          aria-hidden
+        />
+
+        {/* ── Bloc Academy ────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, delay: 0.5, ease }}
+          className="relative grid lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+        >
+          <div className="lg:col-span-7 lg:order-2 lg:pl-6">
+            <div className="inline-flex items-center gap-2 mb-4">
+              <GraduationCap className="w-3.5 h-3.5 text-gold" />
+              <span className="text-[11px] uppercase tracking-[0.24em] text-gold-light">
+                {t(translations.elev8.academyTitle)}
+              </span>
+            </div>
+            <h3 className="font-display text-3xl md:text-4xl text-foreground tracking-tight mb-3 text-balance">
+              {t(translations.elev8.academyTagline)}
+            </h3>
+            <p className="text-foreground/65 leading-relaxed mb-8 text-pretty">
+              {t(translations.elev8.academyDescription)}
+            </p>
+
+            {/* Features liste */}
+            <ul className="space-y-3 mb-8">
+              {academyFeatures.map((f, i) => (
+                <li key={i} className="flex items-start gap-3 text-foreground/80">
+                  <span className="flex-shrink-0 mt-0.5 w-5 h-5 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center">
+                    <Check className="w-3 h-3 text-gold" strokeWidth={2.5} />
+                  </span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href={clientConfig.elev8AcademyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 px-6 py-3.5 border border-gold/40 text-gold hover:bg-gold/10 font-semibold rounded-md transition-all duration-300"
+            >
+              <span>{t(translations.elev8.academyCta)}</span>
+              <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
           </div>
 
-          {/* Vidéo */}
-          <div className="relative rounded-2xl overflow-hidden bg-black-card border border-gold/10 aspect-video">
-            {clientConfig.elev8VideoUrl && !isVideoPlaying ? (
-              <button
-                onClick={() => setIsVideoPlaying(true)}
-                className="absolute inset-0 flex items-center justify-center group cursor-pointer"
-              >
-                {/* Thumbnail overlay */}
-                <div className="absolute inset-0 bg-black-deep/50" />
-                <div className="relative z-10 w-20 h-20 rounded-full bg-gold/20 border-2 border-gold flex items-center justify-center group-hover:bg-gold/30 transition-all duration-300">
-                  <Play className="w-8 h-8 text-gold ml-1" fill="currentColor" />
-                </div>
-                <span className="absolute bottom-4 left-4 text-sm text-gold/70 z-10">
-                  {t(translations.footer.podcastVideoLabel)}
-                </span>
-              </button>
-            ) : clientConfig.elev8VideoUrl ? (
-              <video
-                src={clientConfig.elev8VideoUrl}
-                controls
-                autoPlay
-                className="w-full h-full object-cover"
+          {/* Card visuelle Academy */}
+          <div className="lg:col-span-5 lg:order-1">
+            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-gold/15 bg-gradient-to-br from-black-elevated to-black-deep shadow-elevate p-10 flex flex-col justify-between">
+              <div
+                className="absolute inset-0 opacity-30"
+                style={{ background: "radial-gradient(ellipse at top right, oklch(0.78 0.13 82 / 0.18) 0%, transparent 60%)" }}
+                aria-hidden
               />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Play className="w-12 h-12 text-gold/30" />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Compte à rebours */}
-        <div className="text-center space-y-6">
-          <h3 className="text-2xl font-bold uppercase tracking-widest text-foreground">
-            {t(translations.elev8Event.countdownTitle)}
-          </h3>
-          <p className="text-muted-foreground">
-            {t(translations.elev8Event.countdownSubtitle)}
-          </p>
-
-          {/* Timer */}
-          <div className="flex justify-center gap-4 md:gap-8">
-            {countdownItems.map((item, i) => (
-              <div key={i} className="flex flex-col items-center">
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl bg-black-card border border-gold/20 flex items-center justify-center">
-                  <span className="text-3xl md:text-4xl font-bold text-gold tabular-nums">
-                    {String(item.value).padStart(2, "0")}
-                  </span>
+              <div className="relative">
+                <GraduationCap className="w-12 h-12 text-gold/80 mb-6" strokeWidth={1.2} />
+                <div className="text-[11px] uppercase tracking-[0.24em] text-gold-light/70 mb-4">
+                  Formation premium
                 </div>
-                <span className="text-xs mt-2 text-muted-foreground uppercase tracking-wider">
-                  {item.label}
-                </span>
+                <div className="font-display italic text-3xl md:text-4xl text-foreground/95 leading-tight text-balance">
+                  Elev8 Academy
+                </div>
               </div>
-            ))}
+              <div className="relative">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/40 mb-2">
+                  elev8academie.ca
+                </div>
+                <div className="h-px bg-gradient-to-r from-gold/60 via-gold/30 to-transparent" aria-hidden />
+              </div>
+            </div>
           </div>
-
-          <a
-            href={clientConfig.elev8EventUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 mt-4 border-2 border-gold text-gold font-bold uppercase tracking-widest rounded-lg hover:bg-gold hover:text-black-deep transition-all duration-300"
-          >
-            {t(translations.elev8Event.ctaReserve)}
-            <ExternalLink className="w-4 h-4" />
-          </a>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
