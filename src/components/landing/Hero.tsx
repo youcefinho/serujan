@@ -83,13 +83,13 @@ export default function Hero() {
         {/* Badge */}
         <motion.div {...fadeUp(0)} className="inline-flex items-center gap-3 mb-10">
           <span className="w-8 h-px bg-gold/60" aria-hidden />
-          <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+          <span className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-light">
             {t(translations.hero.badge)}
           </span>
         </motion.div>
 
         {/* Titre statique — QUOI + COMBIEN + OÙ en 3 secondes */}
-        <h1 className="font-display text-[2.75rem] sm:text-6xl lg:text-7xl xl:text-[5.5rem] leading-[1.02] tracking-tight max-w-5xl">
+        <h1 className="font-display text-[2.75rem] sm:text-6xl lg:text-7xl xl:text-[5.5rem] leading-[1.05] tracking-tight max-w-5xl">
           <motion.span {...fadeUp(0.08)} className="block text-foreground">
             {t(translations.hero.titleLead)}
           </motion.span>

@@ -296,7 +296,7 @@ export default function Calculator() {
             className="flex items-center gap-3 mb-6"
           >
             <span className="w-8 h-px bg-gold-deep/60" aria-hidden />
-            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-deep inline-flex items-center gap-2">
+            <span className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-deep inline-flex items-center gap-2">
               <CalcIcon className="w-3 h-3" />
               {t(translations.calculator.label)}
             </span>

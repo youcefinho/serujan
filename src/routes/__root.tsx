@@ -25,7 +25,7 @@ function NotFoundComponent() {
         </div>
         <div className="mt-2 flex items-center justify-center gap-3 mb-6">
           <span className="w-8 h-px bg-gold/50" aria-hidden />
-          <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+          <span className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-light">
             {isEn ? "Page not found" : "Page introuvable"}
           </span>
           <span className="w-8 h-px bg-gold/50" aria-hidden />

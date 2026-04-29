@@ -170,7 +170,7 @@ function AdminLeadsPage() {
         <div>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-6 h-px bg-gold/50" aria-hidden />
-            <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-gold-light">
+            <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-gold-light">
               Tableau de bord
             </span>
           </div>
