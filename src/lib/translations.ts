@@ -455,6 +455,12 @@ export const translations = {
     honeypot: { fr: "Ne pas remplir", en: "Do not fill" },
   },
 
+  // --- WhatsApp ---
+  whatsapp: {
+    aria: { fr: "Discuter sur WhatsApp", en: "Chat on WhatsApp" },
+    label: { fr: "WhatsApp", en: "WhatsApp" },
+  },
+
   // --- MobileStickyBar ---
   mobileStickyBar: {
     call: { fr: "Appeler", en: "Call" },

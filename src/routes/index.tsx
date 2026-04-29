@@ -17,6 +17,7 @@ import Footer from "@/components/landing/Footer";
 import MobileStickyBar from "@/components/landing/MobileStickyBar";
 import { ScrollProgressBar } from "@/components/landing/ScrollProgressBar";
 import { BackToTop } from "@/components/landing/BackToTop";
+import { WhatsAppFab } from "@/components/landing/WhatsAppFab";
 import { MouseSpotlight } from "@/components/ui/MouseSpotlight";
 
 export const Route = createFileRoute("/")({
@@ -44,6 +45,7 @@ function Index() {
       <Footer />
       <MobileStickyBar />
       <BackToTop />
+      <WhatsAppFab />
       <Toaster />
     </main>
   );

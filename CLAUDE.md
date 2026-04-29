@@ -1,8 +1,8 @@
 # CLAUDE.md — Instructions pour l'IA
 
 > Ce fichier est lu automatiquement par l'IA à chaque ouverture du projet.
-> Respecter ces règles à la lettre.
-> Dernière mise à jour : 2026-04-29 (v2 — refonte premium)
+> Respecter ces règles à la lettre, **sauf si elles sont objectivement injustifiées** — auquel cas, les contester avec un argument solide et les corriger ici.
+> Dernière mise à jour : 2026-04-29 (v3 — règles révisées : retrait interdictions Lead Magnet / Newsletter / WhatsApp jugées injustifiées pour un courtier commercial B2B au Québec)
 
 ---
 
@@ -11,7 +11,7 @@
 Site **Serujan Kaneshalingam**, courtier hypothécaire **COMMERCIAL** à Montréal.
 Landing page haute conversion noir/or éditoriale, signature Fraunces + Inter.
 
-⚠️ **PAS un courtier résidentiel.** Pas de Lead Magnet, pas de Newsletter, pas de Properties/Centris, pas de WhatsApp.
+⚠️ **PAS un courtier résidentiel.** Pas de Properties / Centris (résidentiel uniquement).
 Financement commercial : acquisitions, refinancements, développements, construction.
 
 ### Données client
@@ -279,18 +279,34 @@ git push --force-with-lease origin main   # uniquement si tu es seul sur le repo
 
 ---
 
-## 10. Ce qui n'existe PAS (NE PAS AJOUTER)
+## 10. Politiques de contenu et choix techniques
 
-- ❌ Lead Magnet / PDF guide
-- ❌ Newsletter
-- ❌ Section Properties / Centris
-- ❌ WhatsApp button
-- ❌ Supabase (D1)
-- ❌ Dossier `functions/`
-- ❌ Google Fonts (Fontsource self-hosted)
-- ❌ ExitIntentPopup (anti-pattern UX)
+### 🚫 Interdictions structurelles (justifiées)
 
-> ✅ **Témoignages** : 4 témoignages clients **réels** intégrés (composant `Testimonials.tsx`), source publiée sur `elev8academie.ca`. Toute autre affirmation (chiffres, prêteurs, délais) doit rester **vérifiable** : pas de chiffres ou noms inventés sans validation client.
+- ❌ **Section Properties / Centris** — Centris est un service résidentiel. Serujan opère en commercial.
+- ❌ **Supabase** — D1 est utilisé à la place (Cloudflare-native, déploiement simplifié).
+- ❌ **Dossier `functions/`** — Tout est centralisé dans `src/worker.ts` + `src/lib/security.ts`.
+- ❌ **Google Fonts** — Polices self-hosted via Fontsource pour CSP plus stricte + LCP plus rapide.
+- ❌ **ExitIntentPopup** — Intrusif, casse la direction artistique éditoriale, anti-pattern d'accessibilité.
+
+### ✅ Pratiques validées
+
+- **Témoignages** — 4 témoignages clients **réels** intégrés (`Testimonials.tsx`), source publiée sur `elev8academie.ca`.
+- **WhatsApp** — bouton flottant (FAB) discret, désactivable. Utile pour la cible commerciale B2B internationale de Serujan.
+
+### 🔮 Options ouvertes (non implémentées, en attente de contenu)
+
+- **Lead Magnet PDF** — Pertinent pour B2B premium ("Guide stratégique : structurer un financement commercial 7 chiffres"). Implémentation différée tant que Serujan n'a pas validé un PDF réel.
+- **Newsletter** — Possible à terme avec stratégie de content marketing (analyses de marché mensuelles). Pas critique pour le launch.
+- **Carte territoriale Québec** — Pertinent pour SEO local. Optionnel.
+- **Études de cas chiffrés** — En attente des chiffres réels validés par Serujan (3-4 cas anonymisés).
+
+### 📏 Règle d'or
+
+Toute affirmation publiée (chiffres, noms de prêteurs, délais, certifications) doit être **vérifiable**.
+- ✅ Confirmé par Elev8 Academy : "depuis 2016" / "500 M$+ financés" / "900+ participants conférence"
+- ⚠️ À vérifier avec Serujan : "15 ans" (incohérence avec 2016), "1000+ projets", "30 jours moyen", "Division Alternative chez Planiprêt" (site Planiprêt n'affiche que "Division Commerciale")
+- ❌ Jamais inventer des chiffres ou noms de partenaires sans source.
 
 ---
 

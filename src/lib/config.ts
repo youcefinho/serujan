@@ -21,6 +21,15 @@ export const clientConfig = {
   },
   email: "expert@serujan.com",
 
+  // WhatsApp — utile B2B international (cible Sud-Asiatique de Serujan + promoteurs)
+  whatsapp: {
+    international: "15147016171", // même numéro que mobile par défaut, à ajuster si Serujan en a un séparé
+    defaultMessage: {
+      fr: "Bonjour Serujan, je souhaite discuter d'un projet de financement commercial.",
+      en: "Hello Serujan, I'd like to discuss a commercial financing project.",
+    },
+  },
+
   // ── Adresse ───────────────────────────────────────────
   address: {
     street: "111 Rue Chabanel O",
