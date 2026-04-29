@@ -4,6 +4,7 @@ import { clientConfig } from "@/lib/config";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { ArrowRight, Quote, CheckCircle2 } from "lucide-react";
+import { CountUp } from "@/components/ui/CountUp";
 
 // ═══════════════════════════════════════════════════════════
 // Bio v2 — Qui est Serujan
@@ -164,11 +165,12 @@ export default function Bio() {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.7 + i * 0.08, ease }}
-              className="bg-black-elevated/60 backdrop-blur-sm px-6 py-7 md:px-7 md:py-8 transition-colors hover:bg-black-elevated"
+              className="glass px-6 py-7 md:px-7 md:py-8 transition-colors hover:bg-black-elevated/70"
             >
-              <div className="font-display text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums">
-                {m.metric}
-              </div>
+              <CountUp
+                value={m.metric}
+                className="font-display text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums"
+              />
               <div className="mt-3 text-[11px] uppercase tracking-[0.18em] text-foreground/60 font-medium">
                 {m.label}
               </div>

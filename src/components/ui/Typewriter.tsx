@@ -67,12 +67,25 @@ export function Typewriter({
     }
 
     return () => clearTimeout(timeout);
-  }, [text, phase, phraseIdx, phrases, typeSpeed, deleteSpeed, pauseAfterType, pauseAfterDelete, reduced]);
+  }, [
+    text,
+    phase,
+    phraseIdx,
+    phrases,
+    typeSpeed,
+    deleteSpeed,
+    pauseAfterType,
+    pauseAfterDelete,
+    reduced,
+  ]);
 
   return (
     <span className={className} aria-live="polite">
       <span>{text}</span>
-      <span className={`inline-block w-[1px] h-[1em] align-middle ml-0.5 bg-current animate-pulse ${cursorClassName}`} aria-hidden />
+      <span
+        className={`inline-block w-[1px] h-[1em] align-middle ml-0.5 bg-current animate-pulse ${cursorClassName}`}
+        aria-hidden
+      />
     </span>
   );
 }

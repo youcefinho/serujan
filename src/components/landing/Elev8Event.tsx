@@ -91,7 +91,7 @@ export default function Elev8() {
             className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance"
           >
             <span className="text-foreground">{t(translations.elev8.titleLead)} </span>
-            <span className="text-gold-gradient italic font-display-italic">
+            <span className="text-gold-gradient-animated italic font-display-italic">
               {t(translations.elev8.titleEmphasis)}
             </span>
             <span className="text-foreground/85"> {t(translations.elev8.titleTail)}</span>
@@ -186,7 +186,7 @@ export default function Elev8() {
               href={clientConfig.elev8EventUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative overflow-hidden inline-flex items-center gap-2 px-6 py-3.5 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold-sm hover:shadow-gold transition-all duration-300 hover:-translate-y-0.5 self-start btn-shine"
+              className="group relative overflow-hidden inline-flex items-center gap-2 px-6 py-3.5 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold-sm hover:shadow-gold transition-all duration-300 hover:-translate-y-0.5 self-start btn-shine btn-glow"
             >
               <span>{t(translations.elev8.eventCta)}</span>
               <ExternalLink className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

@@ -1,7 +1,8 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
 import { Phone, ArrowRight, ArrowDown } from "lucide-react";
 import { CountUp } from "@/components/ui/CountUp";
 import { Typewriter } from "@/components/ui/Typewriter";
@@ -27,17 +28,26 @@ const fadeUp = (delay: number) => ({
 
 export default function Hero() {
   const { t, ta } = useLanguage();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Parallax léger : l'image de fond se déplace en sens inverse du scroll
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="relative min-h-[100svh] flex items-center overflow-hidden bg-gradient-hero bg-stars-hero"
     >
-      {/* Image de fond très atténuée */}
+      {/* Image de fond très atténuée — parallax */}
       {clientConfig.heroImageUrl && (
-        <div
+        <motion.div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.18]"
-          style={{ backgroundImage: `url(${clientConfig.heroImageUrl})` }}
+          style={{ backgroundImage: `url(${clientConfig.heroImageUrl})`, y: bgY }}
           aria-hidden
         />
       )}
@@ -132,7 +142,7 @@ export default function Hero() {
           {STATS.map((s) => (
             <div
               key={s.key}
-              className="bg-black-deep/80 backdrop-blur-sm px-6 py-7 md:px-8 md:py-9 transition-colors hover:bg-black-elevated/60"
+              className="glass px-6 py-7 md:px-8 md:py-9 transition-colors hover:bg-black-elevated/70"
             >
               <CountUp
                 value={s.value}

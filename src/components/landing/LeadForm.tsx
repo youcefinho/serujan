@@ -151,7 +151,7 @@ export default function LeadForm() {
             className="font-display text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.05] tracking-tight text-balance"
           >
             <span className="text-foreground">{t(translations.leadForm.titleLead)} </span>
-            <span className="text-gold-gradient italic font-display-italic">
+            <span className="text-gold-gradient-animated italic font-display-italic">
               {t(translations.leadForm.titleEmphasis)}
             </span>
           </motion.h2>

@@ -13,9 +13,7 @@ const TRAIL_DELAYS = [0, 40, 90, 150]; // ms de retard — réduits pour plus de
 
 export function MouseSpotlight() {
   const dotsRef = useRef<HTMLDivElement[]>([]);
-  const positions = useRef(
-    Array.from({ length: TRAIL_COUNT }, () => ({ x: -100, y: -100 }))
-  );
+  const positions = useRef(Array.from({ length: TRAIL_COUNT }, () => ({ x: -100, y: -100 })));
   const mousePos = useRef({ x: -100, y: -100 });
   const visible = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);

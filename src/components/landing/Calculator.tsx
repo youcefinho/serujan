@@ -251,7 +251,7 @@ export default function Calculator() {
             className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance"
           >
             <span className="text-ink">{t(translations.calculator.titleLead)} </span>
-            <span className="text-gold-gradient italic font-display-italic">
+            <span className="text-gold-gradient-animated italic font-display-italic">
               {t(translations.calculator.titleEmphasis)}
             </span>
           </motion.h2>
@@ -382,7 +382,7 @@ export default function Calculator() {
             {/* CTA */}
             <a
               href="#contact"
-              className="group relative overflow-hidden block w-full p-5 rounded-xl bg-gradient-gold text-black-deep font-semibold text-center transition-all duration-300 hover:-translate-y-0.5 shadow-gold hover:shadow-gold-sm btn-shine"
+              className="group relative overflow-hidden block w-full p-5 rounded-xl bg-gradient-gold text-black-deep font-semibold text-center transition-all duration-300 hover:-translate-y-0.5 shadow-gold hover:shadow-gold-sm btn-shine btn-glow"
             >
               <span className="inline-flex items-center gap-2">
                 {t(translations.calculator.cta)}

@@ -15,14 +15,24 @@ interface CountUpProps {
   className?: string;
 }
 
-function parseValue(raw: string): { prefix: string; number: number; suffix: string; locale: boolean } {
+function parseValue(raw: string): {
+  prefix: string;
+  number: number;
+  suffix: string;
+  locale: boolean;
+} {
   const match = raw.match(/^([^\d-]*)(-?\d+(?:[.,]\d+)?)(.*)$/);
   if (!match) return { prefix: "", number: 0, suffix: raw, locale: false };
   const [, prefix, numStr, suffix] = match;
   const normalized = (numStr ?? "").replace(",", ".");
   const number = Number(normalized);
   const locale = number >= 1000;
-  return { prefix: prefix ?? "", number: Number.isFinite(number) ? number : 0, suffix: suffix ?? "", locale };
+  return {
+    prefix: prefix ?? "",
+    number: Number.isFinite(number) ? number : 0,
+    suffix: suffix ?? "",
+    locale,
+  };
 }
 
 function prefersReducedMotion(): boolean {
@@ -47,7 +57,7 @@ export function CountUp({ value, duration = 1.6, className }: CountUpProps) {
     return parsed.locale ? n.toLocaleString("fr-CA") : String(n);
   });
 
-  const [text, setText] = useState<string>(parsed.locale ? "0".toLocaleString("fr-CA") : "0");
+  const [text, setText] = useState<string>(parsed.locale ? (0).toLocaleString("fr-CA") : "0");
 
   useEffect(() => {
     if (reduced) {
