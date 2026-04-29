@@ -58,7 +58,7 @@ export const clientConfig = {
   },
 
   // ── URLs externes ──────────────────────────────────────
-  elev8EventUrl: "https://elev82025.ca/",
+  elev8EventUrl: "https://elev8academie.ca/",
   elev8AcademyUrl: "https://elev8academie.ca/",
   siteUrl: "https://serujan.intralysqc.workers.dev",
 

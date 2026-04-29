@@ -7,9 +7,9 @@ import { useEffect, useRef, useCallback } from "react";
 // ═══════════════════════════════════════════════════════════
 
 const TRAIL_COUNT = 4;
-const TRAIL_SIZES = [8, 6, 4, 3]; // px — de plus gros à plus petit
-const TRAIL_OPACITIES = [0.6, 0.4, 0.25, 0.15];
-const TRAIL_DELAYS = [0, 80, 160, 260]; // ms de retard
+const TRAIL_SIZES = [6, 5, 4, 3]; // px
+const TRAIL_OPACITIES = [0.7, 0.45, 0.28, 0.15];
+const TRAIL_DELAYS = [0, 40, 90, 150]; // ms de retard — réduits pour plus de fluidité
 
 export function MouseSpotlight() {
   const dotsRef = useRef<HTMLDivElement[]>([]);
@@ -64,8 +64,8 @@ export function MouseSpotlight() {
         const target = i === 0 ? mousePos.current : positions.current[i - 1];
         const current = positions.current[i];
 
-        // Lerp — le premier suit vite, les suivants plus lentement
-        const speed = 0.3 - i * 0.05;
+        // Lerp — le premier suit quasi-instantanément, les suivants avec un léger retard
+        const speed = i === 0 ? 0.85 : 0.45 - i * 0.08;
         current.x += (target.x - current.x) * speed;
         current.y += (target.y - current.y) * speed;
 
