@@ -4,6 +4,7 @@ import { clientConfig } from "@/lib/config";
 import { motion } from "motion/react";
 import { Phone, ArrowRight, ArrowDown } from "lucide-react";
 import { CountUp } from "@/components/ui/CountUp";
+import { Typewriter } from "@/components/ui/Typewriter";
 
 // ═══════════════════════════════════════════════════════════
 // Hero v2 — éditorial, dense, signature
@@ -25,7 +26,7 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function Hero() {
-  const { t } = useLanguage();
+  const { t, ta } = useLanguage();
 
   return (
     <section
@@ -70,20 +71,23 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* Titre tripartite */}
-        <h1 className="font-display text-[2.75rem] sm:text-6xl lg:text-7xl xl:text-[5.5rem] leading-[1.02] tracking-tight text-balance max-w-5xl">
+        {/* Titre avec typewriter */}
+        <h1 className="font-display text-[2.75rem] sm:text-6xl lg:text-7xl xl:text-[5.5rem] leading-[1.02] tracking-tight max-w-5xl">
           <motion.span {...fadeUp(0.08)} className="block text-foreground">
             {t(translations.hero.titleLead)}
           </motion.span>
           <motion.span
             {...fadeUp(0.18)}
-            className="block text-gold-gradient-animated italic font-display-italic"
+            className="block text-gold-gradient-animated italic font-display-italic min-h-[2.4em] sm:min-h-[1.2em]"
             style={{ fontVariationSettings: "'SOFT' 100, 'opsz' 144" }}
           >
-            {t(translations.hero.titleEmphasis)}
-          </motion.span>
-          <motion.span {...fadeUp(0.28)} className="block text-foreground/90">
-            {t(translations.hero.titleTail)}
+            <Typewriter
+              phrases={ta(translations.hero.typewriterPhrases) as string[]}
+              typeSpeed={45}
+              deleteSpeed={25}
+              pauseAfterType={2200}
+              pauseAfterDelete={400}
+            />
           </motion.span>
         </h1>
 

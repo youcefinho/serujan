@@ -42,6 +42,20 @@ export const translations = {
     statDays: { fr: "Jours en moyenne", en: "Days on average" },
     statProjects: { fr: "Projets menés", en: "Projects led" },
     scrollHint: { fr: "Découvrir l'expertise", en: "Discover the expertise" },
+    typewriterPhrases: {
+      fr: [
+        "qui ouvre les portes fermées aux autres.",
+        "qui finance l'impossible.",
+        "qui bâtit des empires.",
+        "qui transforme votre vision en réalité.",
+      ],
+      en: [
+        "that opens doors closed to others.",
+        "that finances the impossible.",
+        "that builds empires.",
+        "that turns your vision into reality.",
+      ],
+    },
   },
 
   // --- ValueCards (3 cartes sous le hero) ---
