@@ -151,12 +151,22 @@ export default function Hero() {
           {...fadeUp(0.58)}
           className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] md:text-[13px] text-foreground/55"
         >
-          {(ta(translations.hero.urgencyBadges) as string[]).map((badge) => (
-            <span key={badge} className="inline-flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-gold/70" aria-hidden />
-              {badge}
-            </span>
-          ))}
+          {(ta(translations.hero.urgencyBadges) as string[]).map((badge) => {
+            const isResponse = /24\s*h/i.test(badge);
+            return (
+              <span key={badge} className="inline-flex items-center gap-1.5">
+                {isResponse ? (
+                  <span className="relative inline-flex w-1.5 h-1.5" aria-hidden>
+                    <span className="absolute inset-0 rounded-full bg-emerald-400/70 motion-safe:animate-ping" />
+                    <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  </span>
+                ) : (
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold/70" aria-hidden />
+                )}
+                {badge}
+              </span>
+            );
+          })}
         </motion.div>
 
         {/* Stats — 4 chiffres sourcés (Elev8 + Planiprêt) */}
