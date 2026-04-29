@@ -58,16 +58,8 @@ export const clientConfig = {
     tiktok: null as string | null,
   },
 
-  // ── Stats ──────────────────────────────────────────────
-  stats: {
-    funded: { value: "500", suffix: "M$+", label: { fr: "financés", en: "funded" } },
-    approval: { value: "95", suffix: "%", label: { fr: "approbation", en: "approval rate" } },
-    avgDays: { value: "30", suffix: "", label: { fr: "jours moyens", en: "average days" } },
-    projects: { value: "1000", suffix: "+", label: { fr: "projets", en: "projects" } },
-  },
-
   // ── URLs externes ──────────────────────────────────────
-  elev8EventUrl: "https://elev8academie.ca/",
+  elev8EventUrl: "https://elev82025.ca/",
   elev8AcademyUrl: "https://elev8academie.ca/",
   siteUrl: "https://serujan.intralysqc.workers.dev",
 
