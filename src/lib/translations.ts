@@ -599,6 +599,89 @@ export const translations = {
     backHome: { fr: "Retour à l'accueil", en: "Back to home" },
   },
 
+  // --- LendersNetwork (réseau de prêteurs institutionnels) ---
+  lendersNetwork: {
+    label: { fr: "Réseau institutionnel", en: "Institutional network" },
+    titleLead: { fr: "L'accès qui", en: "The access that" },
+    titleEmphasis: { fr: "fait la différence.", en: "makes the difference." },
+    subtitle: {
+      fr: "Plus de 40 prêteurs institutionnels et privés négociés au Québec et au Canada. Banques, caisses, fonds de pension, capital privé : chaque mandat est présenté au prêteur le mieux placé sur le marché.",
+      en: "Over 40 institutional and private lenders negotiated across Quebec and Canada. Banks, credit unions, pension funds, private capital: every mandate is presented to the best-placed lender on the market.",
+    },
+    disclaimer: {
+      fr: "Liste représentative — relations négociées au cas par cas selon le profil du dossier.",
+      en: "Representative list — relationships negotiated case-by-case according to file profile.",
+    },
+  },
+
+  // --- FAQ (objections finales avant conversion) ---
+  faq: {
+    label: { fr: "Questions fréquentes", en: "Frequently asked" },
+    titleLead: { fr: "Tout ce que vous", en: "Everything you" },
+    titleEmphasis: { fr: "devez savoir.", en: "need to know." },
+    subtitle: {
+      fr: "Les questions que les promoteurs et investisseurs nous posent en premier — réponses directes, sans détour.",
+      en: "The questions developers and investors ask us first — direct answers, no detour.",
+    },
+    items: {
+      fr: [
+        {
+          q: "Quels prêteurs négociez-vous ?",
+          a: "Plus de 40 institutions et fonds privés au Québec et au Canada — grandes banques, caisses, prêteurs alternatifs, fonds de pension, capital privé. Chaque dossier est présenté au prêteur qui maximise vos conditions, en mettant les acteurs en concurrence quand c'est pertinent.",
+        },
+        {
+          q: "Quels sont les délais d'approbation typiques ?",
+          a: "30 jours en moyenne pour un dossier complet d'acquisition ou de refinancement. 14 à 21 jours possible sur les dossiers simples avec garanties solides. Les projets de construction et développement exigent 60 à 90 jours selon la complexité du montage.",
+        },
+        {
+          q: "Quels types de projets traitez-vous ?",
+          a: "Acquisitions multifamiliales (10+ unités), refinancements de portefeuilles, financement de construction et de développement, restructurations, sorties de financement-relais. Mandats typiques de 1 M$ à 100 M$+, secteur résidentiel locatif, commercial, industriel et mixte.",
+        },
+        {
+          q: "Quels sont vos honoraires ?",
+          a: "Aucun frais d'analyse préliminaire ni d'étude. Nos honoraires sont généralement payés par le prêteur à la conclusion du financement, ou inclus dans les frais de transaction selon la nature du mandat. Toute structure d'honoraires est définie et signée avant que les démarches ne commencent.",
+        },
+        {
+          q: "Comment garantissez-vous la confidentialité ?",
+          a: "Engagement de confidentialité (NDA) systématique avant tout partage de documents financiers. Vos états financiers et plans d'affaires ne sont jamais transmis à un prêteur sans votre autorisation explicite, dossier par dossier. Données stockées au Canada, conformes Loi 25.",
+        },
+        {
+          q: "En quoi êtes-vous différent d'une banque directe ?",
+          a: "Une banque vous propose ses produits. Nous structurons votre dossier pour le présenter au prêteur le mieux placé sur le marché — souvent à des conditions inaccessibles en guichet direct. La mise en concurrence et l'expertise du montage font la différence sur le taux, le LTV, et les covenants.",
+        },
+      ],
+      en: [
+        {
+          q: "Which lenders do you negotiate with?",
+          a: "Over 40 institutions and private funds across Quebec and Canada — major banks, credit unions, alternative lenders, pension funds, private capital. Every file is presented to the lender that maximizes your terms, with competitive bidding when relevant.",
+        },
+        {
+          q: "What are typical approval timelines?",
+          a: "30 days on average for a complete acquisition or refinancing file. 14 to 21 days possible on simple files with strong collateral. Construction and development projects require 60 to 90 days depending on structuring complexity.",
+        },
+        {
+          q: "What types of projects do you handle?",
+          a: "Multifamily acquisitions (10+ units), portfolio refinancings, construction and development financing, restructurings, bridge-loan exits. Typical mandates from $1M to $100M+, across multi-residential, commercial, industrial and mixed-use sectors.",
+        },
+        {
+          q: "What are your fees?",
+          a: "No preliminary analysis or review fee. Our fees are generally paid by the lender upon closing, or included in transaction fees depending on the mandate. Any fee structure is defined and signed before work begins — no surprises.",
+        },
+        {
+          q: "How do you guarantee confidentiality?",
+          a: "Systematic NDA before any sharing of financial documents. Your financial statements and business plans are never transmitted to a lender without your explicit authorization, file by file. Data stored in Canada, Quebec Law 25 compliant.",
+        },
+        {
+          q: "How are you different from going to a bank directly?",
+          a: "A bank offers you its products. We structure your file to present it to the best-placed lender on the market — often at terms inaccessible at the branch. Competitive bidding and structuring expertise make the difference on rate, LTV, and covenants.",
+        },
+      ],
+    },
+    expand: { fr: "Voir la réponse", en: "See answer" },
+    collapse: { fr: "Fermer", en: "Collapse" },
+    cta: { fr: "Une autre question ? Parlons-en", en: "Another question? Let's talk" },
+  },
+
   // --- Footer ---
   footer: {
     desc: {

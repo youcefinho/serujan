@@ -560,6 +560,38 @@
   animation: float-y 11s ease-in-out infinite reverse, twinkle 5s ease-in-out infinite;
 }
 
+/* ── Marquee — défilement infini horizontal pour bandeau de logos/noms ── */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+.marquee-content {
+  display: inline-flex;
+  flex-shrink: 0;
+  animation: marquee-x 48s linear infinite;
+  will-change: transform;
+}
+.marquee-reverse .marquee-content {
+  animation-direction: reverse;
+  animation-duration: 56s;
+}
+.marquee-track:hover .marquee-content {
+  animation-play-state: paused;
+}
+/* Masque latéral pour fade-in/out doux */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-content { animation: none; }
+}
+
 /* Gradient animé — fond éditorial qui pulse lentement (utiliser parcimonieusement) */
 .bg-grad-anim {
   background: linear-gradient(
