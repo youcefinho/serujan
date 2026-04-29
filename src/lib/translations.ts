@@ -24,7 +24,10 @@ export const translations = {
 
   // --- Hero ---
   hero: {
-    badge: { fr: "Courtage hypothécaire commercial · Québec", en: "Commercial Mortgage Brokerage · Quebec" },
+    badge: {
+      fr: "Courtage hypothécaire commercial · Québec",
+      en: "Commercial Mortgage Brokerage · Quebec",
+    },
     titleLead: { fr: "Le financement", en: "Financing" },
     titleEmphasis: { fr: "qui ouvre les portes", en: "that opens doors" },
     titleTail: { fr: "fermées aux autres.", en: "closed to others." },
@@ -106,7 +109,10 @@ export const translations = {
       en: "Elev8 is the annual event and ongoing training that shape Quebec's elite in real estate financing. Where serious investors learn what others ignore.",
     },
     eventTitle: { fr: "Elev8 2026", en: "Elev8 2026" },
-    eventTagline: { fr: "L'événement de référence en investissement immobilier", en: "The benchmark event in real estate investing" },
+    eventTagline: {
+      fr: "L'événement de référence en investissement immobilier",
+      en: "The benchmark event in real estate investing",
+    },
     eventDescription: {
       fr: "Conférences magistrales, panels d'experts, rencontres privilégiées. Un seul jour pour repartir avec un réseau, des stratégies et la clarté qu'il faut pour propulser vos projets.",
       en: "Keynote speeches, expert panels, exclusive meetings. One day to leave with a network, strategies, and the clarity needed to propel your projects.",
@@ -209,15 +215,33 @@ export const translations = {
     },
     features: {
       fr: [
-        { title: "Analyse Stratégique", desc: "Évaluation complète de votre situation et identification des opportunités" },
-        { title: "Structures Innovantes", desc: "Montages financiers créatifs adaptés à vos besoins spécifiques" },
-        { title: "Négociation d'Expert", desc: "Conditions optimales grâce à des relations privilégiées" },
+        {
+          title: "Analyse Stratégique",
+          desc: "Évaluation complète de votre situation et identification des opportunités",
+        },
+        {
+          title: "Structures Innovantes",
+          desc: "Montages financiers créatifs adaptés à vos besoins spécifiques",
+        },
+        {
+          title: "Négociation d'Expert",
+          desc: "Conditions optimales grâce à des relations privilégiées",
+        },
         { title: "Suivi Personnalisé", desc: "Accompagnement jusqu'à la finalisation complète" },
       ],
       en: [
-        { title: "Strategic Analysis", desc: "Complete assessment of your situation and opportunity identification" },
-        { title: "Innovative Structures", desc: "Creative financial arrangements tailored to your specific needs" },
-        { title: "Expert Negotiation", desc: "Optimal conditions through privileged relationships" },
+        {
+          title: "Strategic Analysis",
+          desc: "Complete assessment of your situation and opportunity identification",
+        },
+        {
+          title: "Innovative Structures",
+          desc: "Creative financial arrangements tailored to your specific needs",
+        },
+        {
+          title: "Expert Negotiation",
+          desc: "Optimal conditions through privileged relationships",
+        },
         { title: "Personalized Follow-up", desc: "Support through to complete finalization" },
       ],
     },
@@ -268,13 +292,28 @@ export const translations = {
     },
     features: {
       fr: [
-        { title: "Techniques de Financement Créatif", desc: "Maîtrisez les stratégies les plus avancées du marché" },
-        { title: "Réseau de Prêteurs Privés", desc: "Accès exclusif aux sources de financement alternatives" },
-        { title: "Accompagnement Personnalisé", desc: "Mentorat direct avec Serujan et son équipe" },
+        {
+          title: "Techniques de Financement Créatif",
+          desc: "Maîtrisez les stratégies les plus avancées du marché",
+        },
+        {
+          title: "Réseau de Prêteurs Privés",
+          desc: "Accès exclusif aux sources de financement alternatives",
+        },
+        {
+          title: "Accompagnement Personnalisé",
+          desc: "Mentorat direct avec Serujan et son équipe",
+        },
       ],
       en: [
-        { title: "Creative Financing Techniques", desc: "Master the most advanced market strategies" },
-        { title: "Private Lender Network", desc: "Exclusive access to alternative financing sources" },
+        {
+          title: "Creative Financing Techniques",
+          desc: "Master the most advanced market strategies",
+        },
+        {
+          title: "Private Lender Network",
+          desc: "Exclusive access to alternative financing sources",
+        },
         { title: "Personalized Coaching", desc: "Direct mentorship with Serujan and his team" },
       ],
     },
@@ -298,7 +337,10 @@ export const translations = {
     monthlyMortgage: { fr: "Paiement hypothécaire mensuel", en: "Monthly mortgage payment" },
     capitalInterest: { fr: "Capital + Intérêts", en: "Principal + Interest" },
     totalMonthly: { fr: "Paiement mensuel total", en: "Total monthly payment" },
-    includingTaxInsurance: { fr: "Incluant taxes et assurance", en: "Including taxes and insurance" },
+    includingTaxInsurance: {
+      fr: "Incluant taxes et assurance",
+      en: "Including taxes and insurance",
+    },
     mortgage: { fr: "Hypothèque", en: "Mortgage" },
     taxes: { fr: "Taxes foncières", en: "Property taxes" },
     insuranceLabel: { fr: "Assurance", en: "Insurance" },
@@ -343,7 +385,10 @@ export const translations = {
     submit: { fr: "ÉVALUER MON PROJET", en: "EVALUATE MY PROJECT" },
     sending: { fr: "Envoi en cours...", en: "Sending..." },
     success: { fr: "Demande envoyée avec succès !", en: "Request sent successfully!" },
-    error: { fr: "Erreur lors de l'envoi. Veuillez réessayer.", en: "Error sending. Please try again." },
+    error: {
+      fr: "Erreur lors de l'envoi. Veuillez réessayer.",
+      en: "Error sending. Please try again.",
+    },
     trustText: {
       fr: "Réponse personnelle de Serujan dans les 24h. Vos informations restent confidentielles.",
       en: "Personal response from Serujan within 24h. Your information remains confidential.",
@@ -374,7 +419,10 @@ export const translations = {
     title: { fr: "Avant de partir…", en: "Before you go…" },
     description: { fr: "Obtenez votre", en: "Get your" },
     descriptionBold: { fr: "évaluation gratuite de projet", en: "free project evaluation" },
-    descriptionEnd: { fr: "en 30 secondes. Aucun engagement.", en: "in 30 seconds. No commitment." },
+    descriptionEnd: {
+      fr: "en 30 secondes. Aucun engagement.",
+      en: "in 30 seconds. No commitment.",
+    },
     cta: { fr: "ÉVALUER MON PROJET", en: "EVALUATE MY PROJECT" },
     callAlt: { fr: "ou appelez directement le", en: "or call directly at" },
   },

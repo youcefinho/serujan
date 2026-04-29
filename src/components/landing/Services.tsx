@@ -23,11 +23,18 @@ export default function Services() {
   const inView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section id="services" ref={ref} className="relative py-28 md:py-36 px-6 bg-black-deep overflow-hidden">
+    <section
+      id="services"
+      ref={ref}
+      className="relative py-28 md:py-36 px-6 bg-black-deep overflow-hidden"
+    >
       {/* Lueur dorée discrète à gauche */}
       <div
         className="absolute top-1/3 -left-40 w-[36rem] h-[36rem] rounded-full pointer-events-none opacity-50"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.08) 0%, transparent 65%)", filter: "blur(60px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.08) 0%, transparent 65%)",
+          filter: "blur(60px)",
+        }}
         aria-hidden
       />
 
@@ -97,7 +104,8 @@ export default function Services() {
                 aria-hidden
                 className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                 style={{
-                  background: "linear-gradient(110deg, transparent 30%, oklch(0.95 0.05 85 / 0.08) 50%, transparent 70%)",
+                  background:
+                    "linear-gradient(110deg, transparent 30%, oklch(0.95 0.05 85 / 0.08) 50%, transparent 70%)",
                   backgroundSize: "200% 100%",
                   animation: "sheen-sweep 1.4s ease-out 0.2s",
                 }}
@@ -108,7 +116,10 @@ export default function Services() {
                 <div className="relative w-14 h-14 mb-8">
                   <div className="absolute inset-0 rounded-xl bg-gold/10 group-hover:bg-gold/15 transition-colors duration-500" />
                   <div className="absolute inset-0 rounded-xl border border-gold/20 group-hover:border-gold/40 transition-colors duration-500" />
-                  <Icon className="relative w-7 h-7 m-auto top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-gold transition-transform duration-500 group-hover:scale-110" strokeWidth={1.5} />
+                  <Icon
+                    className="relative w-7 h-7 m-auto top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-gold transition-transform duration-500 group-hover:scale-110"
+                    strokeWidth={1.5}
+                  />
                 </div>
 
                 {/* Étiquette pilier */}
@@ -137,7 +148,10 @@ export default function Services() {
               </div>
 
               {/* Filet doré qui se trace en bas */}
-              <div className="absolute bottom-0 left-0 h-px bg-gradient-to-r from-gold to-transparent w-0 group-hover:w-full transition-all duration-700 ease-out" aria-hidden />
+              <div
+                className="absolute bottom-0 left-0 h-px bg-gradient-to-r from-gold to-transparent w-0 group-hover:w-full transition-all duration-700 ease-out"
+                aria-hidden
+              />
             </motion.article>
           ))}
         </div>

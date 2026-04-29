@@ -4,7 +4,16 @@ import { clientConfig } from "@/lib/config";
 import { trackLeadFormSubmit } from "@/lib/analytics";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { useState, useRef, useEffect } from "react";
-import { Send, CheckCircle2, AlertCircle, Loader2, Shield, Phone, Mail, ArrowRight } from "lucide-react";
+import {
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Shield,
+  Phone,
+  Mail,
+  ArrowRight,
+} from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════
 // LeadForm v2 — fusion FreeConsultation + Form
@@ -32,11 +41,17 @@ export default function LeadForm() {
 
   // Timestamp de mount pour anti-bot timing
   const mountTimeRef = useRef<number>(Date.now());
-  useEffect(() => { mountTimeRef.current = Date.now(); }, []);
+  useEffect(() => {
+    mountTimeRef.current = Date.now();
+  }, []);
 
   const [form, setForm] = useState({
-    name: "", email: "", phone: "",
-    projectType: "", estimatedAmount: "", message: "",
+    name: "",
+    email: "",
+    phone: "",
+    projectType: "",
+    estimatedAmount: "",
+    message: "",
     hp: "",
   });
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -49,7 +64,8 @@ export default function LeadForm() {
     const newErrors: Record<string, string> = {};
     if (sanitize(form.name).length < 2) newErrors.name = t(translations.leadForm.nameRequired);
     if (!validateEmail(form.email)) newErrors.email = t(translations.leadForm.emailInvalid);
-    if (form.phone && !validatePhone(form.phone)) newErrors.phone = t(translations.leadForm.phoneInvalid);
+    if (form.phone && !validatePhone(form.phone))
+      newErrors.phone = t(translations.leadForm.phoneInvalid);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -79,29 +95,47 @@ export default function LeadForm() {
       });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({})) as Record<string, string>;
+        const data = (await res.json().catch(() => ({}))) as Record<string, string>;
         throw new Error(data.error || t(translations.leadForm.serverError));
       }
 
       setStatus("success");
       trackLeadFormSubmit(form.projectType);
-      setForm({ name: "", email: "", phone: "", projectType: "", estimatedAmount: "", message: "", hp: "" });
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        projectType: "",
+        estimatedAmount: "",
+        message: "",
+        hp: "",
+      });
     } catch {
       setStatus("error");
     }
   }
 
   return (
-    <section id="contact" ref={ref} className="relative py-28 md:py-36 px-6 bg-black-surface overflow-hidden">
+    <section
+      id="contact"
+      ref={ref}
+      className="relative py-28 md:py-36 px-6 bg-black-surface overflow-hidden"
+    >
       {/* Halo */}
       <div
         className="absolute top-1/2 -left-40 w-[40rem] h-[40rem] rounded-full pointer-events-none opacity-50"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.07) 0%, transparent 60%)", filter: "blur(80px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.07) 0%, transparent 60%)",
+          filter: "blur(80px)",
+        }}
         aria-hidden
       />
       <div
         className="absolute bottom-0 right-0 w-[30rem] h-[30rem] rounded-full pointer-events-none opacity-40"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.05) 0%, transparent 60%)", filter: "blur(60px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.05) 0%, transparent 60%)",
+          filter: "blur(60px)",
+        }}
         aria-hidden
       />
 
@@ -286,7 +320,9 @@ export default function LeadForm() {
                     >
                       <option value="">—</option>
                       {projectTypeOptions.map((opt) => (
-                        <option key={opt} value={opt}>{opt}</option>
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
                       ))}
                     </select>
                   </Field>
@@ -298,7 +334,9 @@ export default function LeadForm() {
                     >
                       <option value="">—</option>
                       {amountOptions.map((opt) => (
-                        <option key={opt} value={opt}>{opt}</option>
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
                       ))}
                     </select>
                   </Field>
@@ -344,7 +382,10 @@ export default function LeadForm() {
                     <AlertCircle className="w-4 h-4 flex-shrink-0" />
                     <p>
                       {t(translations.leadForm.genericError)}{" "}
-                      <a href={`tel:+${clientConfig.phone.international}`} className="underline font-semibold">
+                      <a
+                        href={`tel:+${clientConfig.phone.international}`}
+                        className="underline font-semibold"
+                      >
                         {clientConfig.phone.display}
                       </a>
                     </p>
@@ -362,7 +403,15 @@ export default function LeadForm() {
 const inputCls =
   "w-full px-4 py-3 rounded-md bg-black-elevated/40 border border-gold/10 text-foreground placeholder-foreground/30 focus:border-gold/40 focus:bg-black-elevated/60 focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all duration-200";
 
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+function Field({
+  label,
+  error,
+  children,
+}: {
+  label: string;
+  error?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <label className="block text-xs uppercase tracking-[0.18em] text-foreground/55 mb-2">

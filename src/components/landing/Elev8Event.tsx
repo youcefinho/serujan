@@ -42,7 +42,9 @@ export default function Elev8() {
 
   const academyFeatures = ta(translations.elev8.academyFeatures) as string[];
   const eventDateFormatted = new Intl.DateTimeFormat(lang === "fr" ? "fr-CA" : "en-CA", {
-    day: "numeric", month: "long", year: "numeric",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   }).format(EVENT_DATE);
   const cd = [
     { value: countdown.days, label: t(translations.elev8.days) },
@@ -52,11 +54,18 @@ export default function Elev8() {
   ];
 
   return (
-    <section id="elev8" ref={ref} className="relative py-28 md:py-36 px-6 bg-black-deep overflow-hidden">
+    <section
+      id="elev8"
+      ref={ref}
+      className="relative py-28 md:py-36 px-6 bg-black-deep overflow-hidden"
+    >
       {/* Halo */}
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[60rem] h-[60rem] rounded-full pointer-events-none opacity-50"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.06) 0%, transparent 60%)", filter: "blur(80px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.06) 0%, transparent 60%)",
+          filter: "blur(80px)",
+        }}
         aria-hidden
       />
 
@@ -121,7 +130,10 @@ export default function Elev8() {
                 <div className="relative z-10 flex flex-col items-center gap-3">
                   <div className="relative w-20 h-20 rounded-full bg-gold/20 border-2 border-gold flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                     <Play className="w-8 h-8 text-gold ml-1" fill="currentColor" />
-                    <span className="absolute inset-0 rounded-full border-2 border-gold/40 animate-pulse-gold" aria-hidden />
+                    <span
+                      className="absolute inset-0 rounded-full border-2 border-gold/40 animate-pulse-gold"
+                      aria-hidden
+                    />
                   </div>
                   <span className="text-xs uppercase tracking-[0.24em] text-foreground/80">
                     {t(translations.elev8.videoLabel)}
@@ -129,7 +141,12 @@ export default function Elev8() {
                 </div>
               </button>
             ) : clientConfig.elev8VideoUrl ? (
-              <video src={clientConfig.elev8VideoUrl} controls autoPlay className="w-full h-full object-cover" />
+              <video
+                src={clientConfig.elev8VideoUrl}
+                controls
+                autoPlay
+                className="w-full h-full object-cover"
+              />
             ) : null}
           </div>
 
@@ -235,7 +252,10 @@ export default function Elev8() {
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-gold/15 bg-gradient-to-br from-black-elevated to-black-deep shadow-elevate p-10 flex flex-col justify-between">
               <div
                 className="absolute inset-0 opacity-30"
-                style={{ background: "radial-gradient(ellipse at top right, oklch(0.78 0.13 82 / 0.18) 0%, transparent 60%)" }}
+                style={{
+                  background:
+                    "radial-gradient(ellipse at top right, oklch(0.78 0.13 82 / 0.18) 0%, transparent 60%)",
+                }}
                 aria-hidden
               />
               <div className="relative">
@@ -251,7 +271,10 @@ export default function Elev8() {
                 <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/40 mb-2">
                   elev8academie.ca
                 </div>
-                <div className="h-px bg-gradient-to-r from-gold/60 via-gold/30 to-transparent" aria-hidden />
+                <div
+                  className="h-px bg-gradient-to-r from-gold/60 via-gold/30 to-transparent"
+                  aria-hidden
+                />
               </div>
             </div>
           </div>

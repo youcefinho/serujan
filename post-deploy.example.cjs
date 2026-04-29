@@ -12,22 +12,22 @@
 // ⚠️ NE JAMAIS commiter ce fichier avec les vraies clés !
 // ═══════════════════════════════════════════════════════════
 
-const { execSync } = require('child_process');
+const { execSync } = require("child_process");
 
 // SWAP: Remplacer par les vrais secrets du client
 const secrets = {
-  ADMIN_PASSWORD: 'REMPLACER_PAR_MOT_DE_PASSE_ADMIN',
-  RESEND_API_KEY: 'REMPLACER_PAR_CLE_RESEND_re_...',
+  ADMIN_PASSWORD: "REMPLACER_PAR_MOT_DE_PASSE_ADMIN",
+  RESEND_API_KEY: "REMPLACER_PAR_CLE_RESEND_re_...",
   // GHL_WEBHOOK_URL: 'https://services.leadconnectorhq.com/hooks/VOTRE_ID',  // Optionnel — décommenter si GoHighLevel est utilisé
 };
 
-console.log('🔐 Configuration des secrets Cloudflare...\n');
+console.log("🔐 Configuration des secrets Cloudflare...\n");
 
 for (const [name, value] of Object.entries(secrets)) {
   try {
     execSync(`npx wrangler secret put ${name}`, {
       input: value,
-      stdio: ['pipe', 'inherit', 'inherit'],
+      stdio: ["pipe", "inherit", "inherit"],
       cwd: __dirname,
     });
     console.log(`✅ ${name} configuré\n`);
@@ -36,4 +36,4 @@ for (const [name, value] of Object.entries(secrets)) {
   }
 }
 
-console.log('🚀 Secrets configurés ! Teste le login sur /admin/login');
+console.log("🚀 Secrets configurés ! Teste le login sur /admin/login");

@@ -13,7 +13,7 @@ declare global {
 
 export function trackEvent(
   eventName: string,
-  params?: Record<string, string | number | boolean>
+  params?: Record<string, string | number | boolean>,
 ): void {
   if (typeof window !== "undefined" && window.gtag) {
     window.gtag("event", eventName, params);

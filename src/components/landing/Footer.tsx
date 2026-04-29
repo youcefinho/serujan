@@ -17,7 +17,10 @@ export default function Footer() {
       {/* Halo subtil */}
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[40rem] h-[20rem] rounded-full pointer-events-none opacity-50"
-        style={{ background: "radial-gradient(ellipse, oklch(0.78 0.13 82 / 0.08) 0%, transparent 60%)", filter: "blur(60px)" }}
+        style={{
+          background: "radial-gradient(ellipse, oklch(0.78 0.13 82 / 0.08) 0%, transparent 60%)",
+          filter: "blur(60px)",
+        }}
         aria-hidden
       />
 
@@ -27,7 +30,13 @@ export default function Footer() {
           {/* Colonne identité */}
           <div className="lg:col-span-5">
             {clientConfig.logoUrl && (
-              <img src={clientConfig.logoUrl} alt={clientConfig.teamName} loading="lazy" decoding="async" className="h-12 w-auto mb-6 opacity-90" />
+              <img
+                src={clientConfig.logoUrl}
+                alt={clientConfig.teamName}
+                loading="lazy"
+                decoding="async"
+                className="h-12 w-auto mb-6 opacity-90"
+              />
             )}
             <p className="font-display text-xl md:text-2xl leading-tight text-foreground/85 max-w-md text-balance">
               {t(translations.footer.desc)}
@@ -82,8 +91,10 @@ export default function Footer() {
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-3.5 h-3.5 text-gold/60 flex-shrink-0 mt-1" />
                 <span className="leading-relaxed">
-                  {clientConfig.address.street}<br />
-                  {clientConfig.address.suite}<br />
+                  {clientConfig.address.street}
+                  <br />
+                  {clientConfig.address.suite}
+                  <br />
                   {clientConfig.address.city}, {clientConfig.address.province}
                 </span>
               </li>
@@ -138,16 +149,17 @@ export default function Footer() {
         </div>
 
         {/* Filet doré */}
-        <div className="h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent mb-8" aria-hidden />
+        <div
+          className="h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent mb-8"
+          aria-hidden
+        />
 
         {/* Mention légale en bas */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-foreground/40">
           <p className="tracking-wide">
             © {year} {t(translations.footer.copyright)}
           </p>
-          <p className="font-display italic text-foreground/50">
-            {t(translations.footer.madeIn)}
-          </p>
+          <p className="font-display italic text-foreground/50">{t(translations.footer.madeIn)}</p>
           <div className="flex gap-5">
             <Link to="/mentions-legales" className="hover:text-gold transition-colors">
               {t(translations.footer.mentions)}
@@ -162,7 +174,15 @@ export default function Footer() {
   );
 }
 
-function SocialLink({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
+function SocialLink({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <a
       href={href}

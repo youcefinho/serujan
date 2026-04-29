@@ -12,7 +12,10 @@ export const Route = createFileRoute("/confidentialite")({
 
 function ConfidentialitePage() {
   const { t, ta } = useLanguage();
-  const sections = ta(translations.legal.privacy.sections) as Array<{ heading: string; body: string }>;
+  const sections = ta(translations.legal.privacy.sections) as Array<{
+    heading: string;
+    body: string;
+  }>;
 
   return (
     <LegalPage

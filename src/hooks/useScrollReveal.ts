@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+// Hook IntersectionObserver. Retourne `{ ref, visible }` — `visible` passe
+// à true une seule fois quand l'élément entre dans le viewport.
+// Utilisé surtout par `<ScrollReveal>` — les sections v2 utilisent `useInView`
+// de motion/react directement.
 
-/**
- * Returns a ref and a boolean `visible` that becomes true once the element
- * enters the viewport (IntersectionObserver). Fires only once.
- */
-export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
-  threshold = 0.15,
-) {
+import { useEffect, useRef, useState } from "react";
+export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(threshold = 0.15) {
   const ref = useRef<T>(null);
   const [visible, setVisible] = useState(false);
 

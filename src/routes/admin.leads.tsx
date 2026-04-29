@@ -2,8 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  Loader2, Search, Phone, Mail, X, Briefcase,
-  DollarSign, Download, Calendar, Inbox, TrendingUp,
+  Loader2,
+  Search,
+  Phone,
+  Mail,
+  X,
+  Briefcase,
+  DollarSign,
+  Download,
+  Calendar,
+  Inbox,
+  TrendingUp,
 } from "lucide-react";
 
 interface Lead {
@@ -25,22 +34,32 @@ const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 function exportCSV(leads: Lead[]) {
   if (leads.length === 0) return;
-  const headers = ["Date", "Nom", "Téléphone", "Courriel", "Type de projet", "Montant estimé", "Message"];
+  const headers = [
+    "Date",
+    "Nom",
+    "Téléphone",
+    "Courriel",
+    "Type de projet",
+    "Montant estimé",
+    "Message",
+  ];
   const escape = (v: string | null) => {
     if (!v) return "";
     const s = v.replace(/"/g, '""');
     return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s}"` : s;
   };
 
-  const rows = leads.map((l) => [
-    new Date(l.created_at).toLocaleString("fr-CA"),
-    escape(l.name),
-    escape(l.phone),
-    escape(l.email),
-    escape(l.project_type),
-    escape(l.estimated_amount),
-    escape(l.message),
-  ].join(","));
+  const rows = leads.map((l) =>
+    [
+      new Date(l.created_at).toLocaleString("fr-CA"),
+      escape(l.name),
+      escape(l.phone),
+      escape(l.email),
+      escape(l.project_type),
+      escape(l.estimated_amount),
+      escape(l.message),
+    ].join(","),
+  );
 
   const csv = [headers.join(","), ...rows].join("\n");
   const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
@@ -177,9 +196,22 @@ function AdminLeadsPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <StatCard label="Total" value={stats.total} icon={<Inbox className="w-4 h-4" />} />
-        <StatCard label="Cette semaine" value={stats.week} accent icon={<TrendingUp className="w-4 h-4" />} />
-        <StatCard label="30 derniers jours" value={stats.month} icon={<Calendar className="w-4 h-4" />} />
-        <StatCard label="Avec type de projet" value={stats.withProject} icon={<Briefcase className="w-4 h-4" />} />
+        <StatCard
+          label="Cette semaine"
+          value={stats.week}
+          accent
+          icon={<TrendingUp className="w-4 h-4" />}
+        />
+        <StatCard
+          label="30 derniers jours"
+          value={stats.month}
+          icon={<Calendar className="w-4 h-4" />}
+        />
+        <StatCard
+          label="Avec type de projet"
+          value={stats.withProject}
+          icon={<Briefcase className="w-4 h-4" />}
+        />
       </div>
 
       {/* Search */}
@@ -200,9 +232,7 @@ function AdminLeadsPage() {
         {filtered.length === 0 ? (
           <div className="p-16 text-center">
             <Inbox className="w-10 h-10 text-gold/30 mx-auto mb-4" strokeWidth={1.2} />
-            <p className="text-foreground/50 text-sm">
-              Aucun lead {search && `pour "${search}"`}
-            </p>
+            <p className="text-foreground/50 text-sm">Aucun lead {search && `pour "${search}"`}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -231,7 +261,9 @@ function AdminLeadsPage() {
                         minute: "2-digit",
                       })}
                     </td>
-                    <td className="px-5 py-4 font-display tracking-tight text-foreground">{l.name}</td>
+                    <td className="px-5 py-4 font-display tracking-tight text-foreground">
+                      {l.name}
+                    </td>
                     <td className="px-5 py-4 hidden md:table-cell text-foreground/55 text-xs">
                       <div>{l.email}</div>
                       <div className="tabular-nums">{l.phone}</div>
@@ -241,7 +273,9 @@ function AdminLeadsPage() {
                         <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider bg-gold/10 text-gold border border-gold/25">
                           {l.project_type}
                         </span>
-                      ) : <span className="text-foreground/30">—</span>}
+                      ) : (
+                        <span className="text-foreground/30">—</span>
+                      )}
                     </td>
                     <td className="px-5 py-4 hidden lg:table-cell text-foreground/65 text-xs">
                       {l.estimated_amount || <span className="text-foreground/30">—</span>}
@@ -263,8 +297,16 @@ function AdminLeadsPage() {
 }
 
 function StatCard({
-  label, value, accent, icon,
-}: { label: string; value: number; accent?: boolean; icon?: React.ReactNode }) {
+  label,
+  value,
+  accent,
+  icon,
+}: {
+  label: string;
+  value: number;
+  accent?: boolean;
+  icon?: React.ReactNode;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -277,12 +319,16 @@ function StatCard({
       }`}
     >
       <div className="flex items-center justify-between mb-3">
-        <span className={`text-[10px] uppercase tracking-[0.22em] ${accent ? "text-black-deep/70" : "text-foreground/45"}`}>
+        <span
+          className={`text-[10px] uppercase tracking-[0.22em] ${accent ? "text-black-deep/70" : "text-foreground/45"}`}
+        >
           {label}
         </span>
         <span className={accent ? "text-black-deep/70" : "text-gold/60"}>{icon}</span>
       </div>
-      <div className={`font-display text-3xl md:text-4xl tabular-nums leading-none ${accent ? "text-black-deep" : "text-foreground"}`}>
+      <div
+        className={`font-display text-3xl md:text-4xl tabular-nums leading-none ${accent ? "text-black-deep" : "text-foreground"}`}
+      >
         {value}
       </div>
     </motion.div>
@@ -311,7 +357,9 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
             <span className="text-[10px] uppercase tracking-[0.22em] text-gold-light/70">
               Lead commercial
             </span>
-            <h2 className="font-display text-2xl text-foreground tracking-tight mt-0.5">{lead.name}</h2>
+            <h2 className="font-display text-2xl text-foreground tracking-tight mt-0.5">
+              {lead.name}
+            </h2>
           </div>
           <button
             onClick={onClose}
@@ -324,18 +372,27 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
 
         <div className="p-6 space-y-5">
           <Field label="Date">
-            {new Date(lead.created_at).toLocaleString("fr-CA", { dateStyle: "long", timeStyle: "short" })}
+            {new Date(lead.created_at).toLocaleString("fr-CA", {
+              dateStyle: "long",
+              timeStyle: "short",
+            })}
           </Field>
           {lead.phone && (
             <Field label="Téléphone">
-              <a href={`tel:${lead.phone}`} className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors font-medium tabular-nums">
+              <a
+                href={`tel:${lead.phone}`}
+                className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors font-medium tabular-nums"
+              >
                 <Phone className="w-3.5 h-3.5" />
                 {lead.phone}
               </a>
             </Field>
           )}
           <Field label="Courriel">
-            <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors font-medium break-all">
+            <a
+              href={`mailto:${lead.email}`}
+              className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors font-medium break-all"
+            >
               <Mail className="w-3.5 h-3.5" />
               {lead.email}
             </a>
@@ -348,7 +405,9 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
           </Field>
           {lead.message && (
             <Field label="Message">
-              <div className="whitespace-pre-wrap text-foreground/85 leading-relaxed">{lead.message}</div>
+              <div className="whitespace-pre-wrap text-foreground/85 leading-relaxed">
+                {lead.message}
+              </div>
             </Field>
           )}
 
@@ -376,7 +435,15 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
   );
 }
 
-function Field({ label, icon, children }: { label: string; icon?: React.ReactNode; children: React.ReactNode }) {
+function Field({
+  label,
+  icon,
+  children,
+}: {
+  label: string;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-foreground/45 font-medium mb-1.5">

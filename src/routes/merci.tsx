@@ -22,7 +22,10 @@ function MerciPage() {
       {/* Halo doré */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44rem] h-[44rem] rounded-full pointer-events-none opacity-50"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.10) 0%, transparent 60%)", filter: "blur(80px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.10) 0%, transparent 60%)",
+          filter: "blur(80px)",
+        }}
         aria-hidden
       />
 
@@ -35,7 +38,10 @@ function MerciPage() {
           className="relative inline-flex items-center justify-center w-20 h-20 rounded-full bg-gold/15 border border-gold/40 mb-10 shadow-gold-sm"
         >
           <CheckCircle2 className="w-10 h-10 text-gold" strokeWidth={2} />
-          <span className="absolute inset-0 rounded-full border border-gold/30 animate-pulse-gold" aria-hidden />
+          <span
+            className="absolute inset-0 rounded-full border border-gold/30 animate-pulse-gold"
+            aria-hidden
+          />
         </motion.div>
 
         {/* Eyebrow */}

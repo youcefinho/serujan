@@ -59,7 +59,10 @@ function AdminLogin() {
       {/* Halo */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[36rem] h-[36rem] rounded-full pointer-events-none opacity-50"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.08) 0%, transparent 60%)", filter: "blur(80px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.08) 0%, transparent 60%)",
+          filter: "blur(80px)",
+        }}
         aria-hidden
       />
 
@@ -75,7 +78,10 @@ function AdminLogin() {
           <div className="flex justify-center mb-6">
             <div className="relative w-14 h-14 rounded-xl bg-gold/15 border border-gold/40 flex items-center justify-center">
               <Lock className="w-6 h-6 text-gold" strokeWidth={1.5} />
-              <span className="absolute inset-0 rounded-xl border border-gold/30 animate-pulse-gold" aria-hidden />
+              <span
+                className="absolute inset-0 rounded-xl border border-gold/30 animate-pulse-gold"
+                aria-hidden
+              />
             </div>
           </div>
 

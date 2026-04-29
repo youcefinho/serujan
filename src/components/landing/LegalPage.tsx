@@ -24,14 +24,21 @@ interface Props {
 
 export function LegalPage({ eyebrow, title, sections }: Props) {
   const { t } = useLanguage();
-  const today = new Date().toLocaleDateString("fr-CA", { day: "numeric", month: "long", year: "numeric" });
+  const today = new Date().toLocaleDateString("fr-CA", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <main className="relative min-h-screen bg-black-deep text-foreground px-6 py-24 md:py-32 overflow-hidden">
       {/* Halo discret */}
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[40rem] h-[30rem] rounded-full pointer-events-none opacity-40"
-        style={{ background: "radial-gradient(ellipse, oklch(0.78 0.13 82 / 0.06) 0%, transparent 60%)", filter: "blur(80px)" }}
+        style={{
+          background: "radial-gradient(ellipse, oklch(0.78 0.13 82 / 0.06) 0%, transparent 60%)",
+          filter: "blur(80px)",
+        }}
         aria-hidden
       />
 
@@ -97,7 +104,10 @@ export function LegalPage({ eyebrow, title, sections }: Props) {
         </div>
 
         {/* Filet doré final */}
-        <div className="mt-20 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" aria-hidden />
+        <div
+          className="mt-20 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent"
+          aria-hidden
+        />
 
         <div className="mt-8 text-xs text-foreground/40 text-center">
           © {new Date().getFullYear()} Serujan Kaneshalingam · Courtage Hypothécaire Commercial

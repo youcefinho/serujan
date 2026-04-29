@@ -2,7 +2,12 @@ import { describe, it, expect } from "vitest";
 
 // Test de la formule hypothécaire canadienne (semi-annual compounding)
 // Adapté pour le simulateur commercial (montants plus élevés)
-function calculateMortgage(price: number, downPercent: number, rate: number, years: number): number {
+function calculateMortgage(
+  price: number,
+  downPercent: number,
+  rate: number,
+  years: number,
+): number {
   const principal = price * (1 - downPercent / 100);
   const r = Math.pow(1 + rate / 100 / 2, 1 / 6) - 1;
   const n = years * 12;
@@ -12,8 +17,12 @@ function calculateMortgage(price: number, downPercent: number, rate: number, yea
 
 // Calcul du coût mensuel total
 function calculateTotalMonthly(
-  price: number, downPercent: number, rate: number, years: number,
-  propertyTax: number, insurance: number,
+  price: number,
+  downPercent: number,
+  rate: number,
+  years: number,
+  propertyTax: number,
+  insurance: number,
 ): number {
   const mortgage = calculateMortgage(price, downPercent, rate, years);
   return mortgage + propertyTax / 12 + insurance / 12;

@@ -16,7 +16,9 @@ function AnimatedNumber({ value, format }: { value: number; format: (n: number) 
   const spring = useSpring(value, { stiffness: 80, damping: 20 });
   const display = useTransform(spring, (v) => format(v));
 
-  useEffect(() => { spring.set(value); }, [value, spring]);
+  useEffect(() => {
+    spring.set(value);
+  }, [value, spring]);
 
   return <motion.span className="tabular-nums">{display}</motion.span>;
 }
@@ -34,12 +36,24 @@ function Donut({ percents }: { percents: { mortgage: number; tax: number; insura
   return (
     <svg viewBox="0 0 200 200" className="w-44 h-44 md:w-56 md:h-56 -rotate-90">
       {/* Rail gris */}
-      <circle cx="100" cy="100" r={RADIUS} fill="none" stroke="oklch(1 0 0 / 0.06)" strokeWidth={STROKE} />
+      <circle
+        cx="100"
+        cy="100"
+        r={RADIUS}
+        fill="none"
+        stroke="oklch(1 0 0 / 0.06)"
+        strokeWidth={STROKE}
+      />
 
       {/* Hypothèque (or principal) */}
       <motion.circle
-        cx="100" cy="100" r={RADIUS} fill="none"
-        stroke="var(--gold)" strokeWidth={STROKE} strokeLinecap="butt"
+        cx="100"
+        cy="100"
+        r={RADIUS}
+        fill="none"
+        stroke="var(--gold)"
+        strokeWidth={STROKE}
+        strokeLinecap="butt"
         strokeDasharray={`${m} ${C}`}
         animate={{ strokeDasharray: `${m} ${C}` }}
         transition={{ duration: 0.8, ease }}
@@ -47,8 +61,13 @@ function Donut({ percents }: { percents: { mortgage: number; tax: number; insura
       />
       {/* Taxes (or moyen) */}
       <motion.circle
-        cx="100" cy="100" r={RADIUS} fill="none"
-        stroke="var(--gold-deep)" strokeWidth={STROKE} strokeLinecap="butt"
+        cx="100"
+        cy="100"
+        r={RADIUS}
+        fill="none"
+        stroke="var(--gold-deep)"
+        strokeWidth={STROKE}
+        strokeLinecap="butt"
         strokeDasharray={`${t} ${C}`}
         strokeDashoffset={-m}
         animate={{ strokeDasharray: `${t} ${C}`, strokeDashoffset: -m }}
@@ -56,8 +75,13 @@ function Donut({ percents }: { percents: { mortgage: number; tax: number; insura
       />
       {/* Assurance (or sourd) */}
       <motion.circle
-        cx="100" cy="100" r={RADIUS} fill="none"
-        stroke="oklch(0.45 0.08 75)" strokeWidth={STROKE} strokeLinecap="butt"
+        cx="100"
+        cy="100"
+        r={RADIUS}
+        fill="none"
+        stroke="oklch(0.45 0.08 75)"
+        strokeWidth={STROKE}
+        strokeLinecap="butt"
         strokeDasharray={`${i} ${C}`}
         strokeDashoffset={-(m + t)}
         animate={{ strokeDasharray: `${i} ${C}`, strokeDashoffset: -(m + t) }}
@@ -68,9 +92,21 @@ function Donut({ percents }: { percents: { mortgage: number; tax: number; insura
 }
 
 // Slider custom or
-function GoldSlider({ label, value, format, min, max, step, onChange }: {
-  label: string; value: number; format: string;
-  min: number; max: number; step: number;
+function GoldSlider({
+  label,
+  value,
+  format,
+  min,
+  max,
+  step,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  format: string;
+  min: number;
+  max: number;
+  step: number;
   onChange: (n: number) => void;
 }) {
   const percent = ((value - min) / (max - min)) * 100;
@@ -91,7 +127,10 @@ function GoldSlider({ label, value, format, min, max, step, onChange }: {
         {/* Range natif (invisible mais accessible) */}
         <input
           type="range"
-          min={min} max={max} step={step} value={value}
+          min={min}
+          max={max}
+          step={step}
+          value={value}
           onChange={(e) => onChange(Number(e.target.value))}
           aria-label={label}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -122,10 +161,11 @@ export default function Calculator() {
   const calc = useMemo(() => {
     const monthlyRate = interestRate / 100 / 12;
     const numPayments = amortization * 12;
-    const monthlyMortgage = monthlyRate === 0
-      ? loanAmount / numPayments
-      : (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
-        (Math.pow(1 + monthlyRate, numPayments) - 1);
+    const monthlyMortgage =
+      monthlyRate === 0
+        ? loanAmount / numPayments
+        : (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
+          (Math.pow(1 + monthlyRate, numPayments) - 1);
     const monthlyTax = propertyTax / 12;
     const monthlyInsurance = insurance / 12;
     const totalMonthly = monthlyMortgage + monthlyTax + monthlyInsurance;
@@ -141,14 +181,25 @@ export default function Calculator() {
   }, [loanAmount, interestRate, amortization, propertyTax, insurance]);
 
   const fmt = (n: number) =>
-    new Intl.NumberFormat("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 }).format(n);
+    new Intl.NumberFormat("fr-CA", {
+      style: "currency",
+      currency: "CAD",
+      maximumFractionDigits: 0,
+    }).format(n);
 
   return (
-    <section id="simulateur" ref={ref} className="relative py-28 md:py-36 px-6 bg-black-surface overflow-hidden">
+    <section
+      id="simulateur"
+      ref={ref}
+      className="relative py-28 md:py-36 px-6 bg-black-surface overflow-hidden"
+    >
       {/* Halo */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44rem] h-[44rem] rounded-full pointer-events-none opacity-40"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.07) 0%, transparent 60%)", filter: "blur(80px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.07) 0%, transparent 60%)",
+          filter: "blur(80px)",
+        }}
         aria-hidden
       />
 
@@ -198,11 +249,51 @@ export default function Calculator() {
             transition={{ duration: 0.9, delay: 0.3, ease }}
             className="p-8 md:p-10 rounded-2xl bg-black-deep/70 border border-gold/10 space-y-7"
           >
-            <GoldSlider label={t(translations.calculator.loanAmount)} value={loanAmount} format={fmt(loanAmount)} min={500_000} max={50_000_000} step={100_000} onChange={setLoanAmount} />
-            <GoldSlider label={t(translations.calculator.interestRate)} value={interestRate} format={`${interestRate.toFixed(1)} %`} min={1} max={15} step={0.1} onChange={setInterestRate} />
-            <GoldSlider label={t(translations.calculator.amortization)} value={amortization} format={`${amortization} ${t(translations.common.years)}`} min={5} max={30} step={1} onChange={setAmortization} />
-            <GoldSlider label={t(translations.calculator.propertyTax)} value={propertyTax} format={fmt(propertyTax)} min={5_000} max={200_000} step={1_000} onChange={setPropertyTax} />
-            <GoldSlider label={t(translations.calculator.insurance)} value={insurance} format={fmt(insurance)} min={1_000} max={50_000} step={500} onChange={setInsurance} />
+            <GoldSlider
+              label={t(translations.calculator.loanAmount)}
+              value={loanAmount}
+              format={fmt(loanAmount)}
+              min={500_000}
+              max={50_000_000}
+              step={100_000}
+              onChange={setLoanAmount}
+            />
+            <GoldSlider
+              label={t(translations.calculator.interestRate)}
+              value={interestRate}
+              format={`${interestRate.toFixed(1)} %`}
+              min={1}
+              max={15}
+              step={0.1}
+              onChange={setInterestRate}
+            />
+            <GoldSlider
+              label={t(translations.calculator.amortization)}
+              value={amortization}
+              format={`${amortization} ${t(translations.common.years)}`}
+              min={5}
+              max={30}
+              step={1}
+              onChange={setAmortization}
+            />
+            <GoldSlider
+              label={t(translations.calculator.propertyTax)}
+              value={propertyTax}
+              format={fmt(propertyTax)}
+              min={5_000}
+              max={200_000}
+              step={1_000}
+              onChange={setPropertyTax}
+            />
+            <GoldSlider
+              label={t(translations.calculator.insurance)}
+              value={insurance}
+              format={fmt(insurance)}
+              min={1_000}
+              max={50_000}
+              step={500}
+              onChange={setInsurance}
+            />
           </motion.div>
 
           {/* Résultats */}
@@ -215,11 +306,13 @@ export default function Calculator() {
             {/* Donut + total mensuel */}
             <div className="relative p-8 md:p-10 rounded-2xl bg-black-deep/70 border border-gold/15 shadow-elevate">
               <div className="flex flex-col md:flex-row items-center gap-8">
-                <Donut percents={{
-                  mortgage: calc.mortgagePercent,
-                  tax: calc.taxPercent,
-                  insurance: calc.insurancePercent,
-                }} />
+                <Donut
+                  percents={{
+                    mortgage: calc.mortgagePercent,
+                    tax: calc.taxPercent,
+                    insurance: calc.insurancePercent,
+                  }}
+                />
                 <div className="flex-1 text-center md:text-left">
                   <p className="text-[10px] uppercase tracking-[0.24em] text-gold-light/70 mb-3">
                     {t(translations.calculator.totalMonthly)}
@@ -277,7 +370,17 @@ export default function Calculator() {
   );
 }
 
-function Breakdown({ label, value, percent, color }: { label: string; value: string; percent: number; color: string }) {
+function Breakdown({
+  label,
+  value,
+  percent,
+  color,
+}: {
+  label: string;
+  value: string;
+  percent: number;
+  color: string;
+}) {
   return (
     <div>
       <div className="flex justify-between items-baseline text-sm mb-1.5">

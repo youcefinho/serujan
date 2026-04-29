@@ -12,7 +12,10 @@ function NotFoundComponent() {
       {/* Halo */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] rounded-full pointer-events-none opacity-50"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.08) 0%, transparent 60%)", filter: "blur(80px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.08) 0%, transparent 60%)",
+          filter: "blur(80px)",
+        }}
         aria-hidden
       />
 
@@ -61,10 +64,10 @@ function SkipLink() {
 
 function RootComponent() {
   useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
     }
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);
 
   return (

@@ -19,11 +19,18 @@ export default function About() {
   const features = ta(translations.approche.features) as Array<{ title: string; desc: string }>;
 
   return (
-    <section id="approche" ref={ref} className="relative py-28 md:py-36 px-6 bg-black-surface overflow-hidden">
+    <section
+      id="approche"
+      ref={ref}
+      className="relative py-28 md:py-36 px-6 bg-black-surface overflow-hidden"
+    >
       {/* Halo doré central */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[50rem] rounded-full pointer-events-none opacity-40"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.06) 0%, transparent 60%)", filter: "blur(80px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.06) 0%, transparent 60%)",
+          filter: "blur(80px)",
+        }}
         aria-hidden
       />
 
@@ -65,7 +72,10 @@ export default function About() {
             className="lg:col-span-5 relative"
           >
             <div className="relative p-8 md:p-10 rounded-2xl bg-black-deep/60 border border-gold/15 shadow-elevate">
-              <Quote className="absolute -top-3 -left-3 w-8 h-8 text-gold/80 fill-gold/20" strokeWidth={1.5} />
+              <Quote
+                className="absolute -top-3 -left-3 w-8 h-8 text-gold/80 fill-gold/20"
+                strokeWidth={1.5}
+              />
               <blockquote className="font-display italic text-xl md:text-2xl leading-[1.4] text-foreground/90 text-pretty">
                 {t(translations.approche.quote)}
               </blockquote>
@@ -73,7 +83,10 @@ export default function About() {
                 {t(translations.approche.quoteAttribution)}
               </figcaption>
               {/* Filet doré */}
-              <div className="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" aria-hidden />
+              <div
+                className="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent"
+                aria-hidden
+              />
             </div>
           </motion.figure>
 
@@ -108,9 +121,7 @@ export default function About() {
                   <h4 className="font-display text-lg text-foreground mb-1.5 tracking-tight">
                     {feature.title}
                   </h4>
-                  <p className="text-sm text-foreground/55 leading-relaxed">
-                    {feature.desc}
-                  </p>
+                  <p className="text-sm text-foreground/55 leading-relaxed">{feature.desc}</p>
                 </div>
               </motion.div>
             );

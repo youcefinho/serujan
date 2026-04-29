@@ -1,5 +1,6 @@
 // Calendly URL — set VITE_CALENDLY_URL in .env.local
-const CALENDLY_URL = import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/dahmanimohamedrouchdi";
+const CALENDLY_URL =
+  import.meta.env.VITE_CALENDLY_URL || "https://calendly.com/dahmanimohamedrouchdi";
 
 import { trackCalendlyClick } from "@/lib/analytics";
 

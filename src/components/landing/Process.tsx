@@ -28,11 +28,18 @@ export default function Process() {
   const steps = ta(translations.process.steps) as Array<{ title: string; desc: string }>;
 
   return (
-    <section id="processus" ref={ref} className="relative py-28 md:py-36 px-6 bg-black-deep overflow-hidden">
+    <section
+      id="processus"
+      ref={ref}
+      className="relative py-28 md:py-36 px-6 bg-black-deep overflow-hidden"
+    >
       {/* Halo discret */}
       <div
         className="absolute top-1/2 right-0 w-[40rem] h-[40rem] rounded-full pointer-events-none opacity-50"
-        style={{ background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.05) 0%, transparent 60%)", filter: "blur(70px)" }}
+        style={{
+          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.05) 0%, transparent 60%)",
+          filter: "blur(70px)",
+        }}
         aria-hidden
       />
 
@@ -112,7 +119,10 @@ export default function Process() {
                   <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full bg-black-deep border-2 border-gold/40 flex items-center justify-center shadow-gold-sm">
                     <Icon className="w-5 h-5 md:w-6 md:h-6 text-gold" strokeWidth={1.5} />
                     {/* Anneau pulsé */}
-                    <span className="absolute inset-0 rounded-full border border-gold/30 animate-pulse-gold" aria-hidden />
+                    <span
+                      className="absolute inset-0 rounded-full border border-gold/30 animate-pulse-gold"
+                      aria-hidden
+                    />
                   </div>
                 </div>
 

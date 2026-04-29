@@ -1,8 +1,9 @@
+// Contexte de langue FR/EN. Provider à monter à la racine.
+// Hook `useLanguage()` → `{ lang, setLang, t, ta }`.
+// FR par défaut. Persistence via localStorage clé `intralys-lang`.
+
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { Language } from "@/lib/translations";
-
-// Contexte de langue — Standard Intralys §10.1
-// Français par défaut, choix persisté dans localStorage
 
 const STORAGE_KEY = "intralys-lang";
 
@@ -52,9 +53,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const ta = (obj: { readonly fr: any; readonly en: any }): any => obj[lang];
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t, ta }}>
-      {children}
-    </LanguageContext.Provider>
+    <LanguageContext.Provider value={{ lang, setLang, t, ta }}>{children}</LanguageContext.Provider>
   );
 }
 

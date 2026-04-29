@@ -51,15 +51,18 @@ export default function Hero() {
       />
 
       {/* Filets dorés horizontaux discrets */}
-      <div className="absolute top-32 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/15 to-transparent" aria-hidden />
-      <div className="absolute bottom-32 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/10 to-transparent" aria-hidden />
+      <div
+        className="absolute top-32 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/15 to-transparent"
+        aria-hidden
+      />
+      <div
+        className="absolute bottom-32 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/10 to-transparent"
+        aria-hidden
+      />
 
       <div className="relative z-10 w-full max-w-6xl mx-auto px-6 pt-28 pb-20 md:pt-32 md:pb-24">
         {/* Badge */}
-        <motion.div
-          {...fadeUp(0)}
-          className="inline-flex items-center gap-3 mb-10"
-        >
+        <motion.div {...fadeUp(0)} className="inline-flex items-center gap-3 mb-10">
           <span className="w-8 h-px bg-gold/60" aria-hidden />
           <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
             {t(translations.hero.badge)}

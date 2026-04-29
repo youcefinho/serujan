@@ -12,7 +12,10 @@ export const Route = createFileRoute("/mentions-legales")({
 
 function MentionsLegalesPage() {
   const { t, ta } = useLanguage();
-  const sections = ta(translations.legal.mentions.sections) as Array<{ heading: string; body: string }>;
+  const sections = ta(translations.legal.mentions.sections) as Array<{
+    heading: string;
+    body: string;
+  }>;
 
   return (
     <LegalPage

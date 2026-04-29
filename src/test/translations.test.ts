@@ -3,10 +3,7 @@ import { translations } from "../lib/translations";
 
 // Vérifie que TOUTES les clés de traduction ont les deux langues (FR et EN)
 
-function checkTranslationKeys(
-  obj: Record<string, unknown>,
-  path = ""
-): string[] {
+function checkTranslationKeys(obj: Record<string, unknown>, path = ""): string[] {
   const errors: string[] = [];
 
   for (const key of Object.keys(obj)) {
@@ -28,15 +25,8 @@ function checkTranslationKeys(
       if (pair.en === undefined || pair.en === null || pair.en === "") {
         errors.push(`${currentPath}.en est vide`);
       }
-    } else if (
-      value &&
-      typeof value === "object" &&
-      !Array.isArray(value) &&
-      !("fr" in value)
-    ) {
-      errors.push(
-        ...checkTranslationKeys(value as Record<string, unknown>, currentPath)
-      );
+    } else if (value && typeof value === "object" && !Array.isArray(value) && !("fr" in value)) {
+      errors.push(...checkTranslationKeys(value as Record<string, unknown>, currentPath));
     }
   }
 
@@ -45,13 +35,9 @@ function checkTranslationKeys(
 
 describe("Système i18n — Intégrité des traductions (Serujan)", () => {
   it("toutes les clés de traduction ont une version FR et EN", () => {
-    const errors = checkTranslationKeys(
-      translations as unknown as Record<string, unknown>
-    );
+    const errors = checkTranslationKeys(translations as unknown as Record<string, unknown>);
     if (errors.length > 0) {
-      throw new Error(
-        `Traductions manquantes :\n${errors.map((e) => `  - ${e}`).join("\n")}`
-      );
+      throw new Error(`Traductions manquantes :\n${errors.map((e) => `  - ${e}`).join("\n")}`);
     }
     expect(errors).toHaveLength(0);
   });
@@ -69,10 +55,9 @@ describe("Système i18n — Intégrité des traductions (Serujan)", () => {
     ];
 
     for (const section of requiredSections) {
-      expect(
-        translations,
-        `Section "${section}" manquante dans translations.ts`
-      ).toHaveProperty(section);
+      expect(translations, `Section "${section}" manquante dans translations.ts`).toHaveProperty(
+        section,
+      );
     }
   });
 

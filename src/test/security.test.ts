@@ -13,7 +13,7 @@ import {
 describe("sanitizeHtml — protection XSS pour les emails", () => {
   it("échappe les caractères dangereux", () => {
     expect(sanitizeHtml("<script>alert('xss')</script>")).toBe(
-      "&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;"
+      "&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;",
     );
   });
 
