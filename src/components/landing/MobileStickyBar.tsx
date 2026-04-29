@@ -40,7 +40,7 @@ export default function MobileStickyBar() {
             </a>
             <a
               href="#contact"
-              className="flex-[1.6] flex items-center justify-center gap-2 py-3 bg-gradient-gold text-black-deep font-semibold rounded-md text-sm shadow-gold-sm"
+              className="flex-[1.6] relative overflow-hidden flex items-center justify-center gap-2 py-3 bg-gradient-gold text-black-deep font-semibold rounded-md text-sm shadow-gold-sm btn-shine"
             >
               <span>{t(translations.mobileStickyBar.cta)}</span>
               <ArrowRight className="w-4 h-4" />

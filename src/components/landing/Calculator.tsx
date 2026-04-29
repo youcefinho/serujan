@@ -382,7 +382,7 @@ export default function Calculator() {
             {/* CTA */}
             <a
               href="#contact"
-              className="group block w-full p-5 rounded-xl bg-gradient-gold text-black-deep font-semibold text-center transition-all duration-300 hover:-translate-y-0.5 shadow-gold hover:shadow-gold-sm"
+              className="group relative overflow-hidden block w-full p-5 rounded-xl bg-gradient-gold text-black-deep font-semibold text-center transition-all duration-300 hover:-translate-y-0.5 shadow-gold hover:shadow-gold-sm btn-shine"
             >
               <span className="inline-flex items-center gap-2">
                 {t(translations.calculator.cta)}

@@ -1,43 +1,82 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 // ═══════════════════════════════════════════════════════════
-// MouseSpotlight — Halo lumineux qui suit le curseur
-// Effet inspiré de intralys.com — radial-gradient diffus
-// Respecte prefers-reduced-motion (désactivé si activé).
+// MouseSpotlight — Petit halo doré à la taille du curseur
+// + 3-4 traînées qui suivent avec un délai (effet étoile)
+// Désactivé sur mobile et prefers-reduced-motion.
 // ═══════════════════════════════════════════════════════════
+
+const TRAIL_COUNT = 4;
+const TRAIL_SIZES = [8, 6, 4, 3]; // px — de plus gros à plus petit
+const TRAIL_OPACITIES = [0.6, 0.4, 0.25, 0.15];
+const TRAIL_DELAYS = [0, 80, 160, 260]; // ms de retard
 
 export function MouseSpotlight() {
-  const ref = useRef<HTMLDivElement>(null);
+  const dotsRef = useRef<HTMLDivElement[]>([]);
+  const positions = useRef(
+    Array.from({ length: TRAIL_COUNT }, () => ({ x: -100, y: -100 }))
+  );
+  const mousePos = useRef({ x: -100, y: -100 });
+  const visible = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const assignRef = useCallback((el: HTMLDivElement | null, i: number) => {
+    if (el) dotsRef.current[i] = el;
+  }, []);
 
   useEffect(() => {
-    // Vérifier prefers-reduced-motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    // Ne pas activer sur mobile / tablette (pas de souris)
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
-    const el = ref.current;
-    if (!el) return;
+    const dots = dotsRef.current;
 
-    let rafId: number;
-
+    // Écoute souris
     function handleMouseMove(e: MouseEvent) {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        if (el) {
-          el.style.setProperty("--mx", `${e.clientX}px`);
-          el.style.setProperty("--my", `${e.clientY}px`);
-          el.style.opacity = "1";
-        }
-      });
+      mousePos.current = { x: e.clientX, y: e.clientY };
+      if (!visible.current && containerRef.current) {
+        containerRef.current.style.opacity = "1";
+        visible.current = true;
+      }
     }
 
     function handleMouseLeave() {
-      if (el) el.style.opacity = "0";
+      if (containerRef.current) {
+        containerRef.current.style.opacity = "0";
+        visible.current = false;
+      }
     }
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.addEventListener("mouseleave", handleMouseLeave);
+
+    // Animation loop — chaque point suit le précédent avec un retard
+    let rafId: number;
+    let lastTime = 0;
+
+    function animate(time: number) {
+      rafId = requestAnimationFrame(animate);
+
+      // Limiter à ~60fps
+      if (time - lastTime < 16) return;
+      lastTime = time;
+
+      for (let i = 0; i < TRAIL_COUNT; i++) {
+        const target = i === 0 ? mousePos.current : positions.current[i - 1];
+        const current = positions.current[i];
+
+        // Lerp — le premier suit vite, les suivants plus lentement
+        const speed = 0.3 - i * 0.05;
+        current.x += (target.x - current.x) * speed;
+        current.y += (target.y - current.y) * speed;
+
+        const dot = dots[i];
+        if (dot) {
+          dot.style.transform = `translate(${current.x}px, ${current.y}px) translate(-50%, -50%)`;
+        }
+      }
+    }
+
+    rafId = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(rafId);
@@ -48,13 +87,28 @@ export function MouseSpotlight() {
 
   return (
     <div
-      ref={ref}
+      ref={containerRef}
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-40 opacity-0 transition-opacity duration-700"
-      style={{
-        background:
-          "radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), oklch(0.78 0.10 82 / 0.06), transparent 60%)",
-      }}
-    />
+      className="pointer-events-none fixed inset-0 z-40 opacity-0 transition-opacity duration-500"
+    >
+      {Array.from({ length: TRAIL_COUNT }, (_, i) => (
+        <div
+          key={i}
+          ref={(el) => assignRef(el, i)}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: `${TRAIL_SIZES[i]}px`,
+            height: `${TRAIL_SIZES[i]}px`,
+            borderRadius: "50%",
+            background: `oklch(0.82 0.14 82 / ${TRAIL_OPACITIES[i]})`,
+            boxShadow: `0 0 ${TRAIL_SIZES[i] * 2}px ${TRAIL_SIZES[i]}px oklch(0.78 0.13 82 / ${TRAIL_OPACITIES[i] * 0.5})`,
+            transitionDelay: `${TRAIL_DELAYS[i]}ms`,
+            willChange: "transform",
+          }}
+        />
+      ))}
+    </div>
   );
 }

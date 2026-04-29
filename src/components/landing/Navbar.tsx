@@ -91,7 +91,7 @@ export default function Navbar() {
           </a>
           <a
             href="#contact"
-            className="px-6 py-2.5 bg-gradient-gold text-black-deep text-sm font-bold uppercase tracking-widest rounded-lg hover:scale-[1.02] transition-transform"
+            className="relative overflow-hidden px-6 py-2.5 bg-gradient-gold text-black-deep text-sm font-bold uppercase tracking-widest rounded-lg hover:scale-[1.02] transition-transform btn-shine btn-glow"
           >
             {t(translations.nav.cta)}
           </a>

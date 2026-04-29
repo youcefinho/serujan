@@ -348,7 +348,7 @@ export default function LeadForm() {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="group mt-8 w-full py-4 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold-sm hover:shadow-gold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 flex items-center justify-center gap-2"
+                  className="group relative overflow-hidden mt-8 w-full py-4 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold-sm hover:shadow-gold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 flex items-center justify-center gap-2 btn-shine btn-glow"
                 >
                   {status === "sending" ? (
                     <>

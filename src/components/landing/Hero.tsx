@@ -3,6 +3,7 @@ import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { motion } from "motion/react";
 import { Phone, ArrowRight, ArrowDown } from "lucide-react";
+import { CountUp } from "@/components/ui/CountUp";
 
 // ═══════════════════════════════════════════════════════════
 // Hero v2 — éditorial, dense, signature
@@ -76,7 +77,7 @@ export default function Hero() {
           </motion.span>
           <motion.span
             {...fadeUp(0.18)}
-            className="block text-gold-gradient italic font-display-italic"
+            className="block text-gold-gradient-animated italic font-display-italic"
             style={{ fontVariationSettings: "'SOFT' 100, 'opsz' 144" }}
           >
             {t(translations.hero.titleEmphasis)}
@@ -101,7 +102,7 @@ export default function Hero() {
         >
           <a
             href="#contact"
-            className="group inline-flex items-center justify-center gap-2 px-7 py-4 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold hover:shadow-gold-sm transition-all duration-300 hover:-translate-y-0.5"
+            className="group relative overflow-hidden inline-flex items-center justify-center gap-2 px-7 py-4 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold hover:shadow-gold-sm transition-all duration-300 hover:-translate-y-0.5 btn-shine btn-glow"
           >
             <span>{t(translations.hero.ctaPrimary)}</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -129,9 +130,10 @@ export default function Hero() {
               key={s.key}
               className="bg-black-deep/80 backdrop-blur-sm px-6 py-7 md:px-8 md:py-9 transition-colors hover:bg-black-elevated/60"
             >
-              <div className="font-display text-3xl md:text-4xl lg:text-5xl tabular-nums text-gold-gradient leading-none">
-                {s.value}
-              </div>
+              <CountUp
+                value={s.value}
+                className="font-display text-3xl md:text-4xl lg:text-5xl tabular-nums text-gold-gradient leading-none"
+              />
               <div className="mt-3 text-[11px] uppercase tracking-[0.18em] text-foreground/55">
                 {t(translations.hero[s.key])}
               </div>
