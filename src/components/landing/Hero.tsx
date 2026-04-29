@@ -100,10 +100,29 @@ export default function Hero() {
           >
             {t(translations.hero.titleEmphasis)}
           </motion.span>
-          <motion.span {...fadeUp(0.28)} className="block text-foreground/85 text-balance">
+          <motion.span
+            {...fadeUp(0.28)}
+            className="block text-gold-gradient italic font-display-italic"
+            style={{ fontVariationSettings: "'SOFT' 100, 'opsz' 144" }}
+          >
             {t(translations.hero.titleTail)}
           </motion.span>
         </h1>
+
+        {/* Cartouche identité du service — fusion range + audience + territoire */}
+        <motion.div
+          {...fadeUp(0.34)}
+          className="mt-7 inline-flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 rounded-md border border-gold/25 bg-gold/[0.06] text-[13px] tracking-[0.04em]"
+        >
+          {(ta(translations.hero.titleRangePill) as string[]).map((part, i) => (
+            <span key={i} className="inline-flex items-center gap-3">
+              {i > 0 && <span className="text-foreground/35" aria-hidden>·</span>}
+              <span className={i === 0 ? "text-gold font-semibold tabular-nums" : "text-foreground/85"}>
+                {part}
+              </span>
+            </span>
+          ))}
+        </motion.div>
 
         {/* Sous-titre — typewriter émotionnel (après que le message est clair) */}
         <motion.div {...fadeUp(0.4)} className="mt-8 max-w-2xl">
