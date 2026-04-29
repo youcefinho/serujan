@@ -5,43 +5,23 @@ import { useRef } from "react";
 
 // ═══════════════════════════════════════════════════════════
 // LendersNetwork — bandeau "réseau institutionnel" avec
-// marquee infinite-scroll des noms de prêteurs en typo
-// Fraunces or. Effet "preuve sociale" pour le commercial :
-// la valeur ajoutée du courtier = son réseau.
+// marquee infinite-scroll des CATÉGORIES de prêteurs (banques,
+// caisses, alternatifs, capital privé, etc.). Liste nominative
+// volontairement absente : elle est partagée à l'étape du mandat
+// selon le profil du dossier (et évite toute affirmation non
+// vérifiable sur les partenaires actifs).
 // ═══════════════════════════════════════════════════════════
-
-const LENDERS = [
-  "Banque Nationale",
-  "RBC",
-  "BMO",
-  "CIBC",
-  "TD",
-  "Banque Scotia",
-  "Desjardins Entreprises",
-  "Banque Laurentienne",
-  "HSBC Canada",
-  "Industrielle Alliance",
-  "MCAN Financial",
-  "Equitable Bank",
-  "CWB Trust",
-  "First National",
-  "Otera Capital",
-  "Trez Capital",
-  "Romspen",
-  "KingSett Capital",
-  "Foresters",
-  "Cohen & Cohen",
-];
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export default function LendersNetwork() {
-  const { t } = useLanguage();
+  const { t, ta } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.2 });
 
+  const categories = ta(translations.lendersNetwork.categories) as string[];
   // Doublé pour boucle visuellement continue
-  const loop = [...LENDERS, ...LENDERS];
+  const loop = [...categories, ...categories];
 
   return (
     <section
@@ -115,7 +95,10 @@ export default function LendersNetwork() {
           {/* Rangée 2 — droite → gauche, décalée */}
           <div className="marquee-track marquee-reverse">
             <div className="marquee-content">
-              {[...loop.slice(10), ...loop.slice(0, 10)].map((name, i) => (
+              {[
+                ...loop.slice(Math.floor(loop.length / 2)),
+                ...loop.slice(0, Math.floor(loop.length / 2)),
+              ].map((name, i) => (
                 <LenderChip key={`row2-${i}`} name={name} />
               ))}
             </div>

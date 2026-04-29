@@ -605,12 +605,38 @@ export const translations = {
     titleLead: { fr: "L'accès qui", en: "The access that" },
     titleEmphasis: { fr: "fait la différence.", en: "makes the difference." },
     subtitle: {
-      fr: "Plus de 40 prêteurs institutionnels et privés négociés au Québec et au Canada. Banques, caisses, fonds de pension, capital privé : chaque mandat est présenté au prêteur le mieux placé sur le marché.",
-      en: "Over 40 institutional and private lenders negotiated across Quebec and Canada. Banks, credit unions, pension funds, private capital: every mandate is presented to the best-placed lender on the market.",
+      fr: "Un réseau de prêteurs institutionnels et privés à l'échelle du Québec et du Canada. Chaque mandat est présenté au prêteur le mieux placé pour la nature et le profil du projet.",
+      en: "A network of institutional and private lenders across Quebec and Canada. Every mandate is presented to the lender best suited to the nature and profile of the project.",
+    },
+    categories: {
+      fr: [
+        "Banques nationales",
+        "Banques régionales",
+        "Caisses Desjardins",
+        "Prêteurs alternatifs",
+        "Trusts hypothécaires",
+        "Capital privé",
+        "Fonds institutionnels",
+        "Family offices",
+        "Sociétés d'assurance",
+        "Prêteurs spécialisés construction",
+      ],
+      en: [
+        "National banks",
+        "Regional banks",
+        "Desjardins credit unions",
+        "Alternative lenders",
+        "Mortgage trusts",
+        "Private capital",
+        "Institutional funds",
+        "Family offices",
+        "Insurance lenders",
+        "Specialized construction lenders",
+      ],
     },
     disclaimer: {
-      fr: "Liste représentative — relations négociées au cas par cas selon le profil du dossier.",
-      en: "Representative list — relationships negotiated case-by-case according to file profile.",
+      fr: "Catégories de prêteurs négociés. La liste nominative des partenaires actifs est partagée à l'étape du mandat selon le profil du dossier.",
+      en: "Categories of lenders negotiated. The named list of active partners is shared at the mandate stage according to the file profile.",
     },
   },
 
@@ -626,54 +652,54 @@ export const translations = {
     items: {
       fr: [
         {
-          q: "Quels prêteurs négociez-vous ?",
-          a: "Plus de 40 institutions et fonds privés au Québec et au Canada — grandes banques, caisses, prêteurs alternatifs, fonds de pension, capital privé. Chaque dossier est présenté au prêteur qui maximise vos conditions, en mettant les acteurs en concurrence quand c'est pertinent.",
+          q: "Avec quels types de prêteurs travaillez-vous ?",
+          a: "Un réseau de prêteurs institutionnels et privés au Québec et au Canada — banques nationales et régionales, Caisses Desjardins, prêteurs alternatifs, trusts hypothécaires, capital privé et fonds institutionnels. Chaque dossier est présenté au prêteur le mieux placé pour la nature et le profil du projet.",
         },
         {
-          q: "Quels sont les délais d'approbation typiques ?",
-          a: "30 jours en moyenne pour un dossier complet d'acquisition ou de refinancement. 14 à 21 jours possible sur les dossiers simples avec garanties solides. Les projets de construction et développement exigent 60 à 90 jours selon la complexité du montage.",
+          q: "Quels sont les délais d'approbation ?",
+          a: "Variable selon la complexité du dossier et le type de projet. Un dossier complet et bien structuré est traité dans les meilleurs délais; les projets de construction et de développement exigent un délai d'analyse plus important compte tenu du montage requis. Une estimation précise est partagée dès la prise de mandat.",
         },
         {
           q: "Quels types de projets traitez-vous ?",
-          a: "Acquisitions multifamiliales (10+ unités), refinancements de portefeuilles, financement de construction et de développement, restructurations, sorties de financement-relais. Mandats typiques de 1 M$ à 100 M$+, secteur résidentiel locatif, commercial, industriel et mixte.",
+          a: "Financement commercial sur mesure : acquisitions multifamiliales et commerciales, refinancements de portefeuilles, construction et développement, restructurations et sorties de financement-relais. Secteurs résidentiel locatif, commercial, industriel et mixte.",
         },
         {
           q: "Quels sont vos honoraires ?",
-          a: "Aucun frais d'analyse préliminaire ni d'étude. Nos honoraires sont généralement payés par le prêteur à la conclusion du financement, ou inclus dans les frais de transaction selon la nature du mandat. Toute structure d'honoraires est définie et signée avant que les démarches ne commencent.",
+          a: "Aucun frais pour la prise de contact et l'évaluation initiale du dossier. La structure d'honoraires applicable au mandat est définie, expliquée et signée en amont — aucune surprise une fois le mandat confié.",
         },
         {
           q: "Comment garantissez-vous la confidentialité ?",
-          a: "Engagement de confidentialité (NDA) systématique avant tout partage de documents financiers. Vos états financiers et plans d'affaires ne sont jamais transmis à un prêteur sans votre autorisation explicite, dossier par dossier. Données stockées au Canada, conformes Loi 25.",
+          a: "Engagement de confidentialité (NDA) systématique avant tout partage de documents financiers. Vos états financiers et plans d'affaires ne sont jamais transmis à un prêteur sans votre autorisation explicite, prêteur par prêteur. Conformité à la Loi 25 du Québec.",
         },
         {
           q: "En quoi êtes-vous différent d'une banque directe ?",
-          a: "Une banque vous propose ses produits. Nous structurons votre dossier pour le présenter au prêteur le mieux placé sur le marché — souvent à des conditions inaccessibles en guichet direct. La mise en concurrence et l'expertise du montage font la différence sur le taux, le LTV, et les covenants.",
+          a: "Une banque vous propose ses produits. Nous structurons votre dossier pour le présenter au prêteur le mieux placé sur le marché — souvent à des conditions inaccessibles en guichet direct. La mise en concurrence et l'expertise du montage font la différence sur le taux, le LTV et les conditions.",
         },
       ],
       en: [
         {
-          q: "Which lenders do you negotiate with?",
-          a: "Over 40 institutions and private funds across Quebec and Canada — major banks, credit unions, alternative lenders, pension funds, private capital. Every file is presented to the lender that maximizes your terms, with competitive bidding when relevant.",
+          q: "What types of lenders do you work with?",
+          a: "A network of institutional and private lenders across Quebec and Canada — national and regional banks, Desjardins credit unions, alternative lenders, mortgage trusts, private capital and institutional funds. Every file is presented to the lender best suited to the nature and profile of the project.",
         },
         {
           q: "What are typical approval timelines?",
-          a: "30 days on average for a complete acquisition or refinancing file. 14 to 21 days possible on simple files with strong collateral. Construction and development projects require 60 to 90 days depending on structuring complexity.",
+          a: "Variable depending on file complexity and project type. A complete and well-structured file is processed promptly; construction and development projects require a longer analysis period given the structuring involved. A precise estimate is provided once the mandate is signed.",
         },
         {
           q: "What types of projects do you handle?",
-          a: "Multifamily acquisitions (10+ units), portfolio refinancings, construction and development financing, restructurings, bridge-loan exits. Typical mandates from $1M to $100M+, across multi-residential, commercial, industrial and mixed-use sectors.",
+          a: "Custom commercial financing: multifamily and commercial acquisitions, portfolio refinancings, construction and development, restructurings and bridge-loan exits. Multi-residential, commercial, industrial and mixed-use sectors.",
         },
         {
           q: "What are your fees?",
-          a: "No preliminary analysis or review fee. Our fees are generally paid by the lender upon closing, or included in transaction fees depending on the mandate. Any fee structure is defined and signed before work begins — no surprises.",
+          a: "No fee for initial contact and preliminary file review. The fee structure applicable to the mandate is defined, explained and signed up front — no surprises once the mandate is entrusted.",
         },
         {
           q: "How do you guarantee confidentiality?",
-          a: "Systematic NDA before any sharing of financial documents. Your financial statements and business plans are never transmitted to a lender without your explicit authorization, file by file. Data stored in Canada, Quebec Law 25 compliant.",
+          a: "Systematic NDA before any sharing of financial documents. Your financial statements and business plans are never transmitted to a lender without your explicit authorization, lender by lender. Quebec Law 25 compliant.",
         },
         {
           q: "How are you different from going to a bank directly?",
-          a: "A bank offers you its products. We structure your file to present it to the best-placed lender on the market — often at terms inaccessible at the branch. Competitive bidding and structuring expertise make the difference on rate, LTV, and covenants.",
+          a: "A bank offers you its products. We structure your file to present it to the lender best suited on the market — often at terms inaccessible directly at the branch. Competitive bidding and structuring expertise make the difference on rate, LTV and conditions.",
         },
       ],
     },
