@@ -3,6 +3,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { useScrollThreshold } from "@/hooks/useScrollThreshold";
+import { trackWhatsappClick } from "@/lib/analytics";
 
 // ═══════════════════════════════════════════════════════════
 // WhatsAppFab — bouton flottant WhatsApp en bas à gauche.
@@ -30,6 +31,7 @@ export function WhatsAppFab() {
           exit={{ opacity: 0, y: 20, scale: 0.85 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           href={href}
+          onClick={() => trackWhatsappClick("fab")}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t(translations.whatsapp.aria)}

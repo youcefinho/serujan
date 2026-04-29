@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { Phone, ArrowRight, ArrowDown, Mic, GraduationCap } from "lucide-react";
 import { CountUp } from "@/components/ui/CountUp";
 import { Typewriter } from "@/components/ui/Typewriter";
+import { trackCtaClick, trackPhoneClick } from "@/lib/analytics";
 
 // ═══════════════════════════════════════════════════════════
 // Hero v3 — orienté conversion
@@ -147,6 +148,7 @@ export default function Hero() {
         >
           <a
             href="#contact"
+            onClick={() => trackCtaClick("hero", "ctaPrimary")}
             className="group relative overflow-hidden inline-flex items-center justify-center gap-2 px-7 py-4 bg-gradient-gold text-black-deep font-bold tracking-[0.04em] rounded-md shadow-gold hover:shadow-gold-sm transition-all duration-300 hover:-translate-y-0.5 btn-shine btn-glow"
           >
             <span>{t(translations.hero.ctaPrimary)}</span>
@@ -154,6 +156,7 @@ export default function Hero() {
           </a>
           <a
             href={`tel:+${clientConfig.phone.international}`}
+            onClick={() => trackPhoneClick("hero")}
             className="group inline-flex items-center justify-center gap-2 px-7 py-4 border border-gold/30 text-foreground/90 hover:text-gold hover:border-gold/60 font-medium rounded-md transition-all duration-300"
             aria-label={`${t(translations.hero.ctaCall)} — ${clientConfig.phone.display}`}
           >

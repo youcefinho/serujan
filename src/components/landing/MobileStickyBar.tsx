@@ -4,6 +4,7 @@ import { clientConfig } from "@/lib/config";
 import { motion, AnimatePresence } from "motion/react";
 import { Phone, ArrowRight } from "lucide-react";
 import { useScrollThreshold } from "@/hooks/useScrollThreshold";
+import { trackCtaClick, trackPhoneClick } from "@/lib/analytics";
 
 // ═══════════════════════════════════════════════════════════
 // MobileStickyBar v2 — Apparition fluide après 600px de scroll
@@ -28,6 +29,7 @@ export default function MobileStickyBar() {
           <div className="flex gap-2.5">
             <a
               href={`tel:+${clientConfig.phone.international}`}
+              onClick={() => trackPhoneClick("mobile-sticky")}
               className="flex-1 flex items-center justify-center gap-2 py-3 border border-gold/30 text-gold rounded-md text-sm font-medium"
               aria-label={`${t(translations.mobileStickyBar.call)} ${clientConfig.phone.display}`}
             >
@@ -36,6 +38,7 @@ export default function MobileStickyBar() {
             </a>
             <a
               href="#contact"
+              onClick={() => trackCtaClick("mobile-sticky")}
               className="flex-[1.6] relative overflow-hidden flex items-center justify-center gap-2 py-3 bg-gradient-gold text-black-deep font-semibold rounded-md text-sm shadow-gold-sm btn-shine"
             >
               <span>{t(translations.mobileStickyBar.cta)}</span>

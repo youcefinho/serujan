@@ -2,7 +2,13 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { useNavigate } from "@tanstack/react-router";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
-import { trackLeadFormSubmit } from "@/lib/analytics";
+import {
+  trackLeadFormSubmit,
+  trackFormStart,
+  trackFormSubmitError,
+  trackPhoneClick,
+  trackEmailClick,
+} from "@/lib/analytics";
 import { isValidEmail, isValidPhone, sanitizeInput } from "@/lib/security";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { useState, useRef, useEffect } from "react";
@@ -119,11 +125,22 @@ export default function LeadForm() {
       setTimeout(() => {
         navigate({ to: "/merci" });
       }, 800);
-    } catch {
+    } catch (err) {
       setStatus("error");
+      const reason = err instanceof Error ? err.message.slice(0, 60) : "leadform-network";
+      trackFormSubmitError(reason);
       toast.error(t(translations.leadForm.error), {
         description: `${t(translations.leadForm.genericError)} ${clientConfig.phone.display}`,
       });
+    }
+  }
+
+  // Premier keystroke = form_start (une seule fois)
+  const startedRef = useRef(false);
+  function markStartedOnce() {
+    if (!startedRef.current) {
+      startedRef.current = true;
+      trackFormStart("lead");
     }
   }
 
@@ -196,6 +213,7 @@ export default function LeadForm() {
           >
             <a
               href={`tel:+${clientConfig.phone.international}`}
+              onClick={() => trackPhoneClick("leadform-pitch")}
               className="group flex items-center gap-4 p-5 rounded-xl bg-black-deep/60 border border-gold/15 hover:border-gold/40 hover:bg-black-elevated/60 transition-all duration-300"
             >
               <div className="w-11 h-11 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center flex-shrink-0 group-hover:bg-gold/15 transition-colors">
@@ -214,6 +232,7 @@ export default function LeadForm() {
 
             <a
               href={`mailto:${clientConfig.email}`}
+              onClick={() => trackEmailClick("leadform-pitch")}
               className="group flex items-center gap-4 p-5 rounded-xl bg-black-deep/60 border border-gold/15 hover:border-gold/40 hover:bg-black-elevated/60 transition-all duration-300"
             >
               <div className="w-11 h-11 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center flex-shrink-0 group-hover:bg-gold/15 transition-colors">
@@ -274,6 +293,7 @@ export default function LeadForm() {
               <motion.form
                 key="form"
                 onSubmit={handleSubmit}
+                onFocus={markStartedOnce}
                 exit={{ opacity: 0, scale: 0.98 }}
                 className="relative p-8 md:p-10 rounded-2xl bg-black-deep/70 border border-gold/15 shadow-elevate"
               >
@@ -428,6 +448,7 @@ export default function LeadForm() {
                       {t(translations.leadForm.genericError)}{" "}
                       <a
                         href={`tel:+${clientConfig.phone.international}`}
+                        onClick={() => trackPhoneClick("leadform-error-fallback")}
                         className="underline font-semibold"
                       >
                         {clientConfig.phone.display}

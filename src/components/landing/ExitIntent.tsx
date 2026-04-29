@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { X, PhoneCall, Loader2, CheckCircle2 } from "lucide-react";
+import { trackExitIntent, trackFormSubmitError, trackLeadFormSubmit } from "@/lib/analytics";
 
 // ═══════════════════════════════════════════════════════════
 // ExitIntent — modal sobre, déclenché UNE FOIS par session
@@ -51,6 +52,7 @@ export default function ExitIntent() {
   const handleClose = useCallback(() => {
     setOpen(false);
     markShown();
+    trackExitIntent("closed");
   }, []);
 
   // Armer le déclencheur après un court délai (évite faux positif au load)
@@ -67,6 +69,7 @@ export default function ExitIntent() {
       if (e.clientY <= 0 && e.relatedTarget === null) {
         setOpen(true);
         markShown();
+        trackExitIntent("shown");
       }
     }
     document.addEventListener("mouseleave", onLeave);
@@ -86,6 +89,7 @@ export default function ExitIntent() {
       if (Date.now() - last > MOBILE_INACTIVITY_MS && document.hasFocus()) {
         setOpen(true);
         markShown();
+        trackExitIntent("shown");
       }
     }, 5000);
     window.addEventListener("scroll", reset, { passive: true });
@@ -130,6 +134,8 @@ export default function ExitIntent() {
       });
       if (!res.ok) throw new Error();
       setStatus("success");
+      trackLeadFormSubmit("Exit-intent");
+      trackExitIntent("clicked");
       toast.success(t(translations.exitIntent.success));
       setName("");
       setPhone("");
@@ -137,6 +143,7 @@ export default function ExitIntent() {
       setTimeout(() => setOpen(false), 2500);
     } catch {
       setStatus("idle");
+      trackFormSubmitError("exitintent-network");
       toast.error(t(translations.leadForm.error));
     }
   }

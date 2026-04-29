@@ -3,6 +3,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { Mail, Phone, MapPin, Instagram, Linkedin, ArrowUpRight } from "lucide-react";
+import { trackPhoneClick, trackEmailClick } from "@/lib/analytics";
 
 // ═══════════════════════════════════════════════════════════
 // Footer v2 — épuré, éditorial, signature en bas
@@ -73,6 +74,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`tel:+${clientConfig.phone.international}`}
+                  onClick={() => trackPhoneClick("footer")}
                   className="flex items-center gap-2.5 hover:text-gold transition-colors group"
                 >
                   <Phone className="w-3.5 h-3.5 text-gold/60 group-hover:text-gold transition-colors" />
@@ -82,6 +84,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`mailto:${clientConfig.email}`}
+                  onClick={() => trackEmailClick("footer")}
                   className="flex items-center gap-2.5 hover:text-gold transition-colors group"
                 >
                   <Mail className="w-3.5 h-3.5 text-gold/60 group-hover:text-gold transition-colors" />
