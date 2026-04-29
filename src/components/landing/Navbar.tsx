@@ -54,12 +54,12 @@ export default function Navbar() {
         </a>
 
         {/* Navigation desktop */}
-        <div className="hidden lg:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-5">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.key}
               href={item.href}
-              className="text-sm font-medium text-foreground/70 hover:text-gold transition-colors duration-200 uppercase tracking-wider"
+              className="text-xs font-medium text-foreground/70 hover:text-gold transition-colors duration-200 uppercase tracking-wide whitespace-nowrap"
             >
               {t(translations.nav[item.key])}
             </a>

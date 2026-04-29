@@ -32,7 +32,10 @@
   /* SWAP: Classes couleur accent — remplacer si thème différent */
   --color-gold: var(--gold);
   --color-gold-glow: var(--gold-glow);
+  --color-gold-light: var(--gold-glow);
+  --color-black-deep: var(--black-deep);
   --color-black-surface: var(--black-surface);
+  --color-black-card: var(--card);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
 }

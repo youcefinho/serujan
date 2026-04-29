@@ -9,8 +9,8 @@ import { Calendar, ExternalLink, Play } from "lucide-react";
 // Elev8Event — Section événement avec vidéo + compte à rebours
 // ═══════════════════════════════════════════════════════════
 
-// Date de l'événement Elev8 2025 (à ajuster)
-const EVENT_DATE = new Date("2025-11-15T09:00:00-05:00");
+// SWAP: Date de l'événement Elev8 (ISO 8601 avec fuseau EST)
+const EVENT_DATE = new Date("2026-10-17T09:00:00-04:00");
 
 function useCountdown(targetDate: Date) {
   const [timeLeft, setTimeLeft] = useState(getTimeLeft(targetDate));
