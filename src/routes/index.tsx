@@ -12,6 +12,7 @@ import LeadForm from "@/components/landing/LeadForm";
 import Footer from "@/components/landing/Footer";
 import MobileStickyBar from "@/components/landing/MobileStickyBar";
 import { ScrollProgressBar } from "@/components/landing/ScrollProgressBar";
+import { MouseSpotlight } from "@/components/ui/MouseSpotlight";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <main className="bg-background text-foreground">
+      <MouseSpotlight />
       <ScrollProgressBar />
       <Navbar />
       <Hero />
