@@ -1,7 +1,7 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { isValidPhone, sanitizeInput } from "@/lib/security";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { X, PhoneCall, Loader2, CheckCircle2 } from "lucide-react";
@@ -43,6 +43,10 @@ export default function ExitIntent() {
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");
   const mountRef = useRef<number>(Date.now());
+  const reduced = useReducedMotion();
+  const backdropTransition = reduced ? { duration: 0 } : { duration: 0.3 };
+  const modalTransition = reduced ? { duration: 0 } : { duration: 0.45, ease };
+  const successTransition = reduced ? { duration: 0 } : { duration: 0.5, ease };
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -142,10 +146,10 @@ export default function ExitIntent() {
       {open && (
         <motion.div
           key="backdrop"
-          initial={{ opacity: 0 }}
+          initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={backdropTransition}
           className="fixed inset-0 z-[80] flex items-center justify-center px-4"
           onClick={handleClose}
           role="dialog"
@@ -158,10 +162,10 @@ export default function ExitIntent() {
           {/* Modal */}
           <motion.div
             key="modal"
-            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            initial={reduced ? false : { opacity: 0, scale: 0.94, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 8 }}
-            transition={{ duration: 0.45, ease }}
+            exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 8 }}
+            transition={modalTransition}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-md rounded-2xl bg-black-deep border border-gold/30 shadow-elevate p-7 md:p-9"
           >
@@ -179,10 +183,10 @@ export default function ExitIntent() {
               {status === "success" ? (
                 <motion.div
                   key="success"
-                  initial={{ opacity: 0, scale: 0.96 }}
+                  initial={reduced ? false : { opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5, ease }}
+                  transition={successTransition}
                   className="text-center py-6"
                 >
                   <div className="w-14 h-14 rounded-full bg-gold/15 border border-gold/40 flex items-center justify-center mx-auto mb-5 shadow-gold-sm">

@@ -173,13 +173,24 @@
     overflow-x: hidden;
     word-break: break-word;
     overflow-wrap: break-word;
+    /* iOS Safari : retire le flash gris au tap sur les éléments interactifs */
+    -webkit-tap-highlight-color: transparent;
+    /* iOS Safari : empêche le zoom au focus input (déjà 16px par défaut, mais garde-fou) */
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* Espace pour la barre mobile sticky */
+  /* Espace pour la barre mobile sticky + safe-area iOS (home indicator) */
   @media (max-width: 767px) {
     body {
-      padding-bottom: 5rem;
+      padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
     }
+  }
+
+  /* Force un focus visible accessible (clavier) sans flash bleu sur les liens */
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 
   h1, h2, h3, h4 {

@@ -1,7 +1,7 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { isValidPhone, sanitizeInput } from "@/lib/security";
-import { motion, useInView, AnimatePresence } from "motion/react";
+import { motion, useInView, AnimatePresence, useReducedMotion } from "motion/react";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { PhoneCall, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
@@ -18,6 +18,9 @@ export default function MidPageCTA() {
   const { t } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.3 });
+  const reduced = useReducedMotion();
+  const cardTransition = reduced ? { duration: 0 } : { duration: 0.7, ease };
+  const successTransition = reduced ? { duration: 0 } : { duration: 0.5, ease };
 
   const mountRef = useRef<number>(Date.now());
   useEffect(() => {
@@ -74,9 +77,9 @@ export default function MidPageCTA() {
 
       <div className="relative max-w-5xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduced ? false : { opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease }}
+          transition={cardTransition}
           className="grid lg:grid-cols-12 gap-8 items-center p-8 md:p-10 rounded-2xl bg-black-deep/80 border border-gold/20 shadow-elevate"
         >
           {/* Pitch */}
@@ -101,10 +104,10 @@ export default function MidPageCTA() {
               {status === "success" ? (
                 <motion.div
                   key="mid-success"
-                  initial={{ opacity: 0, scale: 0.96 }}
+                  initial={reduced ? false : { opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.5, ease }}
+                  exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+                  transition={successTransition}
                   className="flex items-center gap-3 p-4 rounded-xl bg-gold/10 border border-gold/30"
                 >
                   <CheckCircle2 className="w-5 h-5 text-gold flex-shrink-0" strokeWidth={2} />
