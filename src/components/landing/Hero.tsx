@@ -3,7 +3,7 @@ import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { Phone, ArrowRight, ArrowDown, Mic } from "lucide-react";
+import { Phone, ArrowRight, ArrowDown, Mic, GraduationCap } from "lucide-react";
 import { CountUp } from "@/components/ui/CountUp";
 import { Typewriter } from "@/components/ui/Typewriter";
 
@@ -187,6 +187,15 @@ export default function Hero() {
         >
           <Mic className="w-3.5 h-3.5 text-gold/70 flex-shrink-0" strokeWidth={1.5} />
           <span>{t(translations.hero.trustStrip)}</span>
+        </motion.div>
+
+        {/* Credentials institutionnels — légitimité (sourcé Elev8 + Planiprêt) */}
+        <motion.div
+          {...fadeUp(0.84)}
+          className="mt-3 flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-foreground/50"
+        >
+          <GraduationCap className="w-3.5 h-3.5 text-gold/70 flex-shrink-0" strokeWidth={1.5} />
+          <span>{t(translations.hero.credentialsStrip)}</span>
         </motion.div>
       </div>
 

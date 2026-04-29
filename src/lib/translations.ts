@@ -52,6 +52,10 @@ export const translations = {
       fr: "Présent sur podcast aux côtés de Patrick Bet-David · Ryan Serhant",
       en: "Featured on podcast alongside Patrick Bet-David · Ryan Serhant",
     },
+    credentialsStrip: {
+      fr: "BBA Concordia · Courtier hypothécaire C.I.Q. · Planiprêt",
+      en: "BBA Concordia · Mortgage broker C.I.Q. · Planiprêt",
+    },
     scrollHint: { fr: "Découvrir l'expertise", en: "Discover the expertise" },
     typewriterPhrases: {
       fr: [
