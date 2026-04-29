@@ -92,7 +92,7 @@ Dans `index.html`, remplacer les deux `G-XXXXXXXXXX` par l'ID GA4 réel (format 
 
 ```bash
 bun run build      # Doit retourner 0 erreur
-bun run test       # 43/43 doit passer
+bun run test       # 52/52 doit passer
 wrangler deploy
 ```
 
@@ -175,7 +175,7 @@ Pour les données client (téléphone, email, adresse), modifier `src/lib/config
 
 - [ ] `bun run build` → 0 erreur
 - [ ] `bunx tsc --noEmit` → 0 erreur
-- [ ] `bun run test` → 43/43
+- [ ] `bun run test` → 52/52
 - [ ] Pas de `console.log` ajouté (sauf `console.error`/`warn` dans catch)
 - [ ] Pas de texte hardcodé en français dans les composants (tout via `translations.ts`)
 - [ ] Variables d'env Cloudflare à jour si changement

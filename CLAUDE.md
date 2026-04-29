@@ -70,7 +70,7 @@ src/
 ├── assets/
 ├── components/
 │   ├── landing/      # 9 sections + LegalPage partagé
-│   └── ui/           # accordion, sonner
+│   └── ui/           # sonner
 ├── hooks/            # useScrollReveal, useIsMobile
 ├── lib/
 │   ├── config.ts            # ⭐ Données client
@@ -225,7 +225,7 @@ Voir `DEPLOYMENT.md` pour les étapes Cloudflare D1 + secrets + deploy.
 3. **0 données hardcodées** dans les composants — tout dans `config.ts` ou `translations.ts`
 4. **TypeScript strict** — pas de `any` non justifié
 5. **Build = 0 erreur** avant push
-6. **Tests = 43/43** avant push
+6. **Tests = 52/52** avant push
 7. **i18n complet** — toggle FR/EN = 100% du texte visible change
 8. **Sécurité** — CSP stricte, rate limits, sanitisation serveur
 9. **Français** — réponses, commits, commentaires en français

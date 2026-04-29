@@ -57,7 +57,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Hook pour accéder aux traductions dans les composants
+// Hook pour accéder aux traductions dans les composants.
+// eslint-disable-next-line react-refresh/only-export-components -- pattern Provider + hook colocalisés
 export function useLanguage(): LanguageContextType {
   const context = useContext(LanguageContext);
   if (!context) {

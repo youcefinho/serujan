@@ -52,8 +52,7 @@ export default function LeadForm() {
 
   function validate(): boolean {
     const newErrors: Record<string, string> = {};
-    if (sanitizeInput(form.name).length < 2)
-      newErrors.name = t(translations.leadForm.nameRequired);
+    if (sanitizeInput(form.name).length < 2) newErrors.name = t(translations.leadForm.nameRequired);
     if (!isValidEmail(form.email)) newErrors.email = t(translations.leadForm.emailInvalid);
     if (form.phone && !isValidPhone(form.phone))
       newErrors.phone = t(translations.leadForm.phoneInvalid);
