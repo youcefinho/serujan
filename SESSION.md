@@ -1,6 +1,6 @@
 # SESSION.md — État du projet Serujan
 
-> Document de passation généré le **2026-04-29 (v2 — fin session 2)** pour reprise sans perte.
+> Document de passation généré le **2026-04-29 (v3 — fin session 3)** pour reprise sans perte.
 > **À lire en premier au démarrage de chaque nouvelle session, avant tout travail.**
 
 ---
@@ -9,13 +9,27 @@
 
 | Item | Résultat |
 |---|---|
-| `bun run build` | ✅ 0 erreur (~1.87 s · 286 KB main / 91.89 KB gzip) |
+| `bun run build` | ✅ 0 erreur (~1.92 s) |
 | `bunx tsc --noEmit` | ✅ 0 erreur |
 | `bun run test` | ✅ **53/53** passent (3 fichiers : calculator, security, translations) |
 | `bunx eslint . --max-warnings=0` | ✅ 0 erreur, 0 warning |
 | Git status | ✅ `main` sync à 100 % avec `origin/main` |
 | Tag de référence | `v0.1.0` (état pré-déploiement Cloudflare initial) |
-| Dernier commit | `c82db8e` — feat: WhatsApp FAB + révision CLAUDE.md |
+| Dernier commit | `f8410ec` — perf: élimine le freeze de 1er scroll en haut de page |
+
+### Bundles (post-lazy-loading)
+| Chunk | Taille | Gzip | Quand |
+|---|---|---|---|
+| `proxy-*.js` (React + motion + deps) | 122.26 KB | 39.96 KB | initial load |
+| `index-*.js` (page Index sync : Hero, WhySerujan, Testimonials, Services, About, Process, LendersNetwork, Bio, Footer, Navbar, FABs) | 100.84 KB | **26.63 KB** | initial load |
+| `translations-*.js` | 37.92 KB | 13.46 KB | initial load |
+| `Calculator-*.js` | 14.87 KB | 4.54 KB | lazy au scroll |
+| `LeadForm-*.js` | 11.67 KB | 3.73 KB | lazy au scroll |
+| `Elev8Event-*.js` | 9.29 KB | 2.91 KB | lazy au scroll |
+| `ExitIntent-*.js` | 6.08 KB | 2.33 KB | lazy (modal armée après 8s) |
+| `MidPageCTA-*.js` | 4.69 KB | 1.91 KB | lazy au scroll |
+| `Faq-*.js` | 4.07 KB | 1.63 KB | lazy au scroll |
+| `index-*.js` (root) | 4.04 KB | 1.95 KB | initial load |
 
 ---
 
@@ -43,94 +57,142 @@ origin/dependabot/npm_and_yarn/vite-8.0.10           ⚠ MAJEURE — review manu
 
 ---
 
-## 3. Historique commits — session du 2026-04-29 (depuis `c92c9f8`)
+## 3. Historique commits — sessions 2026-04-29 (depuis `c92c9f8`)
 
 ```
-c82db8e feat: WhatsApp FAB + révision CLAUDE.md (retire interdictions injustifiées)
-4c6abfc checkpoint: avant révision règles CLAUDE.md
-cc187a1 feat: 4 ajouts inspirés demo Intralys + Elev8 (Pourquoi Serujan, Témoignages, Calculator complet)
-8a5306e checkpoint: avant 4 ajouts
-428056c fix: retire affirmations non vérifiables FAQ + LendersNetwork (factuel uniquement)
-f09fe10 feat: section Réseau institutionnel + FAQ accordéon (inspiration Intralys)
-f6e4150 checkpoint: avant FAQ + Réseau
-cdf4fcd style: palette adoucie - charbon chaud + ivoire premium
-a0778b1 checkpoint: avant calibrage palette
-83e22ad feat: SEO meta dynamiques + Sonner toasts + back-to-top + burger animé + lazy vidéo + grain
-db65ddd checkpoint: avant SEO/Sonner/back-to-top
-f80c2d9 feat: polish effets premium - Bio CountUp/glass, Hero parallax/glass, gradient anim CTA/titres
-7c303bd feat: typewriter hero — cycle de 4 phrases (Antigravity)
-49d1ab1 fix: spotlight souris plus fluide + lien Elev8 corrigé (Antigravity)
-a4a297f feat: effets premium — spotlight + CountUp + shimmer + gradient animé (Antigravity)
-6dfeac1 feat: MouseSpotlight (Antigravity)
-0111d23 style: fond noir adouci + étoiles partout (Antigravity)
-6418538 checkpoint: avant effets visuels premium
+f8410ec perf: élimine le freeze de 1er scroll en haut de page (translateZ GPU layers)
+517213f perf: scroll fluide + FAQ accordéon GPU-friendly (useScrollThreshold + grid-rows)
+859d6a1 a11y: reduced-motion + safe-area iOS + tap-highlight (audit groupe D)
+a2cd90e perf: lazy load 6 sections bottom-of-fold (audit groupe C)
+982c09f security: durcissement headers + suppression logs client (audit groupe B)
+0d35f41 chore: code mort + alignement (audit groupe A)
+3bfacc3 checkpoint: avant audit performance/compat/sécurité/qualité
+6e1754a feat: refonte conversion v3 — tunnel AIDA optimisé + capture multi-points
+72cfaa9 checkpoint: avant refonte conversion (Niveau 1+2 + exit-intent élégant)
+cb85869 feat: enrichissements factuels Elev8 — claim #1 Canada, intervenants, podcast, financement 100%
+1248dac checkpoint: avant enrichissement Bio podcast + Elev8 intervenants
+6ad72d5 docs: SESSION.md v2 (passation session 2)
+c82db8e feat: WhatsApp FAB + révision CLAUDE.md
+... (session 1 antérieure)
 ```
 
 ---
 
-## 4. ✅ Structure landing finale — 13 sections
+## 4. ✅ Tunnel de conversion v3 — ordre AIDA optimisé
+
+**13 sections principales + 2 composants captures intermédiaires + 5 composants flottants.**
 
 ```
- 1. Hero            — typewriter Fraunces (4 phrases) + 4 stats CountUp + parallax bg image
+ 1. Hero            — Titre statique tripartite "Financement commercial / pour
+                     promoteurs et investisseurs / de 1 M$ à 50 M$ au Québec."
+                     Sous-titre cadrage + 4 stats sourcées (500M$+, 95%, 2016, 900+ Elev8)
+                     Trust strip podcast (Patrick Bet-David, Ryan Serhant)
+                     Double CTA : "Évaluer mon projet" + tel:+15147016171
+                     Parallax léger image bg + halos GPU pré-composités
  2. WhySerujan      — 3 cartes trust signals (Réseau · Expertise · Résultats)
- 3. Services        — 3 piliers cartes éditoriales (numéro géant filigrane)
- 4. About           — citation Fraunces italic + 4 features
- 5. Process         — timeline 4 étapes ligne or qui se trace au scroll
-                     (DIAGNOSTIC FINANCIER · STRUCTURE & STRATÉGIE · NÉGOCIATION · CLÔTURE & EXÉCUTION)
- 6. LendersNetwork  — marquee infinite-scroll 10 catégories de prêteurs (volontairement non nominal)
- 7. Bio             — split photo + 4 milestones CountUp + glass cards
- 8. Testimonials    — 4 avis clients RÉELS (Elev8 Academy) avec photos + 5 étoiles dorées
- 9. Calculator      — 6 inputs (Prix, Mise de fonds, Taux, Amort., Taxes, Assurance)
-                     + 7 résultats (Mensuel, Hypothèque, Taxes, Assurance, Coût intérêts, Coût total, LTV)
-                     + donut SVG animé + sliders or éditables
-10. Faq             — accordéon premium 6 Q/R commerciales (sans chiffres inventés)
-11. Elev8           — Event (vidéo lazy + countdown 2026) + Academy fusionnés
-12. LeadForm        — pitch sticky + form anti-bot timing + Sonner toast success/error
-13. Footer          — 4 colonnes éditoriales
+                     + CTA contextuel "Évaluer mon éligibilité"
+ 3. Testimonials    — 4 avis clients RÉELS Elev8 + CTA "Devenir le prochain"
+                     ⭐ Remonté en position 3 (preuve sociale tôt)
+ 4. Services        — 3 piliers (sans CTA "Voir un cas similaire" — retirés)
+                     + CTA global "Discuter de mon projet"
+ 5. About           — Citation Fraunces italic + 4 features
+                     ⭐ Masquée sur mobile (hidden md:block) — couvert par WhySerujan/Bio
+ 6. Process         — Timeline 4 étapes + ligne or scroll-trace
+                     + CTA contextuel "Lancer mon diagnostic"
+ 7. LendersNetwork  — Marquee 10 catégories génériques + disclaimer
+                     ⭐ Masquée sur mobile — couvert par FAQ Q1
+ 8. Bio             — Split photo + 4 milestones, dont milestone Podcast
+                     enrichi : "Patrick Bet-David et Ryan Serhant"
+ 9. MidPageCTA      — ⭐ Bandeau capture rapide (nom + tel) "Rappel sous 1 h"
+                     Soumet /api/leads avec project_type "Rappel rapide"
+                     Lazy-loaded
+10. Calculator      — 6 inputs + LTV + capture email léger en fin (prénom + email)
+                     "Recevoir cette simulation par courriel" — sec. porte d'entrée
+                     Lazy-loaded
+11. Faq             — Accordéon premium 6 Q/R commerciales
+                     ⭐ Anim grid-template-rows GPU (avant: height 0→auto = laggy)
+                     Lazy-loaded
+12. Elev8Event      — Event (#1 Canada + intervenants Ryan Serhant/Andy Elliott/
+                     Olivier Primeau) + Academy fusionnés
+                     Lazy-loaded
+13. LeadForm        — Form principal avec :
+                     ⭐ 3 obligatoires (nom + tel + montant), email/type/message optionnels
+                     ⭐ Trust badge en haut "Réponse personnelle sous 24 h · Confidentialité"
+                     Lazy-loaded
 
-Composants flottants : Navbar (burger morphing 3 barres), MobileStickyBar,
-ScrollProgressBar, BackToTop (bas-droite, 800px), WhatsAppFab (bas-gauche, 800px),
-MouseSpotlight (desktop only, halo or + 4 traînées)
+Composants flottants (rAF-throttled via useScrollThreshold) :
+- Navbar (burger morphing 3 barres) — seuil 50px
+- MobileStickyBar — seuil 600px (avec safe-area-inset-bottom iOS)
+- ScrollProgressBar — motion useScroll + useSpring (zéro re-render React)
+- BackToTop (bas-droite, desktop only) — seuil 800px
+- WhatsAppFab (bas-gauche, desktop only) — seuil 800px
+- MouseSpotlight (desktop only, halo or + 4 traînées)
+
+Modal (lazy) :
+- ExitIntent — armée après 8s, déclenchée 1×/session sur mouseleave top desktop
+              ou inactivité 45s mobile. 2 champs (nom + tel) + ESC/click-backdrop ferme.
 ```
 
 ---
 
-## 5. ✅ Composants utilitaires (src/components/ui/)
+## 5. ✅ Composants utilitaires (src/components/ui/ + src/hooks/)
 
 | Composant | Rôle |
 |---|---|
-| `CountUp.tsx` | Anime un nombre 0→cible quand visible. Parse préfixe/suffixe (ex "500M$+"). Respecte reduced-motion. |
-| `Typewriter.tsx` | Cycle entre N phrases : tape, pause, efface, suivante. Curseur clignotant. |
-| `MouseSpotlight.tsx` | Halo doré + 4 traînées qui suivent le curseur (desktop seulement). |
-| `RouteMeta.tsx` | Sync `document.title` + `meta description`/`og:*` par route SPA, restaure au démontage. |
+| `CountUp.tsx` | Anime un nombre 0→cible quand visible. Parse préfixe/suffixe. Respecte reduced-motion. |
+| `MouseSpotlight.tsx` | Halo doré + 4 traînées qui suivent le curseur (desktop seulement, RAF). |
+| `RouteMeta.tsx` | Sync `document.title` + `meta description`/`og:*` par route SPA. |
 | `sonner.tsx` | Toaster premium noir/or, position bottom-right, glassmorphism. |
+| `useScrollThreshold.ts` | ⭐ NOUVEAU — Hook `useScrollThreshold(N)` : retourne `boolean` true si `scrollY > N`, throttlé via rAF, setState seulement sur transition. Utilisé par Navbar, MobileStickyBar, BackToTop, WhatsAppFab. |
+
+⚠️ `Typewriter.tsx` **supprimé** (commit `0d35f41`) — orphelin après refonte conversion v3.
 
 ---
 
-## 6. ✅ Design system v3 — palette adoucie
+## 6. ✅ Design system v3 + perf optimisations
 
-### Tokens OKLCH (commit `cdf4fcd`)
+### Palette (inchangée v3 charbon chaud + ivoire — commit `cdf4fcd` session 2)
 
-| Token | Avant (axe 260° bleu) | Après (axe chaud) |
-|---|---|---|
-| `--black-deep` | 0.10 / 260 | **0.14 / 70** (charbon chaud) |
-| `--black-surface` | 0.14 / 260 | **0.18 / 70** |
-| `--black-elevated` | 0.19 / 260 | **0.23 / 70** |
-| `--off-white` | 0.98 / 85 (presque blanc) | **0.94 / 80** (ivoire chaud Loro Piana) |
-| `--off-white-elevated` | 0.94 (plus sombre que fond) | **0.97 / 82** (papier crème — élévation lumineuse) |
-| `--ink` | 0.18 / 260 | **0.22 / 50** (charbon chaud texte) |
+| Token | Valeur (axe chaud) |
+|---|---|
+| `--black-deep` | 0.14 / 70 |
+| `--black-surface` | 0.18 / 70 |
+| `--black-elevated` | 0.23 / 70 |
+| `--off-white` | 0.94 / 80 (ivoire chaud Loro Piana) |
+| `--off-white-elevated` | 0.97 / 82 (papier crème) |
+| `--ink` | 0.22 / 50 (charbon chaud texte) |
 
 ### Animations CSS (styles.css)
 
 - `text-gold-gradient-animated` — shimmer 8s loop sur titles
 - `btn-shine` — bande lumineuse 4.2s sur CTAs primaires
 - `btn-glow` — pulse au hover
-- `glass` / `glass-light` — backdrop-blur(14px) saturate(140%)
-- `marquee-mask` + `.marquee-track` / `.marquee-reverse` — infinite scroll horizontal
-- `bg-stars` / `bg-stars-hero` / `bg-stars-light` — étoiles dorées scintillantes
-- `grain-overlay` — texture noise SVG subtile (Bio + LeadForm)
-- `highlight-underline` — filet doré qui se trace
-- `bg-grad-anim` — gradient pan slow
+- `glass` / `glass-light` — backdrop-blur(**12px**) saturate(140%) + ⭐ `transform: translateZ(0)` (pré-composite GPU)
+- `marquee-mask` + `.marquee-track` / `.marquee-reverse`
+- `bg-stars` / `bg-stars-hero` / `bg-stars-light` — étoiles dorées avec `translateZ(0)` sur ::before/::after
+- `grain-overlay` — texture noise SVG subtile
+- `highlight-underline`, `bg-grad-anim`
+
+### Optimisations perf appliquées (commits `517213f` + `f8410ec`)
+
+| Élément | Avant | Après |
+|---|---|---|
+| FAQ animation | `motion.div` height 0 → "auto" (reflow par frame) | CSS pur grid-template-rows 0fr → 1fr (GPU) |
+| FAQ cards | `glass` (backdrop-blur) sur 6 cards | `bg-black-elevated/40 + border` (pas de blur, look équivalent) |
+| ScrollProgressBar | `setState` à chaque scroll event | motion `useScroll + useSpring` (zéro re-render React) |
+| Navbar/MobileStickyBar/BackToTop/WhatsAppFab | `setState` à chaque pixel scrollé | `useScrollThreshold(N)` rAF + transition seulement |
+| `.glass` | blur(14px) sans pré-composite | blur(12px) + `translateZ(0)` |
+| Hero halo doré | filter blur(60px) à la volée | filter blur(40px) + `translateZ(0)` |
+| Hero parallax image | sans hint GPU | `willChange: "transform"` |
+| `bg-stars` ::before/::after | promu au scroll | promu au mount via `translateZ(0)` |
+
+### Accessibilité
+
+- `prefers-reduced-motion` : 6 emplacements + 4 règles styles.css (CountUp, MouseSpotlight, BackToTop, **MidPageCTA**, **ExitIntent**, styles.css)
+- `:focus-visible` global outline gold + offset (WCAG)
+- `-webkit-tap-highlight-color: transparent` (iOS Safari)
+- `-webkit-text-size-adjust: 100%` (anti-zoom auto iOS)
+- `env(safe-area-inset-bottom)` body padding mobile + MobileStickyBar
 
 ---
 
@@ -139,36 +201,64 @@ MouseSpotlight (desktop only, halo or + 4 traînées)
 `src/lib/translations.ts` — toutes ces sections ont `fr` + `en` complets, validés par test garde-fou :
 
 ```
-nav, hero (+ typewriterPhrases [4]), valueCards, whySerujan, services,
-approche, process (4 steps), bio (5 credentials, 4 milestones),
-lendersNetwork (10 categories), testimonials (4 items), calculator (étendu),
-faq (6 items), elev8, leadForm, mobileStickyBar, common, legal, merci,
+nav, hero (titre tripartite + 4 stats sourcées + trustStrip), valueCards,
+whySerujan (+ cta), services, approche, process (+ cta), bio (5 credentials, 4 milestones),
+lendersNetwork, testimonials (+ cta), calculator (étendu + capture email),
+faq (6 items), elev8 (+ eventSpeakers), leadForm (+ trustBadge + optional + amountRequired),
+midPageCTA, exitIntent, mobileStickyBar, common, legal, merci,
 footer, mentions/confidentialite, whatsapp
 ```
 
-Test `translations.test.ts` valide aussi que les sections orphelines retirées
-ne sont pas réintroduites : `["exitIntent", "podcast", "elev8Academy", "freeConsultation"]`.
+Test garde-fou (`translations.test.ts`) — sections retirées (ne pas réintroduire sans composant) :
+`["podcast", "elev8Academy", "freeConsultation"]`
+*(`exitIntent` retirée de la liste car composant ExitIntent.tsx existe maintenant.)*
 
 ---
 
-## 8. ✅ Backend & sécurité — inchangé cette session
+## 8. ✅ Backend & sécurité — assouplissement validation /api/leads
 
-- Worker [src/worker.ts](src/worker.ts) : fail-fast `if (!env.DB || !env.ADMIN_PASSWORD)` en tête.
-- Helpers [src/lib/security.ts](src/lib/security.ts) : `sanitizeHtml`, `sanitizeInput`, `isValidEmail`, `isValidPhone`, `isLikelyBot`, `buildSecurityHeaders`, `CSP_DIRECTIVES`.
-- Schema D1 + 2 migrations actives (`002_add_auth_tables`, `003_add_lead_attempts`).
-- CSP `img-src` autorise `https://assets.cdn.filesafe.space` (logo + photos témoignages Elev8).
+### Validation `/api/leads` (worker.ts) — ⭐ assouplie commit `6e1754a`
+
+```ts
+// Avant : name + email obligatoires
+// Après : name + (email OU phone) — permet capture mid-page/exit-intent (nom + tel sans email)
+//                                  + capture calculator (nom + email sans tel)
+```
+
+### Headers sécurité (`buildSecurityHeaders`) — ⭐ +CORP commit `982c09f`
+
+| Header | Valeur |
+|---|---|
+| Content-Security-Policy | strict avec whitelist GA4 + filesafe.space |
+| Strict-Transport-Security | max-age=31536000; includeSubDomains; preload |
+| X-Content-Type-Options | nosniff |
+| X-Frame-Options | DENY |
+| Referrer-Policy | strict-origin-when-cross-origin |
+| Permissions-Policy | camera=(), microphone=(), geolocation=(), interest-cohort=() |
+| Cross-Origin-Opener-Policy | same-origin |
+| **Cross-Origin-Resource-Policy** | **same-site** ⭐ ajouté |
+| X-DNS-Prefetch-Control | on |
+
+### Schema D1 (inchangé)
+
+```sql
+leads(id, name, email, phone, project_type, estimated_amount, message, created_at)
+admin_sessions(token, created_at, expires_at)  -- TTL 24h
+login_attempts(id, ip, attempted_at)
+lead_attempts(id, ip, attempted_at)
+```
 
 ---
 
-## 9. 🔍 Données factuelles validées
+## 9. 🔍 Données factuelles validées (mises à jour session 3)
 
 **Sources publiques consultées le 2026-04-29** :
 
 | Source | Information vérifiée |
 |---|---|
-| **elev8academie.ca** | "Courtier hypothécaire **depuis 2016**" (~9 ans en 2026) · "**500 M$+ financés**" · "Spécialiste financement alternatif" · "Fondateur Elev8" · "**900+ participants** conférence" · "100% financement commercial" |
-| **demo.intralys.com/serujan** | "**95% taux d'approbation**" · "**15 ans d'expérience**" *(⚠️ contradiction avec Elev8 "2016=9 ans")* |
-| **planipret.com** | Partenaires nommés : TD, Desjardins, Scotia, Manulife, Home Trust, MCAP, Alterna, First National, Laurentian, National, EQB, Capital Express, Merix, Pentor, FCT, Castleton, Neighbourhood Holdings, CHIP. **"Division Commerciale"** mentionnée *(Bio dit "Division Alternative" — incohérence)* |
+| **elev8academie.ca** | "depuis 2016" · "500 M$+ financés" · "stratégies financement alternatives / 100% sans mise de fonds" · "Fondateur Elev8" · "900+ participants conférence" · ⭐ "Conférence #1 au Canada" (claim Elev8) · ⭐ Podcast invités: Patrick Bet-David, Ryan Serhant · ⭐ Conférence Elev8 intervenants: Ryan Serhant, Andy Elliott, Olivier Primeau · WhatsApp/SMS Elev8 : `+1 438-814-9894` (numéro distinct du mobile, **non utilisé** car Rochdi a confirmé garder 514-701-6171) |
+| **demo.intralys.com/serujan** | "95% taux d'approbation" · "15 ans" *(⚠️ contradiction Elev8)* |
+| **planipret.com** | Partenaires nommés (TD, Desjardins, Scotia, Manulife, etc.) · "Division Commerciale" *(Bio dit "Division Alternative" — incohérence)* |
 | **LinkedIn** | Bloqué (HTTP 999, anti-bot) |
 
 **4 témoignages réels intégrés** dans `Testimonials.tsx` (sources Elev8) :
@@ -184,16 +274,20 @@ James R. · Puva Siva · Lauren K. · Nina Martellino
 |---|---|---|
 | 1 | **"15 ans" (demo) vs "depuis 2016 = 9 ans" (Elev8)** | Quelle est l'année de début exacte ? |
 | 2 | **Bio dit "Division Alternative chez Planiprêt"** mais site Planiprêt n'affiche que **"Division Commerciale"** | Quel est l'intitulé exact ? |
-| 3 | Stats Hero "1000+ projets" et "30 jours moyen" | Non confirmés sources publiques — validés par Serujan ? |
+| 3 | Stats Hero "1000+ projets" et "30 jours moyen" | ⭐ **RETIRÉES Hero** (commit refonte) — remplacées par sourcées (2016, 900+ Elev8) |
 | 4 | Bio milestones "500+ courtiers accompagnés" et "Top 1% prêts alternatifs Québec" | À valider |
-| 5 | WhatsApp `clientConfig.whatsapp.international = "15147016171"` (= mobile) | Numéro WhatsApp business séparé existe ? Sinon laisser tel quel |
+| 5 | WhatsApp `clientConfig.whatsapp.international = "15147016171"` (= mobile) | ⭐ Confirmé Rochdi : on garde 514-701-6171 (l'écosystème Elev8 a un autre numéro 438-814-9894 mais non utilisé pour le site Serujan) |
 | 6 | Liste nominative des prêteurs réellement actifs | Si Serujan accepte, remplacer les catégories LendersNetwork par 10-20 noms |
 
 **Données confirmées et OK** :
-- ✅ "500 M$+ financés" (Hero + WhySerujan)
-- ✅ "95% taux d'approbation" (Hero + WhySerujan)
-- ✅ "depuis 2016" (WhySerujan, après correction)
-- ✅ "900+ Elev8" (Bio milestone)
+- ✅ "500 M$+ financés"
+- ✅ "95% taux d'approbation"
+- ✅ "depuis 2016" / "Au service depuis"
+- ✅ "900+ participants Elev8"
+- ✅ "Conférence #1 Canada" (claim Elev8 sourcé)
+- ✅ Patrick Bet-David + Ryan Serhant (podcast invités)
+- ✅ Ryan Serhant + Andy Elliott + Olivier Primeau (Elev8 conférence)
+- ✅ "Stratégies de financement 100% sans mise de fonds" (angle Elev8)
 - ✅ Coordonnées : (514) 701-6171 · expert@serujan.com · 111 Rue Chabanel O Suite 617
 
 ---
@@ -211,21 +305,33 @@ James R. · Puva Siva · Lauren K. · Nina Martellino
    - (optionnel) `wrangler secret put GHL_WEBHOOK_URL --name serujan`
 5. **GA4** : remplacer `G-XXXXXXXXXX` × 2 dans `index.html` lignes 36 et 41 par l'ID réel.
 6. **Build + deploy** : `bun run build && wrangler deploy`.
-7. **Smoke test** : login admin, formulaire lead, email Resend, calculator (LTV !), countdown Elev8, FR/EN, témoignages, WhatsApp link, BackToTop, MouseSpotlight.
+7. **Smoke test** :
+   - Hero (titre statique + 4 stats animent + trust strip podcast visibles)
+   - Tous les CTAs scroll vers `#contact`
+   - LeadForm (3 obligatoires, optionnels marqués)
+   - **MidPageCTA** (bandeau entre Bio et Calculator — submit nom+tel sans email)
+   - Calculator + capture email à la fin
+   - **ExitIntent** (déplacer souris vers le haut > 8s après chargement)
+   - Toggle FR/EN — 100% du texte change
+   - Mobile (About + LendersNetwork masquées, MobileStickyBar avec safe-area)
+   - Faq accordéon fluide (anim grid-rows)
+   - Scroll fluide dès le 1er mouvement (pas de freeze Hero)
 8. **Tagger** `v1.0.0` : `git tag -a v1.0.0 -m "v1.0.0 — première mise en prod"` + `git push origin v1.0.0`.
 
 ---
 
-## 12. 🔮 Pistes ouvertes — non implémentées (en attente de contenu)
+## 12. 🔮 Pistes ouvertes — non implémentées
 
 | Item | Bloquant | Trigger |
 |---|---|---|
-| **Lead Magnet PDF** | PDF à fournir par Serujan | Quand on a un guide réel ("Structurer un financement commercial 7 chiffres"), je crée la modal email-gate + téléchargement |
-| **Newsletter mensuelle** | Stratégie content + design template Resend | Quand Serujan veut commencer le content marketing |
-| **Études de cas chiffrés** | 3-4 montants réels anonymisés | Section preuve sociale "12M$ refi 18j", etc. |
+| **Lead Magnet PDF** | PDF à fournir par Serujan | Modal email-gate + téléchargement |
+| **Newsletter mensuelle** | Stratégie content + design template Resend | Quand Serujan veut commencer |
+| **Études de cas chiffrés** | 3-4 montants réels anonymisés | Section preuve sociale |
 | **Carte Québec couverture** | Pas critique | SEO local optionnel |
-| **Logos prêteurs nominatifs** | Validation Serujan + assets logos | Remplacer les catégories LendersNetwork |
-| **Branch Protection GitHub** | UI manuelle | Settings → Rules : Require status checks après 1er CI vert |
+| **Logos prêteurs nominatifs** | Validation Serujan + assets logos | Remplacer catégories LendersNetwork |
+| **Calendly intégré** | Décision Serujan (RDV auto-bookés ?) | Niveau 3, refusé pour l'instant |
+| **Pixel Meta + LinkedIn Insight** | Budget paid Serujan ? | Si campagnes prévues |
+| **Branch Protection GitHub** | UI manuelle | Settings → Rules |
 | **Secret scanning + Push protection** | UI manuelle | Settings → Code security |
 
 ---
@@ -237,57 +343,44 @@ James R. · Puva Siva · Lauren K. · Nina Martellino
 - **`index.html:36+41`** — GA4 placeholder `G-XXXXXXXXXX`. Analytics inactives tant que pas remplacé.
 
 ### Non-bloquants
-- `emailFrom` dans [config.ts:85](src/lib/config.ts#L85) utilise `onboarding@resend.dev` (plan gratuit Resend = haut risque spam). À remplacer par domaine custom validé Resend Dashboard avant prod sérieuse.
-- IDE diagnostic `FormEvent` déprécié dans LeadForm.tsx:64 (TypeScript 6 hint, sans incidence runtime).
+- `emailFrom` dans `config.ts:94` utilise `onboarding@resend.dev` (plan gratuit Resend = haut risque spam). À remplacer par domaine custom validé Resend Dashboard avant prod sérieuse.
+- IDE diagnostic `FormEvent` déprécié dans LeadForm.tsx + Calculator.tsx (TypeScript 6 hint, sans incidence runtime).
 - 3 PRs Dependabot majeures ouvertes (typescript-6, vite-8, types/node-25) — release notes nécessaires avant merge.
 
 ### Vérifié OK
-- Aucun `console.log` en prod (seul `console.error/warn` dans catch).
+- Aucun `console.log` en prod.
+- Aucun `console.error/warn` côté client (admin.login + admin.leads silencieux). Logs serveur worker conservés (Cloudflare logs privés).
 - Aucun secret dans l'historique git.
 - `.env`, `.env.*`, `.dev.vars`, `.wrangler/`, `.claude/`, `.lovable/` dans `.gitignore`.
 - CSP autorise déjà `filesafe.space` (logo + photos témoignages).
+- CORP same-site ajouté (durcissement Spectre).
 
 ---
 
-## 14. 🎨 Récapitulatif des 21 effets visuels actifs
+## 14. 🎯 Récapitulatif des optimisations conversion v3
 
-### Texte / Titres
-1. Gradient or animé (shimmer 8s) sur tous les `titleEmphasis`
-2. Italic optique Fraunces (`font-display-italic`)
-3. Typewriter cycle 4 phrases Hero
-4. CountUp stats Hero (4) + milestones Bio (4)
+### Tunnel AIDA (5 portes de sortie au lieu d'1)
 
-### Scroll / Transitions
-5. Fade-up + slide-in sur toutes les 13 sections (`useInView`)
-6. Parallax léger image Hero (translateY 0→30%)
-7. Timeline ligne or qui se trace au scroll (Process)
-8. Smooth scroll natif + scroll-padding-top
-9. ScrollProgressBar 3px gold top page
+1. **CTA Hero principal** : "Évaluer mon projet" → `#contact` (LeadForm)
+2. **CTA Hero secondaire** : Téléphone tel:+15147016171 (clic direct)
+3. **MidPageCTA** : nom + tel → "Rappel sous 1 h ouvrée"
+4. **Calculator capture** : prénom + email → rapport personnalisé (warm lead)
+5. **ExitIntent** : nom + tel → rappel 1 h (rattrapage départ)
+6. **LeadForm complet** : 3 obligatoires (nom + tel + montant) + optionnels (email, type, message)
+7. **MobileStickyBar** : Phone direct + CTA `#contact` (mobile permanent)
+8. **WhatsAppFab** : message pré-rempli (desktop)
 
-### CTA / Boutons
-10. `btn-shine` — bande lumineuse continue 4.2s
-11. `btn-glow` — pulse au hover
-12. Hover lift `-translate-y-0.5` + ArrowRight `translate-x-1`
-13. Sheen sweep one-shot cards Services
-14. Anneau pulsé (`animate-pulse-gold`) sur icônes Process + bouton play Elev8
+### CTA contextuels (capture mi-scroll)
 
-### Background / Ambiance
-15. Étoiles dorées 3 variantes (hero / dark / light) partout
-16. Halos radial blur or sur chaque section
-17. Glassmorphism cards (Hero stats, Bio milestones, Faq, Testimonials, WhySerujan)
-18. Grain overlay subtil (Bio + LeadForm)
-19. MouseSpotlight desktop (halo + 4 traînées lerp)
+- WhySerujan : "Évaluer mon éligibilité"
+- Process : "Lancer mon diagnostic"
+- Testimonials : "Devenir le prochain"
 
-### Navigation / UX
-20. Navbar dynamique scroll>50px (blur + border)
-21. Burger 3 barres morphing en X (CSS pure, ARIA correct)
+### Anti-pattern conversion supprimés
 
-### En plus
-- Sonner toaster premium noir/or câblé sur LeadForm
-- BackToTop bas-droite (800px scroll)
-- WhatsAppFab bas-gauche (800px scroll)
-- MobileStickyBar mobile (600px scroll)
-- AnimatePresence sur form success / status
+- ❌ Typewriter Hero (anti-pattern lisibilité)
+- ❌ 3 CTA cartes Services "Voir un cas similaire" (mensonge, pas de cas)
+- ❌ Stats Hero non sourcées ("1000+ projets" / "30j moyen")
 
 ---
 
@@ -298,13 +391,13 @@ Voir [CLAUDE.md §9.bis](CLAUDE.md). Pattern de commits **non négociable** :
 | Quand | Préfixe | Exemple |
 |---|---|---|
 | Avant modif structurante | `checkpoint:` | `checkpoint: avant refonte navbar` |
-| Tâche validée | `feat:` / `fix:` / `refactor:` / `docs:` / `chore:` / `style:` | `feat: section témoignages Elev8` |
+| Tâche validée | `feat:` / `fix:` / `refactor:` / `docs:` / `chore:` / `style:` / `perf:` / `security:` / `a11y:` | `feat: section témoignages Elev8` |
 
 **Toujours** en français, **toujours** après `bun run build` 0 erreur + `bun run test` qui passe + `bunx eslint . --max-warnings=0` propre. Push vers `origin/main`.
 
-**Règle d'or factualité** (apprise dur cette session) :
-- ✅ Confirmé Elev8 : "depuis 2016", "500 M$+", "900+ participants"
-- ⚠️ À vérifier : "15 ans", "1000+ projets", "Division Alternative"
+**Règle d'or factualité** :
+- ✅ Confirmé Elev8 : "depuis 2016", "500 M$+", "900+ participants", "Conférence #1 Canada", invités Patrick Bet-David / Ryan Serhant / Andy Elliott / Olivier Primeau
+- ⚠️ À vérifier : "15 ans", "Division Alternative", "Top 1% Québec", "500+ courtiers"
 - ❌ Jamais inventer chiffres ou noms de prêteurs sans source
 
 Rollback : `git log --oneline` → repérer hash checkpoint → `git reset --hard <hash>` → `git push --force-with-lease origin main` (uniquement si solo).
@@ -314,9 +407,44 @@ Rollback : `git log --oneline` → repérer hash checkpoint → `git reset --har
 ## 16. Comment reprendre une nouvelle session
 
 1. Ouvrir une nouvelle session Claude dans `c:\Users\rochdi\.gemini\antigravity\scratch\serujan`.
-2. Coller le **prompt de passation** (voir bloc dédié plus bas — Rochdi a la version courte).
+2. Coller le **prompt de passation** (Rochdi a la version courte ; pointe vers SESSION.md + CLAUDE.md + mémoire).
 3. Claude lira automatiquement `CLAUDE.md` + chargera la mémoire (`feedback_commit_discipline.md`, `feedback_factuality.md`, `reference_serujan_repo.md`, `reference_serujan_sources.md`).
 4. Avant toute modif structurante : `git commit --allow-empty -m "checkpoint: avant <X>"`.
 5. Après validation : commit final propre + `git push origin main`.
+
+### Prompt court pour reprise (à copier-coller en nouvelle session)
+
+```
+Je reprends le projet Serujan Kaneshalingam (courtier hypothécaire commercial,
+Montréal). Repo : https://github.com/youcefinho/serujan, branche main, dernier
+commit f8410ec, tag v0.1.0.
+
+AVANT TOUTE ACTION, lis dans cet ordre :
+1. SESSION.md à la racine — état exhaustif fin session 3 (v3). Tunnel
+   conversion AIDA optimisé : 13 sections + MidPageCTA + ExitIntent + 5
+   flottants. 6 chunks lazy-loaded. Hero v3 statique (sans Typewriter), 4
+   stats sourcées (500M$+, 95%, 2016, 900+ Elev8). Mobile : About + Lenders
+   masqués. Performance : useScrollThreshold rAF + GPU pre-composite Hero.
+2. CLAUDE.md — règles révisées v3.
+3. La mémoire (.claude/projects/.../memory/) — 4 entrées :
+   - feedback_commit_discipline.md
+   - feedback_factuality.md
+   - reference_serujan_repo.md
+   - reference_serujan_sources.md (incluant invités podcast/conférence)
+
+Confirme-moi par écrit, en 6 lignes max, que tu as lu ces 3 sources et que
+tu as compris :
+- L'état actuel (build 0 erreur, tests 53/53, ESLint 0/0, main sync à f8410ec)
+- Le tunnel conversion v3 + 5 portes de sortie (LeadForm/MidPageCTA/Calculator
+  capture/ExitIntent/tel direct)
+- Le pattern checkpoint:/feat: avant chaque modif structurante
+- La RÈGLE D'OR FACTUALITÉ : jamais inventer chiffres ou noms de prêteurs
+- Que la Phase 4 (deploy Cloudflare D1 + secrets + wrangler deploy) est
+  réservée à Rochdi en local
+- Les 3 PRs Dependabot majeures ouvertes (typescript-6, vite-8, types/node-25)
+  à NE PAS merger sans review release notes
+
+Puis attends mes instructions.
+```
 
 ---
