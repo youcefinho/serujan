@@ -656,6 +656,19 @@ export const translations = {
     },
     callLabel: { fr: "Appeler", en: "Call" },
     emailLabel: { fr: "Courriel", en: "Email" },
+    countdownLabel: {
+      fr: "Réponse personnelle d'ici",
+      en: "Personal response within",
+    },
+    countdownUnits: {
+      fr: { hours: "heures", minutes: "minutes" },
+      en: { hours: "hours", minutes: "minutes" },
+    },
+    pledge: {
+      fr: "Chaque demande reçoit une attention personnelle. Pas un assistant, pas un script — vous parlerez directement à Serujan pour cadrer votre projet.",
+      en: "Every request gets personal attention. No assistant, no script — you'll speak directly with Serujan to scope your project.",
+    },
+    pledgeSignature: { fr: "— Serujan Kaneshalingam", en: "— Serujan Kaneshalingam" },
     followText: {
       fr: "En attendant, suivez Serujan sur Instagram pour des insights exclusifs",
       en: "In the meantime, follow Serujan on Instagram for exclusive insights",
