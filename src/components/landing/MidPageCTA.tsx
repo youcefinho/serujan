@@ -5,6 +5,7 @@ import { motion, useInView, AnimatePresence, useReducedMotion } from "motion/rea
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { PhoneCall, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
+import { trackCtaClick, trackFormSubmitError, trackLeadFormSubmit } from "@/lib/analytics";
 
 // ═══════════════════════════════════════════════════════════
 // MidPageCTA — bandeau capture rapide entre Bio et Calculator
@@ -54,11 +55,14 @@ export default function MidPageCTA() {
       });
       if (!res.ok) throw new Error();
       setStatus("success");
+      trackLeadFormSubmit("Rappel rapide");
+      trackCtaClick("midpage", "rappel-rapide");
       toast.success(t(translations.midPageCTA.success));
       setName("");
       setPhone("");
     } catch {
       setStatus("idle");
+      trackFormSubmitError("midpage-network");
       toast.error(t(translations.leadForm.error));
     }
   }

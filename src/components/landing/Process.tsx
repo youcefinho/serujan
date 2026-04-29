@@ -53,7 +53,7 @@ export default function Process() {
             className="flex items-center gap-3 mb-6"
           >
             <span className="w-8 h-px bg-gold/50" aria-hidden />
-            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+            <span className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-light">
               {t(translations.process.label)}
             </span>
           </motion.div>
@@ -129,7 +129,8 @@ export default function Process() {
                 {/* Contenu */}
                 <div className="pt-1">
                   <div className="text-[10px] uppercase tracking-[0.24em] text-gold/60 mb-2">
-                    {t(translations.common.step)} · {String(i + 1).padStart(2, "0")}
+                    {t(translations.common.step)} ·{" "}
+                    <span className="font-mono tabular-nums">{String(i + 1).padStart(2, "0")}</span>
                   </div>
                   <h3 className="font-display text-2xl md:text-3xl tracking-tight text-foreground mb-3 text-balance">
                     {step.title}

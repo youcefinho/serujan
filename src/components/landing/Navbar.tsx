@@ -5,6 +5,7 @@ import { LanguageToggle } from "./LanguageToggle";
 import { useState } from "react";
 import { Phone, ExternalLink } from "lucide-react";
 import { useScrollThreshold } from "@/hooks/useScrollThreshold";
+import { trackCtaClick, trackPhoneClick } from "@/lib/analytics";
 
 // ═══════════════════════════════════════════════════════════
 // Navbar — Navigation premium noir/or pour Serujan
@@ -79,14 +80,16 @@ export default function Navbar() {
           <LanguageToggle />
           <a
             href={`tel:+${clientConfig.phone.international}`}
+            onClick={() => trackPhoneClick("navbar-desktop")}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm text-gold border border-gold/30 rounded-lg hover:bg-gold/10 transition-colors"
           >
             <Phone className="w-4 h-4" />
-            {clientConfig.phone.display}
+            <span className="font-mono tabular-nums tracking-[0.06em]">{clientConfig.phone.display}</span>
           </a>
           <a
             href="#contact"
-            className="relative overflow-hidden px-6 py-2.5 bg-gradient-gold text-black-deep text-sm font-bold uppercase tracking-widest rounded-lg hover:scale-[1.02] transition-transform btn-shine btn-glow"
+            onClick={() => trackCtaClick("navbar-desktop", "Consultation")}
+            className="relative overflow-hidden px-6 py-2.5 bg-gradient-gold text-black-deep text-sm font-bold uppercase tracking-[0.14em] rounded-lg hover:scale-[1.02] transition-transform btn-shine btn-glow"
           >
             {t(translations.nav.cta)}
           </a>
@@ -147,15 +150,22 @@ export default function Navbar() {
             <div className="pt-4 space-y-3 border-t border-gold/10">
               <a
                 href={`tel:+${clientConfig.phone.international}`}
+                onClick={() => {
+                  trackPhoneClick("navbar-mobile");
+                  setIsOpen(false);
+                }}
                 className="flex items-center justify-center gap-2 py-3 border border-gold/30 text-gold rounded-lg font-medium"
               >
                 <Phone className="w-4 h-4" />
-                {clientConfig.phone.display}
+                <span className="font-mono tabular-nums tracking-[0.06em]">{clientConfig.phone.display}</span>
               </a>
               <a
                 href="#contact"
-                onClick={() => setIsOpen(false)}
-                className="block py-3 bg-gradient-gold text-black-deep text-center font-bold uppercase tracking-widest rounded-lg"
+                onClick={() => {
+                  trackCtaClick("navbar-mobile", "Consultation");
+                  setIsOpen(false);
+                }}
+                className="block py-3 bg-gradient-gold text-black-deep text-center font-bold uppercase tracking-[0.14em] rounded-lg"
               >
                 {t(translations.nav.cta)}
               </a>

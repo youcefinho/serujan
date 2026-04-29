@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2, Phone, Mail, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
@@ -15,8 +16,34 @@ export const Route = createFileRoute("/merci")({
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
+// Countdown 24h visuel — démarre quand la page mount et compte vers le bas.
+// But : rassurer le lead que la réponse arrive vraiment, pas presser.
+function useCountdown24h() {
+  const startRef = useRef<number | null>(null);
+  const [remainingMs, setRemainingMs] = useState(24 * 60 * 60 * 1000);
+
+  useEffect(() => {
+    startRef.current = Date.now();
+    const target = startRef.current + 24 * 60 * 60 * 1000;
+    const tick = () => {
+      const left = Math.max(0, target - Date.now());
+      setRemainingMs(left);
+    };
+    tick();
+    const id = setInterval(tick, 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const totalMin = Math.floor(remainingMs / 60_000);
+  const hours = Math.floor(totalMin / 60);
+  const minutes = totalMin % 60;
+  return { hours, minutes };
+}
+
 function MerciPage() {
-  const { t, lang } = useLanguage();
+  const { t, ta, lang } = useLanguage();
+  const { hours, minutes } = useCountdown24h();
+  const units = ta(translations.merci.countdownUnits) as { hours: string; minutes: string };
 
   return (
     <main className="relative min-h-screen bg-black-deep text-foreground flex items-center justify-center px-6 py-20 overflow-hidden">
@@ -66,7 +93,7 @@ function MerciPage() {
           className="flex items-center justify-center gap-3 mb-6"
         >
           <span className="w-8 h-px bg-gold/50" aria-hidden />
-          <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+          <span className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-light">
             {t(translations.merci.badge)}
           </span>
           <span className="w-8 h-px bg-gold/50" aria-hidden />
@@ -94,6 +121,44 @@ function MerciPage() {
         >
           {t(translations.merci.description)}
         </motion.p>
+
+        {/* Countdown 24h — rassure sans presser */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease, delay: 0.42 }}
+          className="mt-10 inline-flex flex-col items-center gap-3 px-6 py-5 rounded-xl border border-gold/20 bg-black-elevated/40"
+        >
+          <div className="text-[10px] uppercase tracking-[0.32em] text-gold-light/80">
+            {t(translations.merci.countdownLabel)}
+          </div>
+          <div className="flex items-baseline gap-2 font-mono tabular-nums text-foreground">
+            <span className="text-3xl md:text-4xl font-light tracking-[-0.02em]">
+              {String(hours).padStart(2, "0")}
+            </span>
+            <span className="text-[11px] uppercase tracking-[0.18em] text-foreground/50">{units.hours}</span>
+            <span className="text-3xl md:text-4xl text-gold-gradient font-light">·</span>
+            <span className="text-3xl md:text-4xl font-light tracking-[-0.02em]">
+              {String(minutes).padStart(2, "0")}
+            </span>
+            <span className="text-[11px] uppercase tracking-[0.18em] text-foreground/50">{units.minutes}</span>
+          </div>
+        </motion.div>
+
+        {/* Citation signée — engagement personnel Serujan */}
+        <motion.figure
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease, delay: 0.55 }}
+          className="mt-12 max-w-xl mx-auto px-8"
+        >
+          <div className="font-display italic font-display-italic text-gold-gradient text-xl md:text-2xl leading-[1.5]">
+            « {t(translations.merci.pledge)} »
+          </div>
+          <figcaption className="mt-4 text-[11px] uppercase tracking-[0.32em] text-foreground/50">
+            {t(translations.merci.pledgeSignature)}
+          </figcaption>
+        </motion.figure>
 
         {/* CTA contact direct */}
         <motion.div

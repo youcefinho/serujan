@@ -67,3 +67,47 @@ export function trackExitIntent(action: "shown" | "closed" | "clicked"): void {
     event_label: action,
   });
 }
+
+// Click sur un CTA primaire (Hero, MidPage, ExitIntent, MobileSticky, etc.)
+export function trackCtaClick(location: string, label?: string): void {
+  trackEvent("cta_click", {
+    event_category: "conversion",
+    event_label: label || location,
+    cta_location: location,
+  });
+}
+
+// Click sur le bouton flottant WhatsApp
+export function trackWhatsappClick(location: string = "fab"): void {
+  trackEvent("whatsapp_click", {
+    event_category: "conversion",
+    event_label: location,
+  });
+}
+
+// Premier input du LeadForm — l'user a démarré la saisie
+export function trackFormStart(formName: string = "lead"): void {
+  trackEvent("form_start", {
+    event_category: "engagement",
+    event_label: formName,
+    form_name: formName,
+  });
+}
+
+// LeadForm a échoué (validation, réseau, rate limit)
+export function trackFormSubmitError(reason: string): void {
+  trackEvent("form_submit_error", {
+    event_category: "conversion",
+    event_label: reason,
+    error_reason: reason,
+  });
+}
+
+// Lien email cliqué (mailto:)
+export function trackEmailClick(location: string): void {
+  trackEvent("email_click", {
+    event_category: "conversion",
+    event_label: location,
+    cta_location: location,
+  });
+}

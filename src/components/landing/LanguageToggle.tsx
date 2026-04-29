@@ -1,4 +1,5 @@
 import { useLanguage } from "@/lib/LanguageContext";
+import { trackLanguageToggle } from "@/lib/analytics";
 
 // Toggle bilingue FR/EN — Standard Intralys §10.1
 // Bouton compact pour la Navbar (desktop et mobile)
@@ -7,7 +8,11 @@ export function LanguageToggle() {
 
   return (
     <button
-      onClick={() => setLang(lang === "fr" ? "en" : "fr")}
+      onClick={() => {
+        const next = lang === "fr" ? "en" : "fr";
+        setLang(next);
+        trackLanguageToggle(next);
+      }}
       className="flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-border text-xs font-bold uppercase tracking-wider hover:bg-white/10 transition cursor-pointer"
       aria-label={lang === "fr" ? "Switch to English" : "Passer en français"}
     >

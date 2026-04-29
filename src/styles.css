@@ -199,8 +199,8 @@
     font-family: var(--font-display);
     font-feature-settings: "ss01", "ss02";
     font-optical-sizing: auto;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
     overflow-wrap: break-word;
     word-break: break-word;
   }

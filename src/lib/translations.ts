@@ -25,15 +25,19 @@ export const translations = {
   // --- Hero ---
   hero: {
     badge: {
-      fr: "Courtage hypothécaire commercial · Québec",
-      en: "Commercial Mortgage Brokerage · Quebec",
+      fr: "Courtage hypothécaire commercial — Québec",
+      en: "Commercial Mortgage Brokerage — Quebec",
     },
     titleLead: { fr: "Financement commercial", en: "Commercial financing" },
     titleEmphasis: {
-      fr: "pour promoteurs et investisseurs",
-      en: "for developers and investors",
+      fr: "qui ouvre les portes",
+      en: "that opens doors",
     },
-    titleTail: { fr: "de 1 M$ à 50 M$ au Québec.", en: "from $1M to $50M in Quebec." },
+    titleTail: { fr: "fermées aux autres.", en: "closed to others." },
+    titleRangePill: {
+      fr: ["1 M$ — 50 M$", "Promoteurs & investisseurs", "Québec"],
+      en: ["$1M — $50M", "Developers & investors", "Quebec"],
+    },
     subtitle: {
       fr: "Acquisitions, refinancements, développements et construction. Réponse personnelle de Serujan sous 24 h.",
       en: "Acquisitions, refinancing, developments and construction. Personal response from Serujan within 24 hours.",
@@ -44,9 +48,9 @@ export const translations = {
     },
     ctaPrimary: { fr: "Évaluer mon projet", en: "Evaluate my project" },
     ctaCall: { fr: "Parler à Serujan", en: "Speak with Serujan" },
-    statFunded: { fr: "Financés", en: "Funded" },
+    statFunded: { fr: "Financés depuis 2016", en: "Funded since 2016" },
     statApproval: { fr: "Taux d'approbation", en: "Approval rate" },
-    statSince: { fr: "Au service depuis", en: "Serving since" },
+    statSince: { fr: "Au service des Québécois", en: "Serving Quebecers" },
     statElev8: { fr: "Participants Elev8", en: "Elev8 attendees" },
     trustStrip: {
       fr: "Présent sur podcast aux côtés de Patrick Bet-David · Ryan Serhant",
@@ -59,13 +63,11 @@ export const translations = {
     scrollHint: { fr: "Découvrir l'expertise", en: "Discover the expertise" },
     typewriterPhrases: {
       fr: [
-        "qui ouvre les portes fermées aux autres.",
         "qui finance l'impossible.",
         "qui bâtit des empires.",
         "qui transforme votre vision en réalité.",
       ],
       en: [
-        "that opens doors closed to others.",
         "that finances the impossible.",
         "that builds empires.",
         "that turns your vision into reality.",
@@ -654,6 +656,19 @@ export const translations = {
     },
     callLabel: { fr: "Appeler", en: "Call" },
     emailLabel: { fr: "Courriel", en: "Email" },
+    countdownLabel: {
+      fr: "Réponse personnelle d'ici",
+      en: "Personal response within",
+    },
+    countdownUnits: {
+      fr: { hours: "heures", minutes: "minutes" },
+      en: { hours: "hours", minutes: "minutes" },
+    },
+    pledge: {
+      fr: "Chaque demande reçoit une attention personnelle. Pas un assistant, pas un script — vous parlerez directement à Serujan pour cadrer votre projet.",
+      en: "Every request gets personal attention. No assistant, no script — you'll speak directly with Serujan to scope your project.",
+    },
+    pledgeSignature: { fr: "— Serujan Kaneshalingam", en: "— Serujan Kaneshalingam" },
     followText: {
       fr: "En attendant, suivez Serujan sur Instagram pour des insights exclusifs",
       en: "In the meantime, follow Serujan on Instagram for exclusive insights",

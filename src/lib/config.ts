@@ -15,7 +15,7 @@ export const clientConfig = {
 
   // ── Contact ───────────────────────────────────────────
   phone: {
-    display: "(514) 701-6171",
+    display: "514 · 701 · 6171",
     raw: "5147016171",
     international: "15147016171",
   },

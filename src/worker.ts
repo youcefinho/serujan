@@ -255,41 +255,72 @@ function renderConfirmationHtml(d: { name: string; phone: string; amount: string
     : "";
 
   return `
-    <div style="font-family:'Inter',Helvetica,Arial,sans-serif;max-width:560px;margin:0 auto;padding:36px 32px;border:1px solid #2a2a2a;border-radius:16px;background:#0e0e10;color:#f5f5f5;">
-      <div style="border-bottom:1px solid #2a2a2a;padding-bottom:18px;margin-bottom:24px;">
-        <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#d4af37;font-weight:600;">Demande reçue · Équipe Serujan</div>
-        <h2 style="margin:10px 0 0;font-family:Georgia,serif;font-weight:400;font-style:italic;font-size:24px;color:#f5f5f5;">Bonjour ${firstName},</h2>
-      </div>
+    <div style="background:#070a0e;padding:32px 16px;font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;">
+      <div style="max-width:580px;margin:0 auto;background:#0e0e10;border:1px solid #2a2a2a;border-radius:16px;overflow:hidden;color:#f5f5f5;">
 
-      <p style="margin:0 0 16px;font-size:15px;color:#e5e5e5;line-height:1.7;">
-        Merci pour votre demande. Elle a bien été enregistrée et sera traitée personnellement par
-        <strong style="color:#fff;">Serujan Kaneshalingam</strong>.
-      </p>
+        <!-- Bandeau or éditorial -->
+        <div style="background:linear-gradient(135deg,rgba(212,175,55,0.12) 0%,rgba(212,175,55,0.04) 100%);padding:28px 32px;border-bottom:1px solid #2a2a2a;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="display:inline-block;width:28px;height:1px;background:#d4af37;"></span>
+            <span style="font-size:10px;letter-spacing:0.32em;text-transform:uppercase;color:#d4af37;font-weight:500;">Demande reçue · Équipe Serujan</span>
+          </div>
+          <h2 style="margin:14px 0 0;font-family:Georgia,'Times New Roman',serif;font-weight:300;font-style:italic;font-size:28px;color:#f5f5f5;letter-spacing:-0.015em;line-height:1.15;">
+            Bonjour ${firstName},
+          </h2>
+        </div>
 
-      <p style="margin:0 0 22px;font-size:15px;color:#e5e5e5;line-height:1.7;">
-        Vous serez recontacté <strong style="color:#d4af37;">sous 24 heures ouvrées</strong> pour
-        cadrer le projet, discuter de la structure de financement adaptée et planifier les prochaines étapes.
-      </p>
+        <div style="padding:28px 32px 32px;">
+          <p style="margin:0 0 16px;font-size:15px;color:#e5e5e5;line-height:1.75;">
+            Merci pour votre demande. Elle a bien été enregistrée et sera traitée personnellement par
+            <strong style="color:#fff;font-weight:600;">Serujan Kaneshalingam</strong>.
+          </p>
 
-      ${amountLine}
-      ${phoneLine}
+          <!-- Cartouche prochain pas -->
+          <div style="margin:24px 0;padding:20px 22px;background:rgba(212,175,55,0.06);border-left:2px solid #d4af37;border-radius:6px;">
+            <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:#d4af37;font-weight:600;margin-bottom:8px;">Prochaine étape</div>
+            <p style="margin:0;font-size:15px;color:#e5e5e5;line-height:1.7;">
+              Vous serez recontacté <strong style="color:#d4af37;font-weight:600;">sous 24 heures ouvrées</strong> pour cadrer le projet, discuter de la structure de financement adaptée et planifier les prochaines étapes.
+            </p>
+          </div>
 
-      <div style="margin:26px 0 0;padding:18px 20px;border:1px solid rgba(212,175,55,0.25);border-radius:10px;background:rgba(212,175,55,0.04);">
-        <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#d4af37;font-weight:600;margin-bottom:8px;">Confidentialité garantie</div>
-        <p style="margin:0;font-size:13px;color:#bdbdbd;line-height:1.6;">
-          Vos informations restent strictement confidentielles. Conformité Loi 25 du Québec.
-          Vos états financiers ne sont jamais transmis à un prêteur sans votre autorisation explicite.
-        </p>
-      </div>
+          ${amountLine}
+          ${phoneLine}
 
-      <p style="margin:28px 0 0;font-size:13px;color:#9a9a9a;line-height:1.7;">
-        Au plaisir d'échanger,<br>
-        <span style="color:#d4af37;font-style:italic;font-family:Georgia,serif;font-size:16px;">Équipe Serujan</span><br>
-        <span style="font-size:11px;letter-spacing:0.04em;color:#7a7a7a;">Courtage hypothécaire commercial · Montréal</span>
-      </p>
+          <!-- Engagement personnel -->
+          <blockquote style="margin:28px 0 0;padding:18px 22px;border:1px solid rgba(212,175,55,0.2);border-radius:10px;background:rgba(255,255,255,0.015);">
+            <p style="margin:0;font-family:Georgia,serif;font-style:italic;font-size:15px;color:#e8e6e1;line-height:1.65;">
+              « Chaque demande reçoit une attention personnelle. Pas un assistant, pas un script — vous parlerez directement à moi pour cadrer votre projet. »
+            </p>
+            <div style="margin-top:10px;font-size:10px;letter-spacing:0.32em;text-transform:uppercase;color:rgba(212,175,55,0.85);">
+              — Serujan Kaneshalingam
+            </div>
+          </blockquote>
 
-      <div style="border-top:1px solid #2a2a2a;margin-top:26px;padding-top:14px;font-size:10px;color:#6a6a6a;letter-spacing:0.06em;">
-        ${sanitizeHtml(CLIENT.address.street)}, ${sanitizeHtml(CLIENT.address.suite)} · ${sanitizeHtml(CLIENT.address.city)}, ${sanitizeHtml(CLIENT.address.province)}
+          <!-- Confidentialité -->
+          <div style="margin:24px 0 0;padding:16px 20px;border:1px solid rgba(212,175,55,0.18);border-radius:10px;background:rgba(212,175,55,0.03);">
+            <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:#d4af37;font-weight:600;margin-bottom:8px;">Confidentialité garantie</div>
+            <p style="margin:0;font-size:13px;color:#bdbdbd;line-height:1.65;">
+              Vos informations restent strictement confidentielles. Conformité <strong style="color:#cfcfcf;">Loi 25 du Québec</strong>. Vos états financiers ne sont jamais transmis à un prêteur sans votre autorisation explicite, prêteur par prêteur.
+            </p>
+          </div>
+
+          <!-- Signature -->
+          <p style="margin:28px 0 0;font-size:13px;color:#9a9a9a;line-height:1.7;">
+            Au plaisir d'échanger,<br>
+            <span style="color:#d4af37;font-style:italic;font-family:Georgia,serif;font-size:18px;font-weight:300;">Équipe Serujan</span><br>
+            <span style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#7a7a7a;">Courtage hypothécaire commercial — Montréal</span>
+          </p>
+        </div>
+
+        <!-- Footer -->
+        <div style="border-top:1px solid #2a2a2a;padding:16px 32px;font-size:10px;color:#6a6a6a;letter-spacing:0.06em;background:#0a0a0c;">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <span>${sanitizeHtml(CLIENT.address.street)}, ${sanitizeHtml(CLIENT.address.suite)} · ${sanitizeHtml(CLIENT.address.city)}, ${sanitizeHtml(CLIENT.address.province)}</span>
+            <span>
+              <a href="tel:+1${CLIENT.phone.raw}" style="color:#9a9a9a;text-decoration:none;font-family:Menlo,Consolas,monospace;letter-spacing:0.06em;">${sanitizeHtml(CLIENT.phone.display)}</a>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   `;

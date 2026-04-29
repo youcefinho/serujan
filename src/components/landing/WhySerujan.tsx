@@ -51,7 +51,7 @@ export default function WhySerujan() {
             className="flex items-center gap-3 mb-6"
           >
             <span className="w-8 h-px bg-gold/50" aria-hidden />
-            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+            <span className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-light">
               {t(translations.whySerujan.label)}
             </span>
           </motion.div>
@@ -102,7 +102,7 @@ export default function WhySerujan() {
                 {/* Chiffre-clé — impact visuel immédiat */}
                 <CountUp
                   value={card.metric}
-                  className="font-display text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums mb-4"
+                  className="font-display font-light tracking-[-0.02em] text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums mb-4"
                 />
 
                 <h3 className="font-display text-lg md:text-xl tracking-tight text-foreground mb-3 text-balance">

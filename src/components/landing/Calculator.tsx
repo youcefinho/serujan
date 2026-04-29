@@ -5,6 +5,7 @@ import { motion, useInView, useSpring, useTransform, AnimatePresence } from "mot
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Calculator as CalcIcon, ArrowRight, Mail, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { trackCalculatorUse, trackLeadFormSubmit, trackFormSubmitError } from "@/lib/analytics";
 
 // ═══════════════════════════════════════════════════════════
 // Calculator v2 — Donut SVG animé + valeurs qui s'animent
@@ -179,12 +180,27 @@ export default function Calculator() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.15 });
 
-  const [propertyPrice, setPropertyPrice] = useState(2_500_000);
-  const [downPayment, setDownPayment] = useState(500_000);
-  const [interestRate, setInterestRate] = useState(5.5);
-  const [amortization, setAmortization] = useState(25);
-  const [propertyTax, setPropertyTax] = useState(25_000);
-  const [insurance, setInsurance] = useState(5_000);
+  const [propertyPrice, setPropertyPriceRaw] = useState(2_500_000);
+  const [downPayment, setDownPaymentRaw] = useState(500_000);
+  const [interestRate, setInterestRateRaw] = useState(5.5);
+  const [amortization, setAmortizationRaw] = useState(25);
+  const [propertyTax, setPropertyTaxRaw] = useState(25_000);
+  const [insurance, setInsuranceRaw] = useState(5_000);
+
+  // Marque "calculator_use" au tout 1er ajustement utilisateur (pas au mount)
+  const calcUsedRef = useRef(false);
+  function markCalcUsed() {
+    if (!calcUsedRef.current) {
+      calcUsedRef.current = true;
+      trackCalculatorUse();
+    }
+  }
+  const setPropertyPrice = (n: number) => { markCalcUsed(); setPropertyPriceRaw(n); };
+  const setDownPayment = (n: number) => { markCalcUsed(); setDownPaymentRaw(n); };
+  const setInterestRate = (n: number) => { markCalcUsed(); setInterestRateRaw(n); };
+  const setAmortization = (n: number) => { markCalcUsed(); setAmortizationRaw(n); };
+  const setPropertyTax = (n: number) => { markCalcUsed(); setPropertyTaxRaw(n); };
+  const setInsurance = (n: number) => { markCalcUsed(); setInsuranceRaw(n); };
 
   // Capture lead léger (prénom + email) — convertit l'outil en porte d'entrée
   const captureMountRef = useRef<number>(Date.now());
@@ -261,11 +277,13 @@ export default function Calculator() {
       });
       if (!res.ok) throw new Error();
       setCaptureStatus("success");
+      trackLeadFormSubmit("Calculator capture");
       toast.success(t(translations.calculator.captureSuccess));
       setCaptureFirstName("");
       setCaptureEmail("");
     } catch {
       setCaptureStatus("idle");
+      trackFormSubmitError("calculator-network");
       toast.error(t(translations.leadForm.error));
     }
   }
@@ -296,7 +314,7 @@ export default function Calculator() {
             className="flex items-center gap-3 mb-6"
           >
             <span className="w-8 h-px bg-gold-deep/60" aria-hidden />
-            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-deep inline-flex items-center gap-2">
+            <span className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-deep inline-flex items-center gap-2">
               <CalcIcon className="w-3 h-3" />
               {t(translations.calculator.label)}
             </span>

@@ -42,5 +42,7 @@ post-deploy.cjs
 .claude/
 .lovable/
 
-# Design handoff Claude Design (extrait local du zip — ne pas polluer le repo)
+# Design handoff Claude Design (extraits locaux du zip — ne pas polluer le repo)
 /serujan/
+/serujan (1)/
+/serujan (*)/

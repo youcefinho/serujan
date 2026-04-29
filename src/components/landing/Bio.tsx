@@ -54,7 +54,7 @@ export default function Bio() {
             className="flex items-center gap-3 mb-6"
           >
             <span className="w-8 h-px bg-gold/50" aria-hidden />
-            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+            <span className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-light">
               {t(translations.bio.label)}
             </span>
           </motion.div>
@@ -169,7 +169,7 @@ export default function Bio() {
             >
               <CountUp
                 value={m.metric}
-                className="font-display text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums"
+                className="font-display font-light tracking-[-0.02em] text-3xl md:text-4xl text-gold-gradient leading-none tabular-nums"
               />
               <div className="mt-3 text-[11px] uppercase tracking-[0.18em] text-foreground/60 font-medium">
                 {m.label}
