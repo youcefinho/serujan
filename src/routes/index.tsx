@@ -2,17 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 
-// Sync — above-the-fold + early scroll (chargés avec le main bundle)
+// Sync — above-the-fold critique (chargés avec le main bundle)
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import WhySerujan from "@/components/landing/WhySerujan";
-
-import Services from "@/components/landing/Services";
-import About from "@/components/landing/About";
-import Process from "@/components/landing/Process";
-import LendersNetwork from "@/components/landing/LendersNetwork";
-import Bio from "@/components/landing/Bio";
-import Footer from "@/components/landing/Footer";
 import MobileStickyBar from "@/components/landing/MobileStickyBar";
 import { ScrollProgressBar } from "@/components/landing/ScrollProgressBar";
 import { BackToTop } from "@/components/landing/BackToTop";
@@ -21,11 +14,17 @@ import { MouseSpotlight } from "@/components/ui/MouseSpotlight";
 
 // Lazy — bottom-of-fold (capturés en chunks séparés, chargés à la demande)
 const Testimonials = lazy(() => import("@/components/landing/Testimonials"));
+const Services = lazy(() => import("@/components/landing/Services"));
+const Process = lazy(() => import("@/components/landing/Process"));
 const MidPageCTA = lazy(() => import("@/components/landing/MidPageCTA"));
 const Calculator = lazy(() => import("@/components/landing/Calculator"));
+const Bio = lazy(() => import("@/components/landing/Bio"));
 const Faq = lazy(() => import("@/components/landing/Faq"));
 const Elev8Event = lazy(() => import("@/components/landing/Elev8Event"));
+const About = lazy(() => import("@/components/landing/About"));
+const LendersNetwork = lazy(() => import("@/components/landing/LendersNetwork"));
 const LeadForm = lazy(() => import("@/components/landing/LeadForm"));
+const Footer = lazy(() => import("@/components/landing/Footer"));
 const ExitIntent = lazy(() => import("@/components/landing/ExitIntent"));
 
 // ═══════════════════════════════════════════════════════════
@@ -70,10 +69,14 @@ function Index() {
       </Suspense>
 
       {/* 4. INTÉRÊT — quoi exactement */}
-      <Services />
+      <Suspense fallback={null}>
+        <Services />
+      </Suspense>
 
       {/* 5. RASSURER — comment ça se passe */}
-      <Process />
+      <Suspense fallback={null}>
+        <Process />
+      </Suspense>
 
       {/* 6. CAPTURE WARM — 2 champs, visiteurs à mi-scroll */}
       <Suspense fallback={null}>
@@ -86,7 +89,9 @@ function Index() {
       </Suspense>
 
       {/* 8. DÉSIR — qui est Serujan */}
-      <Bio />
+      <Suspense fallback={null}>
+        <Bio />
+      </Suspense>
 
       {/* 9. LEVER OBJECTIONS */}
       <Suspense fallback={null}>
@@ -100,10 +105,14 @@ function Index() {
 
       {/* Desktop only — contenu enrichi non essentiel au tunnel */}
       <div className="hidden md:block">
-        <About />
+        <Suspense fallback={null}>
+          <About />
+        </Suspense>
       </div>
       <div className="hidden md:block">
-        <LendersNetwork />
+        <Suspense fallback={null}>
+          <LendersNetwork />
+        </Suspense>
       </div>
 
       {/* 11. ACTION — formulaire principal */}
@@ -111,7 +120,9 @@ function Index() {
         <LeadForm />
       </Suspense>
 
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
       <MobileStickyBar />
       <BackToTop />
       <WhatsAppFab />
