@@ -1,150 +1,154 @@
-import { useState, useEffect } from "react";
-import { Phone, Calendar, Menu, X } from "lucide-react";
-import { openCalendly } from "@/lib/calendly";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
-import { LanguageToggle } from "@/components/landing/LanguageToggle";
 import { clientConfig } from "@/lib/config";
-import logoEquipe from "@/assets/logo-equipe-color.png";
+import { LanguageToggle } from "./LanguageToggle";
+import { useState, useEffect } from "react";
+import { Menu, X, Phone, ExternalLink } from "lucide-react";
 
-export function Navbar() {
+// ═══════════════════════════════════════════════════════════
+// Navbar — Navigation premium noir/or pour Serujan
+// ═══════════════════════════════════════════════════════════
+
+const NAV_ITEMS = [
+  { key: "services", href: "#services" },
+  { key: "approche", href: "#approche" },
+  { key: "processus", href: "#processus" },
+  { key: "elev8", href: "#elev8" },
+  { key: "simulateur", href: "#simulateur" },
+  { key: "contact", href: "#contact" },
+] as const;
+
+export default function Navbar() {
   const { t } = useLanguage();
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  const links = [
-    { label: t(translations.nav.about), href: "#apropos" },
-    { label: t(translations.nav.services), href: "#services" },
-    { label: t(translations.nav.testimonials), href: "#temoignages" },
-    { label: t(translations.nav.faq), href: "#faq" },
-    { label: t(translations.nav.contact), href: "#contact" },
-  ];
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Fermer le menu mobile au redimensionnement
-  useEffect(() => {
-    const onResize = () => {
-      if (window.innerWidth >= 768) setOpen(false);
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  const close = () => setOpen(false);
 
   return (
-    <header
+    <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled || open
-          ? "bg-navy-deep/95 backdrop-blur-lg shadow-lg border-b border-white/10"
-          : ""
+        isScrolled
+          ? "bg-black-deep/95 backdrop-blur-xl border-b border-gold/10 py-3"
+          : "bg-transparent py-5"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 md:h-[72px] flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
-        <a href="/" className="shrink-0" aria-label={`Accueil — ${clientConfig.name}`}>
-          <div className="bg-white rounded-md p-1.5 shadow-lg">
+        <a href="#hero" className="flex items-center gap-3">
+          {clientConfig.logoUrl ? (
             <img
-              src={logoEquipe}
-              alt={clientConfig.banner.name}
-              className="h-8 md:h-10 w-auto"
-              loading="eager"
-              decoding="async"
+              src={clientConfig.logoUrl}
+              alt={clientConfig.teamName}
+              className="h-10 w-auto"
             />
-          </div>
+          ) : (
+            <span className="text-xl font-bold text-gold uppercase tracking-wider">
+              {clientConfig.teamName}
+            </span>
+          )}
         </a>
 
-        {/* Desktop nav links */}
-        <nav className="hidden md:flex items-center gap-1" aria-label="Navigation principale">
-          {links.map((l) => (
+        {/* Navigation desktop */}
+        <div className="hidden lg:flex items-center gap-8">
+          {NAV_ITEMS.map((item) => (
             <a
-              key={l.href}
-              href={l.href}
-              className="px-3 py-2 text-sm text-foreground/70 hover:text-foreground rounded-md hover:bg-white/5 transition"
+              key={item.key}
+              href={item.href}
+              className="text-sm font-medium text-foreground/70 hover:text-gold transition-colors duration-200 uppercase tracking-wider"
             >
-              {l.label}
+              {t(translations.nav[item.key])}
             </a>
           ))}
-        </nav>
 
-        {/* Desktop CTA + Toggle FR/EN */}
-        <div className="hidden md:flex items-center gap-3">
+          {/* Lien externe Elev8 */}
+          <a
+            href={clientConfig.elev8EventUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold hover:text-gold-light transition-colors uppercase tracking-wider"
+          >
+            {t(translations.nav.inscription)}
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </div>
+
+        {/* Actions desktop */}
+        <div className="hidden lg:flex items-center gap-3">
           <LanguageToggle />
           <a
-            href={`tel:${clientConfig.phone.raw}`}
-            className="flex items-center gap-2 text-sm text-foreground/80 hover:text-foreground transition"
-            aria-label={`Appeler le ${clientConfig.phone.display}`}
+            href={`tel:+${clientConfig.phone.international}`}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm text-gold border border-gold/30 rounded-lg hover:bg-gold/10 transition-colors"
           >
             <Phone className="w-4 h-4" />
             {clientConfig.phone.display}
           </a>
-          <button
-            onClick={openCalendly}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-crimson text-primary-foreground text-xs font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer uppercase tracking-wider"
-            aria-label={t(translations.nav.cta)}
+          <a
+            href="#contact"
+            className="px-6 py-2.5 bg-gradient-gold text-black-deep text-sm font-bold uppercase tracking-widest rounded-lg hover:scale-[1.02] transition-transform"
           >
-            <Calendar className="w-4 h-4" />
             {t(translations.nav.cta)}
-          </button>
+          </a>
         </div>
 
-        {/* Mobile hamburger */}
-        <div className="md:hidden flex items-center gap-2">
+        {/* Burger menu mobile */}
+        <div className="flex lg:hidden items-center gap-3">
           <LanguageToggle />
           <button
-            onClick={() => setOpen(!open)}
-            className="p-2 -mr-2 text-foreground"
-            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-            aria-expanded={open}
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2 text-foreground"
+            aria-label="Menu"
           >
-            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu panel */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ${
-          open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <nav className="px-6 pb-6 pt-2 space-y-1" aria-label="Navigation mobile">
-          {links.map((l) => (
+      {/* Menu mobile */}
+      {isOpen && (
+        <div className="lg:hidden bg-black-deep/98 backdrop-blur-xl border-t border-gold/10 animate-fade-in">
+          <div className="max-w-7xl mx-auto px-4 py-6 space-y-4">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.key}
+                href={item.href}
+                onClick={() => setIsOpen(false)}
+                className="block py-2 text-foreground/80 hover:text-gold transition-colors uppercase tracking-wider text-sm font-medium"
+              >
+                {t(translations.nav[item.key])}
+              </a>
+            ))}
             <a
-              key={l.href}
-              href={l.href}
-              onClick={close}
-              className="block px-4 py-3 text-lg font-semibold text-foreground/90 hover:text-crimson hover:bg-white/5 rounded-lg transition"
+              href={clientConfig.elev8EventUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block py-2 text-gold font-semibold uppercase tracking-wider text-sm"
             >
-              {l.label}
+              {t(translations.nav.inscription)} →
             </a>
-          ))}
-
-          <div className="pt-4 mt-2 border-t border-white/10 space-y-3">
-            <a
-              href={`tel:${clientConfig.phone.raw}`}
-              className="flex items-center gap-3 px-4 py-3 text-foreground hover:text-crimson transition"
-              aria-label={`Appeler le ${clientConfig.phone.display}`}
-            >
-              <Phone className="w-5 h-5 text-crimson" />
-              <span className="font-semibold">{clientConfig.phone.display}</span>
-            </a>
-            <button
-              onClick={(e) => { close(); openCalendly(e); }}
-              className="block w-full text-center py-3.5 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson cursor-pointer uppercase tracking-wider"
-              aria-label={t(translations.nav.ctaMobile)}
-            >
-              {t(translations.nav.ctaMobile)}
-            </button>
+            <div className="pt-4 space-y-3 border-t border-gold/10">
+              <a
+                href={`tel:+${clientConfig.phone.international}`}
+                className="flex items-center justify-center gap-2 py-3 border border-gold/30 text-gold rounded-lg font-medium"
+              >
+                <Phone className="w-4 h-4" />
+                {clientConfig.phone.display}
+              </a>
+              <a
+                href="#contact"
+                onClick={() => setIsOpen(false)}
+                className="block py-3 bg-gradient-gold text-black-deep text-center font-bold uppercase tracking-widest rounded-lg"
+              >
+                {t(translations.nav.cta)}
+              </a>
+            </div>
           </div>
-        </nav>
-      </div>
-    </header>
+        </div>
+      )}
+    </nav>
   );
 }

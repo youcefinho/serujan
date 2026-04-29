@@ -1,142 +1,95 @@
-import { Phone, Calendar, Mail, Clock } from "lucide-react";
-import { openCalendly } from "@/lib/calendly";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
-import { TypingAnimation } from "@/components/landing/TypingAnimation";
-import heroBanner from "@/assets/hero-banner.jpg";
+import { Phone, ArrowDown } from "lucide-react";
 
-export function Hero() {
-  const { t, ta } = useLanguage();
+// ═══════════════════════════════════════════════════════════
+// Hero — Section héro premium noir/or pour Serujan
+// ═══════════════════════════════════════════════════════════
+
+export default function Hero() {
+  const { t } = useLanguage();
 
   return (
-    <section className="relative min-h-screen overflow-hidden flex items-center">
-      {/* Banner background — plein écran avec transparence */}
-      <div className="absolute inset-0">
-        <img
-          src={heroBanner}
-          alt={`Quartier résidentiel à ${clientConfig.territoryLabel} au crépuscule`}
-          className="w-full h-full object-cover"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
-        <div className="absolute inset-0 bg-navy-deep/60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/90 via-navy-deep/70 to-navy-deep/40" />
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero grain-overlay"
+    >
+      {/* Image de fond avec overlay */}
+      {clientConfig.heroImageUrl && (
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${clientConfig.heroImageUrl})` }}
+        >
+          <div className="absolute inset-0 bg-black-deep/80" />
+        </div>
+      )}
+
+      {/* Motifs décoratifs */}
+      <div className="absolute top-20 right-10 w-80 h-80 rounded-full bg-gold/3 blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-20 left-10 w-60 h-60 rounded-full bg-gold/5 blur-[120px] pointer-events-none" />
+
+      {/* Contenu principal */}
+      <div className="relative z-10 max-w-5xl mx-auto text-center px-4 pt-32 pb-20">
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-[0.2em] bg-gold/10 text-gold border border-gold/20 mb-8">
+          {t(translations.hero.badge)}
+        </div>
+
+        {/* Logo SK */}
+        {clientConfig.logoUrl && (
+          <div className="flex justify-center mb-8">
+            <img
+              src={clientConfig.logoUrl}
+              alt={clientConfig.teamName}
+              className="h-20 md:h-28 w-auto"
+            />
+          </div>
+        )}
+
+        {/* Titre principal */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-wider text-foreground mb-6 leading-tight">
+          {t(translations.hero.title)}
+        </h1>
+
+        {/* Sous-titre */}
+        <p className="text-xl md:text-2xl text-gold font-medium mb-4 tracking-wide">
+          {t(translations.hero.subtitle)}
+        </p>
+
+        {/* Description */}
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+          {t(translations.hero.description)}
+        </p>
+
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 px-10 py-4 bg-gradient-gold text-black-deep font-bold uppercase tracking-widest rounded-lg shadow-gold hover:shadow-gold-sm hover:scale-[1.02] transition-all duration-300 animate-pulse-gold"
+          >
+            {t(translations.hero.ctaPrimary)}
+          </a>
+          <a
+            href={`tel:+${clientConfig.phone.international}`}
+            className="inline-flex items-center gap-2 px-8 py-4 border-2 border-gold/30 text-gold font-bold uppercase tracking-widest rounded-lg hover:bg-gold/10 transition-all duration-300"
+          >
+            <Phone className="w-4 h-4" />
+            {t(translations.hero.ctaCall)}
+          </a>
+        </div>
+
+        {/* Badge de confiance */}
+        <p className="text-sm text-muted-foreground tracking-wider">
+          {t(translations.hero.trustBadge)}
+        </p>
       </div>
 
-      {/* Accent décoratif */}
-      <div className="absolute top-0 left-0 w-1 h-full bg-gradient-crimson z-10" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pt-24 lg:pt-32 pb-24 w-full">
-        <div className="max-w-3xl space-y-8">
-          {/* Réseaux sociaux — en haut */}
-          <div className="flex items-center gap-3">
-            {clientConfig.socials.instagram && (
-              <a
-                href={clientConfig.socials.instagram.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition text-xs font-semibold uppercase tracking-wider"
-                aria-label="Instagram"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-                {clientConfig.socials.instagram.handle}
-              </a>
-            )}
-            {clientConfig.socials.tiktok && (
-              <a
-                href={clientConfig.socials.tiktok.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition text-xs font-semibold uppercase tracking-wider"
-                aria-label="TikTok"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.11V9a6.33 6.33 0 00-.79-.05A6.34 6.34 0 003.15 15.3a6.34 6.34 0 0010.86 4.48 6.3 6.3 0 001.83-4.48V8.74a8.18 8.18 0 004.75 1.52V6.81a4.84 4.84 0 01-1-.12z"/></svg>
-                TikTok
-              </a>
-            )}
-            {clientConfig.socials.facebook && (
-              <a
-                href={clientConfig.socials.facebook.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition text-xs font-semibold uppercase tracking-wider"
-                aria-label="Facebook"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                Facebook
-              </a>
-            )}
-          </div>
-
-          {/* Badge disponible */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-white/5 backdrop-blur">
-            <span className="w-2 h-2 rounded-full bg-crimson animate-pulse" />
-            <span className="text-[10px] sm:text-xs uppercase tracking-widest font-semibold">{t(translations.hero.badge)}</span>
-          </div>
-
-          {/* Territoire */}
-          <div className="text-sm font-bold uppercase tracking-[0.3em] text-crimson">
-            {clientConfig.territory}
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
-            {t(translations.hero.title)}
-            <span className="block text-crimson mt-2">
-              <TypingAnimation
-                phrases={ta(translations.hero.phrases)}
-                typingSpeed={70}
-                deletingSpeed={35}
-                pauseAfterPhrase={1500}
-              />
-            </span>
-          </h1>
-
-          <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-            {t(translations.hero.description)}<br/><br/>
-            <span className="text-foreground font-semibold">{clientConfig.name}</span> {t(translations.hero.descriptionBold)}
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={openCalendly}
-              className="group inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 bg-gradient-crimson text-primary-foreground text-sm sm:text-base font-bold rounded-md shadow-crimson hover:scale-[1.02] transition-transform cursor-pointer"
-              aria-label={t(translations.hero.ctaPrimary)}
-            >
-              <Calendar className="w-5 h-5" />
-              {t(translations.hero.ctaPrimary)}
-            </button>
-            <a
-              href={`tel:${clientConfig.phone.raw}`}
-              className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 border-2 border-foreground/80 text-foreground text-sm sm:text-base font-bold rounded-md hover:bg-foreground hover:text-navy transition"
-              aria-label={t(translations.hero.ctaCall)}
-            >
-              <Phone className="w-5 h-5" />
-              {t(translations.hero.ctaCall)}
-            </a>
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-4 border-2 border-foreground/30 text-foreground/90 text-sm sm:text-base font-bold rounded-md hover:border-foreground transition"
-              aria-label={t(translations.hero.ctaMessage)}
-            >
-              <Mail className="w-5 h-5" />
-              {t(translations.hero.ctaMessage)}
-            </a>
-          </div>
-
-          {/* Trust badge */}
-          <div className="inline-flex flex-wrap items-center gap-3 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
-            <span className="relative flex w-2 h-2">
-              <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-              <span className="relative inline-flex w-2 h-2 rounded-full bg-emerald-500" />
-            </span>
-            <Clock className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-emerald-300">
-              {t(translations.hero.trustBadge)}
-            </span>
-          </div>
-        </div>
+      {/* Flèche scroll */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <a href="#value-cards" className="flex flex-col items-center gap-2 text-gold/40 hover:text-gold/70 transition-colors">
+          <ArrowDown className="w-5 h-5 animate-bounce" />
+        </a>
       </div>
     </section>
   );

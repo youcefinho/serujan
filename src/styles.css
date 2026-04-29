@@ -29,11 +29,12 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-navy: var(--navy);
-  --color-navy-deep: var(--navy-deep);
-  --color-crimson: var(--crimson);
-  --color-crimson-glow: var(--crimson-glow);
-  --color-cream: var(--cream);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+  --color-black-deep: var(--black-deep);
+  --color-black-card: var(--black-card);
+  --color-black-surface: var(--black-surface);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
 }
@@ -41,45 +42,53 @@
 :root {
   --radius: 0.5rem;
 
-  /* Brand */
-  --navy: oklch(0.21 0.04 260);          /* #0D1B2A */
-  --navy-deep: oklch(0.16 0.035 260);
-  --crimson: oklch(0.56 0.22 25);        /* #D8182F — WCAG AA 3:1+ on navy */
-  --crimson-glow: oklch(0.63 0.24 25);
-  --cream: oklch(0.97 0.01 80);
+  /* ═══════════════════════════════════════════════════════════
+     Brand Serujan — Noir/Or Premium
+     ═══════════════════════════════════════════════════════════ */
+  --gold: oklch(0.76 0.12 85);            /* #d4af37 — Or principal */
+  --gold-light: oklch(0.82 0.10 85);      /* Or clair — hover/accent */
+  --gold-dark: oklch(0.65 0.14 85);       /* Or foncé — bordures */
+  --black-deep: oklch(0.08 0.005 260);    /* #0a0a0f — Fond principal */
+  --black-card: oklch(0.13 0.008 260);    /* Fond cartes */
+  --black-surface: oklch(0.17 0.008 260); /* Surface élevée */
 
-  --background: var(--navy);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.25 0.04 260);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.25 0.04 260);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: var(--crimson);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.3 0.04 260);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.28 0.03 260);
-  --muted-foreground: oklch(0.75 0.02 260);
-  --accent: var(--crimson);
-  --accent-foreground: oklch(0.98 0 0);
+  --background: var(--black-deep);
+  --foreground: oklch(0.95 0 0);
+  --card: var(--black-card);
+  --card-foreground: oklch(0.95 0 0);
+  --popover: var(--black-card);
+  --popover-foreground: oklch(0.95 0 0);
+  --primary: var(--gold);
+  --primary-foreground: var(--black-deep);
+  --secondary: var(--black-surface);
+  --secondary-foreground: oklch(0.95 0 0);
+  --muted: oklch(0.2 0.005 260);
+  --muted-foreground: oklch(0.65 0.01 260);
+  --accent: var(--gold);
+  --accent-foreground: var(--black-deep);
   --destructive: oklch(0.6 0.24 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 10%);
-  --ring: var(--crimson);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 6%);
+  --ring: var(--gold);
 
-  --font-display: "Playfair Display", Georgia, serif;
+  --font-display: "Montserrat", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
 
-  --gradient-hero: radial-gradient(ellipse at top right, oklch(0.3 0.05 260) 0%, var(--navy) 50%, var(--navy-deep) 100%);
-  --gradient-crimson: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-glow) 100%);
-  --shadow-crimson: 0 20px 60px -20px oklch(0.56 0.22 25 / 0.5);
-  --shadow-elevate: 0 30px 80px -30px oklch(0 0 0 / 0.6);
+  /* Gradients */
+  --gradient-hero: radial-gradient(ellipse at top right, oklch(0.15 0.01 260) 0%, var(--black-deep) 50%, oklch(0.06 0.005 260) 100%);
+  --gradient-gold: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%);
+  --gradient-gold-subtle: linear-gradient(135deg, oklch(0.76 0.12 85 / 15%) 0%, oklch(0.82 0.10 85 / 5%) 100%);
+
+  /* Shadows */
+  --shadow-gold: 0 20px 60px -20px oklch(0.76 0.12 85 / 0.3);
+  --shadow-gold-sm: 0 4px 20px -4px oklch(0.76 0.12 85 / 0.2);
+  --shadow-elevate: 0 30px 80px -30px oklch(0 0 0 / 0.7);
 }
 
 .dark {
-  --background: var(--navy);
-  --foreground: oklch(0.98 0 0);
+  --background: var(--black-deep);
+  --foreground: oklch(0.95 0 0);
 }
 
 @layer base {
@@ -104,12 +113,7 @@
     overflow-wrap: break-word;
   }
 
-  /* Prevent horizontal overflow on mobile */
-  body {
-    overflow-x: hidden;
-  }
-
-  /* Reserve space for the mobile sticky CTA bar */
+  /* Réserver l'espace pour la barre CTA mobile sticky */
   @media (max-width: 767px) {
     body {
       padding-bottom: 5rem;
@@ -118,7 +122,8 @@
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     overflow-wrap: break-word;
     word-break: break-word;
   }
@@ -133,11 +138,17 @@
   .bg-gradient-hero {
     background: var(--gradient-hero);
   }
-  .bg-gradient-crimson {
-    background: var(--gradient-crimson);
+  .bg-gradient-gold {
+    background: var(--gradient-gold);
   }
-  .shadow-crimson {
-    box-shadow: var(--shadow-crimson);
+  .bg-gradient-gold-subtle {
+    background: var(--gradient-gold-subtle);
+  }
+  .shadow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+  .shadow-gold-sm {
+    box-shadow: var(--shadow-gold-sm);
   }
   .shadow-elevate {
     box-shadow: var(--shadow-elevate);
@@ -145,14 +156,38 @@
   .text-balance {
     text-wrap: balance;
   }
+  /* Bordure dorée subtile */
+  .border-gold {
+    border-color: oklch(0.76 0.12 85 / 20%);
+  }
+  /* Texte doré avec gradient */
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  /* Grain overlay pour le hero */
+  .grain-overlay {
+    position: relative;
+  }
+  .grain-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
 }
 
-/* Typing cursor blink */
+/* Animation curseur de frappe */
 @keyframes blink {
   50% { opacity: 0; }
 }
 
-/* Modal animations */
+/* Animations modales */
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -167,4 +202,19 @@
 }
 .animate-scale-in {
   animation: scale-in 0.3s ease-out forwards;
+}
+
+/* Animation compteur */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pulsation dorée pour les CTA */
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.76 0.12 85 / 0.4); }
+  50% { box-shadow: 0 0 20px 6px oklch(0.76 0.12 85 / 0.1); }
+}
+.animate-pulse-gold {
+  animation: pulse-gold 3s ease-in-out infinite;
 }

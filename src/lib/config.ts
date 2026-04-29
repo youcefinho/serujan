@@ -1,144 +1,89 @@
 // ═══════════════════════════════════════════════════════════
-// Configuration client — FICHIER UNIQUE À MODIFIER PAR CLIENT
-// ═══════════════════════════════════════════════════════════
-// SWAP: Pour un nouveau client, modifier TOUTES les valeurs
-// ci-dessous + translations.ts + les assets photos/logos.
-// Chercher "SWAP" pour trouver les zones à modifier.
+// Configuration client — Serujan Kaneshalingam
+// Courtage Hypothécaire Commercial — Montréal
 // ═══════════════════════════════════════════════════════════
 
 export const clientConfig = {
-  // SWAP: Nom complet du courtier
-  name: "NOM DU COURTIER",
+  // Identité
+  name: "Serujan Kaneshalingam",
+  shortName: "Serujan",
+  teamName: "Équipe Serujan",
   title: {
-    fr: "Courtier immobilier résidentiel",
-    en: "Residential Real Estate Broker",
-  },
-  // Âge ou années d'expérience affiché dans le badge Hero
-  ageBadge: {
-    value: "22 ans",
-    label: { fr: "Nouvelle\ngénération", en: "New\ngeneration" },
-  },
-  // Badge avis — social proof sur la photo Hero
-  reviewsBadge: {
-    label: { fr: "Avis 5 étoiles", en: "5-Star Reviews" },
+    fr: "Courtage Hypothécaire Commercial",
+    en: "Commercial Mortgage Brokerage",
   },
 
   // ── Contact ───────────────────────────────────────────
   phone: {
-    display: "819-918-3409",    // Format affiché
-    raw: "8199183409",          // Format pour tel: et WhatsApp
-    international: "18199183409", // Format WhatsApp international
+    display: "(514) 701-6171",
+    raw: "5147016171",
+    international: "15147016171",
   },
-  // SWAP: Email professionnel du courtier
-  email: "info@courtier.com",
+  email: "expert@serujan.com",
 
   // ── Adresse ───────────────────────────────────────────
   address: {
-    street: "225 boul. de la Gappe, suite 102",
-    city: "Gatineau",
-    region: "Outaouais",
+    street: "111 Rue Chabanel O",
+    suite: "Suite 617",
+    city: "Montréal",
+    region: "Montréal",
     province: "QC",
-    postalCode: "J8T 8K5",
+    postalCode: "",
     country: "CA",
   },
 
-  // ── Territoire (badge Hero) ───────────────────────────
-  territory: "GATINEAU | OTTAWA",
-  territoryLabel: "Outaouais",
+  // ── Territoire ─────────────────────────────────────────
+  territory: "MONTRÉAL | QUÉBEC",
+  territoryLabel: "Québec",
 
-  // SWAP: Réseaux sociaux du courtier (null = ne pas afficher)
+  // ── Réseaux sociaux ────────────────────────────────────
   socials: {
     instagram: {
-      url: "https://www.instagram.com/COURTIER/",
-      handle: "@COURTIER",
+      url: "https://www.instagram.com/serujan.k/",
+      handle: "@serujan.k",
     },
     facebook: {
-      url: "https://www.facebook.com/COURTIER/",
+      url: "https://www.facebook.com/serujanhypotheque",
     },
-    tiktok: {
-      url: "https://www.tiktok.com/@COURTIER",
-    },
-    linkedin: null as string | null, // null = ne pas afficher
+    linkedin: "https://www.linkedin.com/in/serujan-kaneshalingam-911a3b112/",
+    tiktok: null as string | null,
   },
 
-  // ── Bannière immobilière ──────────────────────────────
-  banner: {
-    name: "L'Équipe Xavier Charron & Ali Al",
-    // Si le courtier est indépendant, mettre null
-    team: "Royal LePage" as string | null,
+  // ── Stats ──────────────────────────────────────────────
+  stats: {
+    funded: { value: "500", suffix: "M$+", label: { fr: "financés", en: "funded" } },
+    approval: { value: "95", suffix: "%", label: { fr: "approbation", en: "approval rate" } },
+    avgDays: { value: "30", suffix: "", label: { fr: "jours moyens", en: "average days" } },
+    projects: { value: "1000", suffix: "+", label: { fr: "projets", en: "projects" } },
   },
 
-  // ── Membres de l'équipe ──────────────────────────────
-  // SWAP: Ajouter/retirer les membres selon le client
-  // Pour les photos : importer dans le composant ParentTeam.tsx
-  teamMembers: [
-    {
-      name: "Xavier Charron",
-      role: { fr: "Courtier immobilier", en: "Real Estate Broker" },
-      initials: "XC",
-      phone: "+1 819-962-7764",
-      website: "xaviercharron.com",
-      location: "Gatineau, QC",
-      stars: 5.0,
-      reviews: 108,
-    },
-    {
-      name: "Ali Al",
-      role: { fr: "Courtier immobilier", en: "Real Estate Broker" },
-      initials: "AA",
-      phone: "+1 819-923-2828",
-      website: "aliremax.com",
-      location: "Gatineau, QC",
-      stars: 5.0,
-      reviews: 124,
-    },
-    {
-      name: "François-Xavier Charbonneau",
-      role: { fr: "Courtier immobilier", en: "Real Estate Broker" },
-      initials: "FX",
-      phone: "+1 514-817-3915",
-      website: "fxcharbonneau.com",
-      location: "Gatineau, QC",
-      stars: 5.0,
-      reviews: 2,
-    },
-    {
-      name: "François-Luc Charron",
-      role: { fr: "Courtier immobilier", en: "Real Estate Broker" },
-      initials: "FL",
-      phone: "+1 514-979-8620",
-      website: "francoisluccharron.com",
-      location: "Gatineau, QC",
-      stars: 5.0,
-      reviews: 3,
-    },
-  ],
+  // ── URLs externes ──────────────────────────────────────
+  elev8EventUrl: "https://elev82025.ca/",
+  elev8AcademyUrl: "https://elev8academie.ca/",
+  siteUrl: "https://serujan.intralysqc.workers.dev",
 
-  // SWAP: URLs du courtier
-  centrisUrl: "https://www.centris.ca/fr",
-  googleReviewUrl: "https://g.page/r/COURTIER/review",
-  guideUrl: "https://drive.google.com/file/d/VOTRE-GUIDE-PDF/view",
-  siteUrl: "https://NOM-CLIENT.intralysqc.workers.dev",
+  // ── Assets ─────────────────────────────────────────────
+  logoUrl: "https://assets.cdn.filesafe.space/uE8otTz2VFBFG6lqzsmK/media/68b7fd5c7f707b51d1928b4d.png",
+  heroImageUrl: "https://assets.cdn.filesafe.space/uE8otTz2VFBFG6lqzsmK/media/68b7fbbf7f707ba15b92606f.png",
+  elev8VideoUrl: "https://o6xngqfgnt.wpdns.site/wp-content/uploads/2025/07/Video-elev8.mp4",
 
-  // ── Page Merci ────────────────────────────────────────
+  // ── Page Merci ─────────────────────────────────────────
   merci: {
     callbackDelay: {
-      fr: "dans les 2 prochaines heures",
-      en: "within the next 2 hours",
+      fr: "dans les 24 prochaines heures",
+      en: "within the next 24 hours",
     },
     followText: {
-      fr: "En attendant, suivez {name} sur Instagram pour des conseils immobiliers",
-      en: "In the meantime, follow {name} on Instagram for real estate tips",
+      fr: "En attendant, suivez {name} sur Instagram pour des insights exclusifs",
+      en: "In the meantime, follow {name} on Instagram for exclusive insights",
     },
   },
 
-  // ── Email Lead Magnet (worker.ts) ─────────────────────
-  // SWAP: Nom du courtier dans l'email + domaine Resend
-  emailFrom: "NOM DU COURTIER <onboarding@resend.dev>",
-  // SWAP: Adapter le sujet avec la ville du courtier
+  // ── Email notification (worker.ts) ─────────────────────
+  emailFrom: "Équipe Serujan <onboarding@resend.dev>",
   emailSubject: {
-    fr: "🏠 Votre Guide Gratuit du Premier Acheteur est prêt !",
-    en: "🏠 Your Free First-Time Buyer Guide is ready!",
+    fr: "🏢 Nouvelle demande d'évaluation de projet",
+    en: "🏢 New project evaluation request",
   },
 } as const;
 

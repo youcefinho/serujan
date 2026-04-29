@@ -1,31 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
-import { Navbar } from "@/components/landing/Navbar";
-import { Hero } from "@/components/landing/Hero";
-import { StatsBar } from "@/components/landing/StatsBar";
-import { About } from "@/components/landing/About";
-import { ParentTeam } from "@/components/landing/ParentTeam";
-import { InstagramReels } from "@/components/landing/InstagramReels";
-import { Pillars } from "@/components/landing/Pillars";
-import { Services } from "@/components/landing/Services";
-import { Properties } from "@/components/landing/Properties";
-import { MarketStats } from "@/components/landing/MarketStats";
-import { Deliverables } from "@/components/landing/Deliverables";
-import { Testimonials } from "@/components/landing/Testimonials";
-import { Process } from "@/components/landing/Process";
-import { Calculator } from "@/components/landing/Calculator";
-import { LeadMagnet } from "@/components/landing/LeadMagnet";
-import { FreeConsultation } from "@/components/landing/FreeConsultation";
-import { LeadForm } from "@/components/landing/LeadForm";
-import { Faq } from "@/components/landing/Faq";
-import { Footer } from "@/components/landing/Footer";
-import { Fears } from "@/components/landing/Fears";
-import { WhatsAppButton } from "@/components/landing/WhatsAppButton";
-import { MobileStickyBar } from "@/components/landing/MobileStickyBar";
+import Navbar from "@/components/landing/Navbar";
+import Hero from "@/components/landing/Hero";
+import ValueCards from "@/components/landing/ValueCards";
+import StatsBar from "@/components/landing/StatsBar";
+import Elev8Event from "@/components/landing/Elev8Event";
+import Podcast from "@/components/landing/Podcast";
+import Process from "@/components/landing/Process";
+import About from "@/components/landing/About";
+import Services from "@/components/landing/Services";
+import Elev8Academy from "@/components/landing/Elev8Academy";
+import Calculator from "@/components/landing/Calculator";
+import FreeConsultation from "@/components/landing/FreeConsultation";
+import LeadForm from "@/components/landing/LeadForm";
+import Footer from "@/components/landing/Footer";
+import MobileStickyBar from "@/components/landing/MobileStickyBar";
 import { ScrollProgressBar } from "@/components/landing/ScrollProgressBar";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
-import { ExitIntentPopup } from "@/components/landing/ExitIntentPopup";
-import { PropertyAlerts } from "@/components/landing/PropertyAlerts";
+import ExitIntentPopup from "@/components/landing/ExitIntentPopup";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -33,73 +25,55 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main className="bg-navy text-foreground">
+    <main className="bg-background text-foreground">
       <ScrollProgressBar />
       <Navbar />
       <Hero />
+
+      {/* — VALEUR AJOUTÉE — */}
+      <section id="value-cards">
+        <ScrollReveal>
+          <ValueCards />
+        </ScrollReveal>
+      </section>
       <StatsBar />
 
-      {/* — QUI EST MATHIS — */}
+      {/* — ELEV8 — */}
       <ScrollReveal>
-        <About />
+        <Elev8Event />
       </ScrollReveal>
-      <ScrollReveal>
-        <ParentTeam />
-      </ScrollReveal>
+      <Podcast />
 
-      {/* — SON APPROCHE — */}
-      <ScrollReveal>
-        <Fears />
-      </ScrollReveal>
-      <ScrollReveal>
-        <Services />
-      </ScrollReveal>
+      {/* — PROCESSUS & APPROCHE — */}
       <ScrollReveal>
         <Process />
       </ScrollReveal>
       <ScrollReveal>
-        <Pillars />
+        <About />
       </ScrollReveal>
 
-      {/* — PREUVES — */}
+      {/* — SERVICES — */}
       <ScrollReveal>
-        <Testimonials />
+        <Services />
       </ScrollReveal>
       <ScrollReveal>
-        <Properties />
-      </ScrollReveal>
-      <PropertyAlerts />
-      <ScrollReveal>
-        <InstagramReels />
+        <Elev8Academy />
       </ScrollReveal>
 
-      {/* — OUTILS — */}
+      {/* — SIMULATEUR — */}
       <ScrollReveal>
         <Calculator />
       </ScrollReveal>
-      <ScrollReveal>
-        <MarketStats />
-      </ScrollReveal>
 
       {/* — CONVERSION — */}
-      <ScrollReveal>
-        <Deliverables />
-      </ScrollReveal>
-      <ScrollReveal>
-        <LeadMagnet />
-      </ScrollReveal>
       <ScrollReveal>
         <FreeConsultation />
       </ScrollReveal>
       <ScrollReveal>
         <LeadForm />
       </ScrollReveal>
-      <ScrollReveal>
-        <Faq />
-      </ScrollReveal>
 
       <Footer />
-      <WhatsAppButton />
       <MobileStickyBar />
       <ExitIntentPopup />
       <Toaster />

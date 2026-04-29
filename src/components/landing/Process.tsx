@@ -1,29 +1,68 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { Search, Puzzle, Handshake, CheckCircle } from "lucide-react";
 
-export function Process() {
+// ═══════════════════════════════════════════════════════════
+// Process — 4 étapes : Diagnostic → Structure → Négociation → Clôture
+// ═══════════════════════════════════════════════════════════
+
+const stepIcons = [Search, Puzzle, Handshake, CheckCircle];
+
+export default function Process() {
   const { t, ta } = useLanguage();
-  const steps = ta(translations.process.steps) as { title: string; desc: string }[];
+  const ref = useScrollReveal();
+
+  const steps = ta(translations.process.steps);
 
   return (
-    <section className="py-24 lg:py-32 bg-navy">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="text-center mb-16 max-w-2xl mx-auto">
-          <span className="text-crimson text-sm font-bold uppercase tracking-widest">{t(translations.process.label)}</span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">{t(translations.process.title)}</h2>
+    <section id="processus" className="relative py-24 px-4 bg-black-card" ref={ref}>
+      <div className="max-w-5xl mx-auto">
+        {/* Label */}
+        <div className="text-center mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-gold/10 text-gold border border-gold/20">
+            {t(translations.process.label)}
+          </span>
         </div>
 
-        <div className="relative grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          <div className="hidden lg:block absolute top-8 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-crimson to-transparent" />
-          {steps.map((s, i) => (
-            <div key={i} className="relative text-center sm:text-left space-y-3">
-              <div className="relative z-10 w-16 h-16 mx-auto sm:mx-0 rounded-full bg-gradient-crimson flex items-center justify-center font-black text-2xl shadow-crimson">
-                {i + 1}
+        {/* Titre */}
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-16 max-w-3xl mx-auto leading-tight">
+          {t(translations.process.title)}
+        </h2>
+
+        {/* Étapes */}
+        <div className="space-y-0">
+          {steps.map((step: { title: string; desc: string }, i: number) => {
+            const Icon = stepIcons[i];
+            return (
+              <div key={i} className="relative flex gap-6 md:gap-8">
+                {/* Ligne verticale + numéro */}
+                <div className="flex flex-col items-center">
+                  <div className="w-14 h-14 rounded-full bg-gold/10 border-2 border-gold/30 flex items-center justify-center flex-shrink-0 z-10">
+                    <Icon className="w-6 h-6 text-gold" />
+                  </div>
+                  {i < steps.length - 1 && (
+                    <div className="w-px flex-1 bg-gradient-to-b from-gold/30 to-gold/5 my-2" />
+                  )}
+                </div>
+
+                {/* Contenu */}
+                <div className="pb-12 pt-2">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-xs font-bold text-gold/50 uppercase tracking-widest">
+                      Étape {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold uppercase tracking-widest text-foreground mb-3">
+                    {step.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed max-w-lg">
+                    {step.desc}
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl font-bold">{s.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

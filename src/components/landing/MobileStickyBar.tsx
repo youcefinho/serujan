@@ -1,21 +1,32 @@
-import { Phone, Calendar } from "lucide-react";
-import { openCalendly } from "@/lib/calendly";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
+import { Phone, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
 
-export function MobileStickyBar() {
+export default function MobileStickyBar() {
   const { t } = useLanguage();
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (!visible) return null;
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-navy-deep/95 backdrop-blur-lg border-t border-white/10 shadow-2xl">
-      <div className="grid grid-cols-2 gap-2 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-        <a href={`tel:${clientConfig.phone.raw}`} className="flex items-center justify-center gap-2 py-3 border-2 border-foreground/40 text-foreground font-bold rounded-md text-sm" aria-label="Appeler">
-          <Phone className="w-4 h-4" />{t(translations.mobileStickyBar.call)}
+    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black-deep/95 backdrop-blur-xl border-t border-gold/20 px-4 py-3 animate-fade-in">
+      <div className="flex gap-3">
+        <a href={`tel:+${clientConfig.phone.international}`} className="flex-1 flex items-center justify-center gap-2 py-3 border border-gold/30 text-gold font-semibold rounded-lg text-sm">
+          <Phone className="w-4 h-4" />
+          {t(translations.mobileStickyBar.call)}
         </a>
-        <button onClick={openCalendly} className="flex items-center justify-center gap-2 py-3 bg-gradient-crimson text-primary-foreground font-bold rounded-md shadow-crimson text-xs uppercase tracking-wider" aria-label={t(translations.mobileStickyBar.cta)}>
-          <Calendar className="w-4 h-4" />{t(translations.mobileStickyBar.cta)}
-        </button>
+        <a href="#contact" className="flex-[2] flex items-center justify-center gap-2 py-3 bg-gradient-gold text-black-deep font-bold uppercase tracking-wider rounded-lg text-sm">
+          {t(translations.mobileStickyBar.cta)}
+          <ArrowRight className="w-4 h-4" />
+        </a>
       </div>
     </div>
   );

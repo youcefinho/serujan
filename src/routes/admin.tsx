@@ -39,7 +39,7 @@ function AdminLayout() {
 
   if (checking) {
     return (
-      <div className="min-h-screen bg-navy flex items-center justify-center text-foreground">
+      <div className="min-h-screen bg-background flex items-center justify-center text-foreground">
         <div className="text-sm text-muted-foreground">Chargement...</div>
       </div>
     );
@@ -48,22 +48,22 @@ function AdminLayout() {
   // Non connecté → afficher le login
   if (!authed) {
     return (
-      <div className="min-h-screen bg-navy flex items-center justify-center text-foreground">
+      <div className="min-h-screen bg-background flex items-center justify-center text-foreground">
         <Outlet />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-navy text-foreground">
-      <header className="border-b border-border bg-navy-deep">
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="border-b border-border bg-black-surface">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/admin/leads" className="flex items-center gap-2 font-bold">
-            <LayoutDashboard className="w-5 h-5 text-crimson" />
+            <LayoutDashboard className="w-5 h-5 text-gold" />
             Admin · {clientConfig.name}
           </Link>
           <div className="flex items-center gap-4">
-            <a href="/" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-crimson transition">
+            <a href="/" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-gold transition">
               ← Retour au site
             </a>
             <button

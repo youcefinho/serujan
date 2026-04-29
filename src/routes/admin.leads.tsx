@@ -125,7 +125,7 @@ function AdminLeadsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-crimson" />
+        <Loader2 className="w-6 h-6 animate-spin text-gold" />
       </div>
     );
   }
@@ -133,11 +133,11 @@ function AdminLeadsPage() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <div className="text-crimson text-lg font-bold">Erreur</div>
+        <div className="text-gold text-lg font-bold">Erreur</div>
         <p className="text-sm text-muted-foreground">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-crimson text-primary-foreground rounded-md text-sm font-bold hover:bg-crimson/90 transition"
+          className="px-4 py-2 bg-gold text-primary-foreground rounded-md text-sm font-bold hover:bg-gold/90 transition"
         >
           Réessayer
         </button>
@@ -157,7 +157,7 @@ function AdminLeadsPage() {
         <button
           onClick={() => exportCSV(leads)}
           disabled={leads.length === 0}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-card border border-border rounded-md text-sm font-semibold hover:border-crimson transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-card border border-border rounded-md text-sm font-semibold hover:border-gold transition disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Exporter les leads en CSV"
         >
           <Download className="w-4 h-4" />
@@ -182,7 +182,7 @@ function AdminLeadsPage() {
               onClick={() => setFilter(f)}
               className={`px-4 py-2 text-xs font-bold uppercase tracking-widest rounded transition ${
                 filter === f
-                  ? "bg-crimson text-primary-foreground"
+                  ? "bg-gold text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -197,7 +197,7 @@ function AdminLeadsPage() {
             placeholder="Rechercher par nom, email, téléphone..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-md focus:border-crimson focus:outline-none transition text-sm"
+            className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-md focus:border-gold focus:outline-none transition text-sm"
           />
         </div>
       </div>
@@ -211,7 +211,7 @@ function AdminLeadsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-navy-deep text-xs uppercase tracking-widest text-muted-foreground">
+              <thead className="bg-black-surface text-xs uppercase tracking-widest text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3 text-left">Date</th>
                   <th className="px-4 py-3 text-left">Type</th>
@@ -225,7 +225,7 @@ function AdminLeadsPage() {
                   <tr
                     key={l.id}
                     onClick={() => setSelected(l)}
-                    className="border-t border-border cursor-pointer hover:bg-navy-deep/50 transition"
+                    className="border-t border-border cursor-pointer hover:bg-black-surface/50 transition"
                   >
                     <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
                       {new Date(l.created_at).toLocaleDateString("fr-CA", {
@@ -240,7 +240,7 @@ function AdminLeadsPage() {
                         className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                           l.type === "buy"
                             ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                            : "bg-crimson/10 text-crimson border border-crimson/30"
+                            : "bg-gold/10 text-gold border border-gold/30"
                         }`}
                       >
                         {l.type === "buy" ? "Achète" : "Vend"}
@@ -285,7 +285,7 @@ function StatCard({
     <div
       className={`rounded-xl border p-5 ${
         accent
-          ? "bg-gradient-crimson border-transparent text-primary-foreground"
+          ? "bg-gradient-gold border-transparent text-primary-foreground"
           : "bg-card border-border"
       }`}
     >
@@ -330,7 +330,7 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
           <Field label="Téléphone">
             <a
               href={`tel:${lead.phone}`}
-              className="inline-flex items-center gap-2 text-crimson hover:underline font-semibold"
+              className="inline-flex items-center gap-2 text-gold hover:underline font-semibold"
             >
               <Phone className="w-4 h-4" />
               {lead.phone}
@@ -339,7 +339,7 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
           <Field label="Courriel">
             <a
               href={`mailto:${lead.email}`}
-              className="inline-flex items-center gap-2 text-crimson hover:underline font-semibold break-all"
+              className="inline-flex items-center gap-2 text-gold hover:underline font-semibold break-all"
             >
               <Mail className="w-4 h-4" />
               {lead.email}
@@ -365,14 +365,14 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
           <div className="flex gap-2 pt-4 border-t border-border">
             <a
               href={`tel:${lead.phone}`}
-              className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-crimson text-primary-foreground rounded-md font-bold text-sm"
+              className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-gold text-primary-foreground rounded-md font-bold text-sm"
             >
               <Phone className="w-4 h-4" />
               Appeler
             </a>
             <a
               href={`mailto:${lead.email}`}
-              className="flex-1 inline-flex items-center justify-center gap-2 py-3 border border-border text-foreground rounded-md font-bold text-sm hover:border-crimson"
+              className="flex-1 inline-flex items-center justify-center gap-2 py-3 border border-border text-foreground rounded-md font-bold text-sm hover:border-gold"
             >
               <Mail className="w-4 h-4" />
               Courriel

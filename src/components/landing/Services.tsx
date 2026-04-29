@@ -1,68 +1,82 @@
-import { Home, TrendingUp, PiggyBank, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { Building2, BarChart3, Landmark } from "lucide-react";
 
-export function Services() {
-  const { t, ta } = useLanguage();
+// ═══════════════════════════════════════════════════════════
+// Services — 3 piliers d'expertise commerciale
+// Financement / Optimisation / Prêteurs Institutionnels
+// ═══════════════════════════════════════════════════════════
 
-  const services = [
-    {
-      icon: Home,
-      title: t(translations.services.achat.title),
-      desc: t(translations.services.achat.desc),
-      points: ta(translations.services.achat.points),
-    },
-    {
-      icon: TrendingUp,
-      title: t(translations.services.vente.title),
-      desc: t(translations.services.vente.desc),
-      points: ta(translations.services.vente.points),
-    },
-    {
-      icon: PiggyBank,
-      title: t(translations.services.investissement.title),
-      desc: t(translations.services.investissement.desc),
-      points: ta(translations.services.investissement.points),
-    },
-  ];
+const pillars = [
+  { key: "pillar1" as const, Icon: Building2 },
+  { key: "pillar2" as const, Icon: BarChart3 },
+  { key: "pillar3" as const, Icon: Landmark },
+];
+
+export default function Services() {
+  const { t } = useLanguage();
+  const ref = useScrollReveal();
 
   return (
-    <section id="services" className="py-24 lg:py-32 bg-navy">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="text-center mb-16">
-          <span className="text-crimson text-sm font-bold uppercase tracking-widest">{t(translations.services.label)}</span>
-          <h2 className="mt-3 text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">{t(translations.services.title)}</h2>
+    <section id="services" className="relative py-24 px-4 bg-black-deep" ref={ref}>
+      <div className="max-w-6xl mx-auto">
+        {/* Label */}
+        <div className="text-center mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-gold/10 text-gold border border-gold/20">
+            {t(translations.services.label)}
+          </span>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {services.map(({ icon: Icon, title, desc, points }) => (
+        {/* Titre */}
+        <h2 className="text-3xl md:text-4xl font-bold text-center uppercase tracking-widest text-foreground mb-4">
+          {t(translations.services.title)}
+        </h2>
+        <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-16 text-lg">
+          {t(translations.services.subtitle)}
+        </p>
+
+        {/* 3 piliers */}
+        <div className="grid md:grid-cols-3 gap-8">
+          {pillars.map(({ key, Icon }) => (
             <div
-              key={title}
-              className="group relative bg-card border border-border rounded-2xl p-6 sm:p-8 lg:p-10 overflow-hidden hover:border-crimson transition"
+              key={key}
+              className="group relative p-8 rounded-2xl bg-black-card border border-gold/10 hover:border-gold/30 transition-all duration-500 hover:-translate-y-2"
             >
-              <div className="absolute top-0 right-0 w-40 h-40 bg-crimson/10 rounded-full blur-3xl group-hover:bg-crimson/20 transition" />
-              <div className="relative space-y-6">
-                <Icon className="w-12 h-12 text-crimson" strokeWidth={1.5} />
-                <h3 className="text-3xl md:text-4xl font-black tracking-tight">{title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{desc}</p>
-                <ul className="space-y-2">
-                  {(points as string[]).map((p: string) => (
-                    <li key={p} className="flex items-center gap-3 text-sm">
-                      <span className="w-6 h-px bg-crimson" />
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 text-crimson font-bold uppercase tracking-wider group-hover:gap-4 transition-all"
-                  aria-label={`${t(translations.services.learnMore)} — ${title.toLowerCase()}`}
-                >
-                  {t(translations.services.learnMore)} <ArrowRight className="w-4 h-4" />
-                </a>
+              {/* Gradient overlay au hover */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-gold-subtle opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              <div className="relative z-10">
+                {/* Icône */}
+                <div className="w-16 h-16 rounded-xl bg-gold/10 flex items-center justify-center mb-6 group-hover:bg-gold/20 transition-colors duration-300">
+                  <Icon className="w-8 h-8 text-gold" />
+                </div>
+
+                {/* Titre du pilier */}
+                <h3 className="text-lg font-bold uppercase tracking-widest text-gold mb-4 leading-tight">
+                  {t(translations.services[key].title)}
+                </h3>
+
+                {/* Description */}
+                <p className="text-muted-foreground leading-relaxed">
+                  {t(translations.services[key].desc)}
+                </p>
               </div>
+
+              {/* Barre dorée en bas */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-gold rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           ))}
+        </div>
+
+        {/* CTA */}
+        <div className="text-center mt-12">
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 px-8 py-4 border-2 border-gold text-gold font-bold uppercase tracking-widest rounded-lg hover:bg-gold hover:text-black-deep transition-all duration-300"
+          >
+            {t(translations.services.learnMore)}
+          </a>
         </div>
       </div>
     </section>

@@ -20,7 +20,7 @@ export function ScrollProgressBar() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-[60] h-[3px] origin-left bg-gradient-crimson pointer-events-none"
+      className="fixed top-0 left-0 right-0 z-[60] h-[3px] origin-left bg-gradient-gold pointer-events-none"
       style={{ transform: `scaleX(${progress})` }}
       role="progressbar"
       aria-valuenow={Math.round(progress * 100)}

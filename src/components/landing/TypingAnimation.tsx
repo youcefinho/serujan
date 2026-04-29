@@ -61,7 +61,7 @@ export function TypingAnimation({
     <span className={className}>
       {displayText}
       <span
-        className="inline-block w-[2px] h-[0.9em] bg-crimson ml-0.5 align-baseline"
+        className="inline-block w-[2px] h-[0.9em] bg-gold ml-0.5 align-baseline"
         style={{
           animation: done ? "none" : "blink 0.7s step-end infinite",
           opacity: done ? 0 : 1,

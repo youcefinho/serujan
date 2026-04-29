@@ -11,9 +11,9 @@ export function LanguageToggle() {
       className="flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-border text-xs font-bold uppercase tracking-wider hover:bg-white/10 transition cursor-pointer"
       aria-label={lang === "fr" ? "Switch to English" : "Passer en français"}
     >
-      <span className={lang === "fr" ? "text-crimson" : "text-muted-foreground"}>FR</span>
+      <span className={lang === "fr" ? "text-gold" : "text-muted-foreground"}>FR</span>
       <span className="text-muted-foreground">/</span>
-      <span className={lang === "en" ? "text-crimson" : "text-muted-foreground"}>EN</span>
+      <span className={lang === "en" ? "text-gold" : "text-muted-foreground"}>EN</span>
     </button>
   );
 }

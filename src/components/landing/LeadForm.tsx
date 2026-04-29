@@ -1,295 +1,264 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { trackLeadFormSubmit } from "@/lib/analytics";
-import { clientConfig } from "@/lib/config";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
+import { clientConfig } from "@/lib/config";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useState } from "react";
+import { Send, CheckCircle, AlertCircle, Loader2, Shield } from "lucide-react";
 
-export function LeadForm() {
-  const [tab, setTab] = useState<"buy" | "sell">("buy");
-  const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const navigate = useNavigate();
+// ═══════════════════════════════════════════════════════════
+// LeadForm — Formulaire "Évaluer mon projet" (commercial)
+// Pas d'onglets ACHAT/VENTE → formulaire unique
+// ═══════════════════════════════════════════════════════════
+
+// Sanitisation basique côté client
+function sanitize(input: string, maxLen = 500): string {
+  return input.trim().slice(0, maxLen);
+}
+
+function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validatePhone(phone: string): boolean {
+  const digits = phone.replace(/\D/g, "");
+  return digits.length >= 10 && digits.length <= 15;
+}
+
+export default function LeadForm() {
   const { t, ta } = useLanguage();
-  const tr = translations.leadForm;
-  const fields = translations.leadFormFields;
+  const ref = useScrollReveal();
 
-  // Schémas de validation dynamiques (utilisant les traductions courantes)
-  const baseSchema = {
-    name: z.string().trim().min(2, t(fields.nameRequired)).max(100),
-    phone: z
-      .string()
-      .trim()
-      .min(7, t(fields.phoneInvalid))
-      .max(20)
-      .regex(/^[0-9+()\-.s]+$/, t(fields.phoneInvalid)),
-    email: z.string().trim().email(t(fields.emailInvalid)).max(255),
-    message: z.string().trim().max(1000).optional(),
-  };
-
-  const buySchema = z.object({
-    ...baseSchema,
-    budget: z.string().min(1).max(100),
-    timeline: z.string().min(1).max(100),
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    projectType: "",
+    estimatedAmount: "",
+    message: "",
+    honeypot: "",
   });
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const sellSchema = z.object({
-    ...baseSchema,
-    address: z.string().trim().min(3, t(fields.addressRequired)).max(200),
-    property_type: z.string().min(1).max(100),
-  });
+  const projectTypeOptions = ta(translations.leadForm.projectTypeOptions);
+  const amountOptions = ta(translations.leadForm.amountOptions);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (loading) return;
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const raw = Object.fromEntries(formData.entries());
-
-    // Honeypot anti-spam: if a bot filled the hidden field, silently fake a success
-    if (raw.website) {
-      form.reset();
-      navigate({ to: "/merci" });
-      return;
+  function validate(): boolean {
+    const newErrors: Record<string, string> = {};
+    if (sanitize(form.name).length < 2) {
+      newErrors.name = t(translations.leadForm.nameRequired);
     }
+    if (!validateEmail(form.email)) {
+      newErrors.email = t(translations.leadForm.emailInvalid);
+    }
+    if (form.phone && !validatePhone(form.phone)) {
+      newErrors.phone = t(translations.leadForm.phoneInvalid);
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (form.honeypot) return; // Bot trap
+    if (!validate()) return;
+
+    setStatus("sending");
     try {
-      setLoading(true);
-
-      const parsed = tab === "buy" ? buySchema.parse(raw) : sellSchema.parse(raw);
-
-      const response = await fetch("/api/leads", {
+      const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: tab,
-          name: parsed.name,
-          phone: parsed.phone,
-          email: parsed.email,
-          message: parsed.message || "",
-          // Champs de qualification spécifiques au type
-          budget: tab === "buy" && "budget" in parsed ? parsed.budget : "",
-          timeline: tab === "buy" && "timeline" in parsed ? parsed.timeline : "",
-          address: tab === "sell" && "address" in parsed ? parsed.address : "",
-          property_type: tab === "sell" && "property_type" in parsed ? parsed.property_type : "",
+          name: sanitize(form.name, 100),
+          email: sanitize(form.email, 200),
+          phone: sanitize(form.phone, 20),
+          project_type: sanitize(form.projectType, 50),
+          estimated_amount: sanitize(form.estimatedAmount, 50),
+          message: sanitize(form.message, 2000),
         }),
       });
 
-      if (!response.ok) throw new Error(t(fields.serverError));
-
-      trackLeadFormSubmit(tab);
-      form.reset();
-      navigate({ to: "/merci" });
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        toast.error(err.issues[0]?.message ?? t(fields.validationError));
-      } else {
-        console.error("Lead submission failed:", err);
-        toast.error(`${t(fields.genericError)} ${clientConfig.phone.display}.`);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({})) as Record<string, string>;
+        throw new Error(data.error || t(translations.leadForm.serverError));
       }
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // Options traduits
-  const budgetOptions = ta(fields.budgetOptions) as string[];
-  const timelineOptions = ta(fields.timelineOptions) as string[];
-  const propertyTypeOptions = ta(fields.propertyTypeOptions) as string[];
+      setStatus("success");
+      setForm({ name: "", email: "", phone: "", projectType: "", estimatedAmount: "", message: "", honeypot: "" });
+    } catch {
+      setStatus("error");
+    }
+  }
 
   return (
-    <section id="contact" className="py-24 lg:py-32 bg-navy">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="text-center mb-12">
-          <span className="text-crimson text-sm font-bold uppercase tracking-widest">{t(tr.label)}</span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-widest">{t(tr.title)}</h2>
+    <section id="contact" className="relative py-24 px-4 bg-black-deep" ref={ref}>
+      <div className="max-w-2xl mx-auto">
+        {/* Label */}
+        <div className="text-center mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-gold/10 text-gold border border-gold/20">
+            {t(translations.leadForm.label)}
+          </span>
         </div>
 
-        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-elevate" suppressHydrationWarning>
-          {!mounted ? (
-            <div className="p-6 sm:p-10 lg:p-16 min-h-[600px] flex items-center justify-center">
-              <Loader2 className="w-6 h-6 animate-spin text-crimson" />
-            </div>
-          ) : (
-          <>
-          <div className="grid grid-cols-2">
-            {(["buy", "sell"] as const).map((tabValue) => (
-              <button
-                key={tabValue}
-                type="button"
-                onClick={() => setTab(tabValue)}
-                className={`py-5 font-bold uppercase tracking-widest text-sm transition relative ${
-                  tab === tabValue ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                }`}
-                aria-label={tabValue === "buy" ? t(fields.tabBuyLabel) : t(fields.tabSellLabel)}
-              >
-                {tabValue === "buy" ? t(fields.tabBuy) : t(fields.tabSell)}
-                {tab === tabValue && <span className="absolute bottom-0 left-0 right-0 h-1 bg-crimson" />}
-              </button>
-            ))}
+        {/* Titre */}
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
+          {t(translations.leadForm.title)}
+        </h2>
+
+        {/* Formulaire */}
+        <form onSubmit={handleSubmit} className="space-y-5 p-8 rounded-2xl bg-black-card border border-gold/10">
+          {/* Honeypot */}
+          <input
+            type="text"
+            name="honeypot"
+            value={form.honeypot}
+            onChange={(e) => setForm({ ...form, honeypot: e.target.value })}
+            className="hidden"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-label={t(translations.leadForm.honeypot)}
+          />
+
+          {/* Nom */}
+          <div>
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">
+              {t(translations.leadForm.name)} *
+            </label>
+            <input
+              type="text"
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="w-full px-4 py-3 rounded-lg bg-black-surface border border-gold/10 text-foreground placeholder-muted-foreground/50 focus:border-gold/40 focus:ring-1 focus:ring-gold/20 outline-none transition-all"
+              placeholder="Jean-Pierre Tremblay"
+            />
+            {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
           </div>
 
-          <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-10 space-y-5" noValidate>
-            {/* Honeypot — invisible to humans, filled by bots */}
-            <div style={{ display: "none" }} aria-hidden="true">
-              <label htmlFor="website">{t(fields.honeypot)}</label>
+          {/* Email + Phone */}
+          <div className="grid md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
+                {t(translations.leadForm.email)} *
+              </label>
               <input
-                type="text"
-                id="website"
-                name="website"
-                tabIndex={-1}
-                autoComplete="off"
-              />
-            </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <Input name="name" label={t(fields.name)} required maxLength={100} autoComplete="name" />
-              <Input
-                name="phone"
-                label={t(fields.phone)}
-                type="tel"
+                type="email"
                 required
-                maxLength={20}
-                autoComplete="tel"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-black-surface border border-gold/10 text-foreground placeholder-muted-foreground/50 focus:border-gold/40 focus:ring-1 focus:ring-gold/20 outline-none transition-all"
+                placeholder="jean@entreprise.com"
               />
+              {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
             </div>
-            <Input
-              name="email"
-              label={t(fields.email)}
-              type="email"
-              required
-              maxLength={255}
-              autoComplete="email"
-            />
+            <div>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
+                {t(translations.leadForm.phone)}
+              </label>
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-black-surface border border-gold/10 text-foreground placeholder-muted-foreground/50 focus:border-gold/40 focus:ring-1 focus:ring-gold/20 outline-none transition-all"
+                placeholder="(514) 555-1234"
+              />
+              {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
+            </div>
+          </div>
 
-            {tab === "buy" ? (
+          {/* Type de projet + Montant estimé */}
+          <div className="grid md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
+                {t(translations.leadForm.projectType)}
+              </label>
+              <select
+                value={form.projectType}
+                onChange={(e) => setForm({ ...form, projectType: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-black-surface border border-gold/10 text-foreground focus:border-gold/40 focus:ring-1 focus:ring-gold/20 outline-none transition-all"
+              >
+                <option value="">—</option>
+                {projectTypeOptions.map((opt: string) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
+                {t(translations.leadForm.estimatedAmount)}
+              </label>
+              <select
+                value={form.estimatedAmount}
+                onChange={(e) => setForm({ ...form, estimatedAmount: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-black-surface border border-gold/10 text-foreground focus:border-gold/40 focus:ring-1 focus:ring-gold/20 outline-none transition-all"
+              >
+                <option value="">—</option>
+                {amountOptions.map((opt: string) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Message */}
+          <div>
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">
+              {t(translations.leadForm.message)}
+            </label>
+            <textarea
+              rows={4}
+              value={form.message}
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              className="w-full px-4 py-3 rounded-lg bg-black-surface border border-gold/10 text-foreground placeholder-muted-foreground/50 focus:border-gold/40 focus:ring-1 focus:ring-gold/20 outline-none transition-all resize-none"
+              placeholder=""
+            />
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="w-full py-4 bg-gradient-gold text-black-deep font-bold uppercase tracking-widest rounded-lg shadow-gold hover:shadow-gold-sm hover:scale-[1.01] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {status === "sending" ? (
               <>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <Select
-                    name="budget"
-                    label={t(fields.budget)}
-                    options={budgetOptions}
-                  />
-                  <Select
-                    name="timeline"
-                    label={t(fields.timeline)}
-                    options={timelineOptions}
-                  />
-                </div>
-                <Textarea name="message" label={t(fields.messageBuy)} />
+                <Loader2 className="w-5 h-5 animate-spin" />
+                {t(translations.leadForm.sending)}
               </>
             ) : (
               <>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <Input
-                    name="address"
-                    label={t(fields.address)}
-                    required
-                    maxLength={200}
-                    autoComplete="street-address"
-                  />
-                  <Select
-                    name="property_type"
-                    label={t(fields.propertyType)}
-                    options={propertyTypeOptions}
-                  />
-                </div>
-                <Textarea name="message" label={t(fields.messageSell)} />
+                <Send className="w-5 h-5" />
+                {t(translations.leadForm.submit)}
               </>
             )}
+          </button>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 bg-gradient-crimson text-primary-foreground font-bold uppercase tracking-widest rounded-md shadow-crimson hover:scale-[1.01] transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-              {loading ? t(tr.sending) : t(tr.submit)}
-            </button>
-            <p className="text-xs text-muted-foreground text-center">
-              {t(tr.trustBold)} {clientConfig.name} {t(tr.trustText)}
-            </p>
-          </form>
-          </>
+          {/* Status */}
+          {status === "success" && (
+            <div className="flex items-center gap-2 p-4 rounded-lg bg-green-900/20 border border-green-500/30 text-green-400">
+              <CheckCircle className="w-5 h-5 flex-shrink-0" />
+              <p>{t(translations.leadForm.success)}</p>
+            </div>
           )}
-        </div>
+          {status === "error" && (
+            <div className="flex items-center gap-2 p-4 rounded-lg bg-red-900/20 border border-red-500/30 text-red-400">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <p>
+                {t(translations.leadForm.genericError)}{" "}
+                <a href={`tel:+${clientConfig.phone.international}`} className="underline font-semibold">
+                  {clientConfig.phone.display}
+                </a>
+              </p>
+            </div>
+          )}
+
+          {/* Trust */}
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Shield className="w-4 h-4 text-gold/50" />
+            <p>{t(translations.leadForm.trustText)}</p>
+          </div>
+        </form>
       </div>
     </section>
-  );
-}
-
-function Input({
-  label,
-  name,
-  type = "text",
-  required,
-  maxLength,
-  autoComplete,
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  required?: boolean;
-  maxLength?: number;
-  autoComplete?: string;
-}) {
-  return (
-    <div>
-      <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
-        {label}
-      </label>
-      <input
-        name={name}
-        type={type}
-        required={required}
-        maxLength={maxLength}
-        autoComplete={autoComplete}
-        className="w-full px-4 py-3 bg-input border border-border rounded-md focus:border-crimson focus:outline-none transition"
-      />
-    </div>
-  );
-}
-
-function Textarea({ label, name }: { label: string; name: string }) {
-  return (
-    <div>
-      <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
-        {label}
-      </label>
-      <textarea
-        name={name}
-        rows={4}
-        maxLength={1000}
-        className="w-full px-4 py-3 bg-input border border-border rounded-md focus:border-crimson focus:outline-none transition resize-none"
-      />
-    </div>
-  );
-}
-
-function Select({ label, name, options }: { label: string; name: string; options: string[] }) {
-  return (
-    <div>
-      <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
-        {label}
-      </label>
-      <select
-        name={name}
-        suppressHydrationWarning
-        className="w-full px-4 py-3 bg-input border border-border rounded-md focus:border-crimson focus:outline-none transition"
-      >
-        {options.map((o) => (
-          <option key={o} className="bg-card">
-            {o}
-          </option>
-        ))}
-      </select>
-    </div>
   );
 }
