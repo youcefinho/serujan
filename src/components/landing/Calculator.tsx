@@ -41,7 +41,7 @@ function Donut({ percents }: { percents: { mortgage: number; tax: number; insura
         cy="100"
         r={RADIUS}
         fill="none"
-        stroke="oklch(1 0 0 / 0.06)"
+        stroke="oklch(0.18 0.008 260 / 0.08)"
         strokeWidth={STROKE}
       />
 
@@ -116,7 +116,7 @@ function GoldSlider({
   return (
     <div>
       <div className="flex justify-between items-baseline mb-2.5 gap-3">
-        <label className="text-xs uppercase tracking-[0.18em] text-foreground/55 flex-shrink-0">
+        <label className="text-xs uppercase tracking-[0.18em] text-ink-soft flex-shrink-0">
           {label}
         </label>
         <div className="flex items-baseline gap-1.5 min-w-0">
@@ -136,16 +136,14 @@ function GoldSlider({
               else onChange(clamp(n));
             }}
             aria-label={label}
-            className={`font-display text-base text-gold tabular-nums bg-transparent border-b border-gold/15 hover:border-gold/40 focus:border-gold/60 outline-none text-right ${inputWidth} transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+            className={`font-display text-base text-gold-deep tabular-nums bg-transparent border-b border-gold-deep/25 hover:border-gold-deep/45 focus:border-gold-deep/65 outline-none text-right ${inputWidth} transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
           />
-          {unit && (
-            <span className="text-xs text-foreground/60 flex-shrink-0 tabular-nums">{unit}</span>
-          )}
+          {unit && <span className="text-xs text-ink-soft flex-shrink-0 tabular-nums">{unit}</span>}
         </div>
       </div>
       <div className="relative h-1.5">
         {/* Track */}
-        <div className="absolute inset-0 rounded-full bg-white/[0.06]" />
+        <div className="absolute inset-0 rounded-full bg-[oklch(0.18_0.008_260/0.08)]" />
         {/* Fill or */}
         <div
           className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-gold-deep via-gold to-gold-light"
@@ -167,7 +165,7 @@ function GoldSlider({
           className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none"
           style={{ left: `${percent}%` }}
         >
-          <div className="w-5 h-5 rounded-full bg-gold border-2 border-black-deep shadow-gold-sm" />
+          <div className="w-5 h-5 rounded-full bg-gold border-2 border-white shadow-gold-sm" />
         </div>
       </div>
     </div>
@@ -218,13 +216,13 @@ export default function Calculator() {
     <section
       id="simulateur"
       ref={ref}
-      className="relative py-28 md:py-36 px-6 bg-black-surface bg-stars overflow-hidden"
+      className="relative py-28 md:py-36 px-6 bg-off-white bg-stars-light overflow-hidden"
     >
       {/* Halo */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44rem] h-[44rem] rounded-full pointer-events-none opacity-40"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44rem] h-[44rem] rounded-full pointer-events-none opacity-50"
         style={{
-          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.07) 0%, transparent 60%)",
+          background: "radial-gradient(circle, oklch(0.62 0.14 75 / 0.10) 0%, transparent 60%)",
           filter: "blur(80px)",
         }}
         aria-hidden
@@ -239,8 +237,8 @@ export default function Calculator() {
             transition={{ duration: 0.7, ease }}
             className="flex items-center gap-3 mb-6"
           >
-            <span className="w-8 h-px bg-gold/50" aria-hidden />
-            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light inline-flex items-center gap-2">
+            <span className="w-8 h-px bg-gold-deep/60" aria-hidden />
+            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-deep inline-flex items-center gap-2">
               <CalcIcon className="w-3 h-3" />
               {t(translations.calculator.label)}
             </span>
@@ -252,7 +250,7 @@ export default function Calculator() {
             transition={{ duration: 0.8, delay: 0.1, ease }}
             className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance"
           >
-            <span className="text-foreground">{t(translations.calculator.titleLead)} </span>
+            <span className="text-ink">{t(translations.calculator.titleLead)} </span>
             <span className="text-gold-gradient italic font-display-italic">
               {t(translations.calculator.titleEmphasis)}
             </span>
@@ -262,7 +260,7 @@ export default function Calculator() {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.25, ease }}
-            className="mt-8 text-base md:text-lg text-foreground/60 leading-relaxed text-pretty max-w-2xl"
+            className="mt-8 text-base md:text-lg text-ink-muted leading-relaxed text-pretty max-w-2xl"
           >
             {t(translations.calculator.subtitle)}
           </motion.p>
@@ -274,7 +272,7 @@ export default function Calculator() {
             initial={{ opacity: 0, x: -24 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.3, ease }}
-            className="p-8 md:p-10 rounded-2xl bg-black-deep/70 border border-gold/10 space-y-7"
+            className="p-8 md:p-10 rounded-2xl bg-white border border-gold-deep/15 shadow-[0_30px_80px_-30px_oklch(0.18_0.008_260/0.12)] space-y-7"
           >
             <GoldSlider
               label={t(translations.calculator.loanAmount)}
@@ -336,7 +334,7 @@ export default function Calculator() {
             className="space-y-6"
           >
             {/* Donut + total mensuel */}
-            <div className="relative p-8 md:p-10 rounded-2xl bg-black-deep/70 border border-gold/15 shadow-elevate">
+            <div className="relative p-8 md:p-10 rounded-2xl bg-white border border-gold-deep/25 shadow-[0_30px_80px_-30px_oklch(0.18_0.008_260/0.18)]">
               <div className="flex flex-col md:flex-row items-center gap-8">
                 <Donut
                   percents={{
@@ -346,13 +344,13 @@ export default function Calculator() {
                   }}
                 />
                 <div className="flex-1 text-center md:text-left">
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-gold-light/70 mb-3">
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-gold-deep/80 mb-3">
                     {t(translations.calculator.totalMonthly)}
                   </p>
                   <div className="font-display text-4xl md:text-5xl text-gold-gradient leading-none mb-2">
                     <AnimatedNumber value={calc.totalMonthly} format={fmt} />
                   </div>
-                  <p className="text-xs text-foreground/50 mt-3">
+                  <p className="text-xs text-ink-soft mt-3">
                     {t(translations.calculator.includingTaxInsurance)}
                   </p>
                 </div>
@@ -360,7 +358,7 @@ export default function Calculator() {
             </div>
 
             {/* Ventilation */}
-            <div className="p-6 md:p-7 rounded-2xl bg-black-deep/70 border border-gold/10 space-y-4">
+            <div className="p-6 md:p-7 rounded-2xl bg-white border border-gold-deep/15 shadow-[0_20px_60px_-25px_oklch(0.18_0.008_260/0.10)] space-y-4">
               <Breakdown
                 label={t(translations.calculator.mortgage)}
                 value={fmt(calc.monthlyMortgage)}
@@ -392,7 +390,7 @@ export default function Calculator() {
               </span>
             </a>
 
-            <p className="text-[11px] text-foreground/40 leading-relaxed">
+            <p className="text-[11px] text-ink-soft leading-relaxed">
               {t(translations.calculator.disclaimer)}
             </p>
           </motion.div>
@@ -416,13 +414,13 @@ function Breakdown({
   return (
     <div>
       <div className="flex justify-between items-baseline text-sm mb-1.5">
-        <span className="flex items-center gap-2 text-foreground/70">
+        <span className="flex items-center gap-2 text-ink-muted">
           <span className="w-2.5 h-2.5 rounded-full" style={{ background: color }} />
           {label}
         </span>
-        <span className="font-display text-foreground tabular-nums">{value}</span>
+        <span className="font-display text-ink tabular-nums">{value}</span>
       </div>
-      <div className="relative h-1 rounded-full bg-white/[0.04] overflow-hidden">
+      <div className="relative h-1 rounded-full bg-[oklch(0.18_0.008_260/0.08)] overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percent}%` }}

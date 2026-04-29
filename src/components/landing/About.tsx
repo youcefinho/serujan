@@ -22,13 +22,13 @@ export default function About() {
     <section
       id="approche"
       ref={ref}
-      className="relative py-28 md:py-36 px-6 bg-black-surface bg-stars overflow-hidden"
+      className="relative py-28 md:py-36 px-6 bg-off-white bg-stars-light overflow-hidden"
     >
       {/* Halo doré central */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[50rem] rounded-full pointer-events-none opacity-40"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[50rem] rounded-full pointer-events-none opacity-50"
         style={{
-          background: "radial-gradient(circle, oklch(0.78 0.13 82 / 0.06) 0%, transparent 60%)",
+          background: "radial-gradient(circle, oklch(0.62 0.14 75 / 0.10) 0%, transparent 60%)",
           filter: "blur(80px)",
         }}
         aria-hidden
@@ -43,8 +43,8 @@ export default function About() {
             transition={{ duration: 0.7, ease }}
             className="flex items-center gap-3 mb-6"
           >
-            <span className="w-8 h-px bg-gold/50" aria-hidden />
-            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-light">
+            <span className="w-8 h-px bg-gold-deep/60" aria-hidden />
+            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-deep">
               {t(translations.approche.label)}
             </span>
           </motion.div>
@@ -55,11 +55,11 @@ export default function About() {
             transition={{ duration: 0.8, delay: 0.1, ease }}
             className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance"
           >
-            <span className="text-foreground">{t(translations.approche.titleLead)} </span>
+            <span className="text-ink">{t(translations.approche.titleLead)} </span>
             <span className="text-gold-gradient italic font-display-italic">
               {t(translations.approche.titleEmphasis)}
             </span>
-            <span className="text-foreground/85"> {t(translations.approche.titleTail)}</span>
+            <span className="text-ink"> {t(translations.approche.titleTail)}</span>
           </motion.h2>
         </div>
 
@@ -71,20 +71,20 @@ export default function About() {
             transition={{ duration: 0.9, delay: 0.2, ease }}
             className="lg:col-span-5 relative"
           >
-            <div className="relative p-8 md:p-10 rounded-2xl bg-black-deep/60 border border-gold/15 shadow-elevate">
+            <div className="relative p-8 md:p-10 rounded-2xl bg-white border border-gold-deep/20 shadow-[0_30px_80px_-30px_oklch(0.18_0.008_260/0.18)]">
               <Quote
-                className="absolute -top-3 -left-3 w-8 h-8 text-gold/80 fill-gold/20"
+                className="absolute -top-3 -left-3 w-8 h-8 text-gold-deep fill-gold/30"
                 strokeWidth={1.5}
               />
-              <blockquote className="font-display italic text-xl md:text-2xl leading-[1.4] text-foreground/90 text-pretty">
+              <blockquote className="font-display italic text-xl md:text-2xl leading-[1.4] text-ink text-pretty">
                 {t(translations.approche.quote)}
               </blockquote>
-              <figcaption className="mt-6 text-sm text-gold-light/80 tracking-wide">
+              <figcaption className="mt-6 text-sm text-gold-deep/90 tracking-wide">
                 {t(translations.approche.quoteAttribution)}
               </figcaption>
               {/* Filet doré */}
               <div
-                className="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent"
+                className="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-gold-deep/40 to-transparent"
                 aria-hidden
               />
             </div>
@@ -96,7 +96,7 @@ export default function About() {
             transition={{ duration: 0.9, delay: 0.35, ease }}
             className="lg:col-span-7 flex items-center"
           >
-            <p className="text-lg md:text-xl text-foreground/70 leading-[1.7] text-pretty">
+            <p className="text-lg md:text-xl text-ink-muted leading-[1.7] text-pretty">
               {t(translations.approche.description)}
             </p>
           </motion.div>
@@ -112,16 +112,16 @@ export default function About() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.7, delay: 0.5 + i * 0.08, ease }}
-                className="group relative flex gap-5 p-6 md:p-7 rounded-xl bg-black-deep/40 border border-gold/10 transition-all duration-500 hover:border-gold/25 hover:bg-black-elevated/60 hover:-translate-y-0.5"
+                className="group relative flex gap-5 p-6 md:p-7 rounded-xl bg-white border border-gold-deep/15 transition-all duration-500 hover:border-gold-deep/30 hover:shadow-[0_20px_60px_-20px_oklch(0.18_0.008_260/0.15)] hover:-translate-y-0.5"
               >
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gold/10 border border-gold/15 flex items-center justify-center group-hover:bg-gold/15 group-hover:border-gold/30 transition-all duration-500">
-                  <Icon className="w-5 h-5 text-gold" strokeWidth={1.5} />
+                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gold/15 border border-gold-deep/25 flex items-center justify-center group-hover:bg-gold/25 group-hover:border-gold-deep/40 transition-all duration-500">
+                  <Icon className="w-5 h-5 text-gold-deep" strokeWidth={1.5} />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-display text-lg text-foreground mb-1.5 tracking-tight">
+                  <h4 className="font-display text-lg text-ink mb-1.5 tracking-tight">
                     {feature.title}
                   </h4>
-                  <p className="text-sm text-foreground/55 leading-relaxed">{feature.desc}</p>
+                  <p className="text-sm text-ink-soft leading-relaxed">{feature.desc}</p>
                 </div>
               </motion.div>
             );
