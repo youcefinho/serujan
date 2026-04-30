@@ -13,6 +13,12 @@ import {
   Calendar,
   Inbox,
   TrendingUp,
+  CheckCircle2,
+  AlertCircle,
+  PauseCircle,
+  Clock,
+  Globe,
+  Tag,
 } from "lucide-react";
 
 interface Lead {
@@ -24,6 +30,35 @@ interface Lead {
   estimated_amount: string | null;
   message: string | null;
   created_at: string;
+  // Attribution (migration 004)
+  source?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_term?: string | null;
+  utm_content?: string | null;
+  referrer?: string | null;
+  language?: string | null;
+  tags?: string | null;
+  // GHL sync
+  synced_to_ghl_at?: string | null;
+  ghl_status?: string | null;
+  ghl_response?: string | null;
+}
+
+const SOURCE_LABELS: Record<string, string> = {
+  leadform: "Formulaire",
+  midpage_cta: "Mid-page",
+  exit_intent: "Exit-intent",
+  calculator: "Calculator",
+};
+
+function GhlStatusIcon({ status }: { status?: string | null }) {
+  if (status === "ok") return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />;
+  if (status === "error") return <AlertCircle className="w-3.5 h-3.5 text-rose-400" />;
+  if (status === "skipped") return <PauseCircle className="w-3.5 h-3.5 text-foreground/30" />;
+  if (status === "pending") return <Clock className="w-3.5 h-3.5 text-gold animate-pulse" />;
+  return <span className="text-foreground/30 text-xs">—</span>;
 }
 
 export const Route = createFileRoute("/admin/leads")({
@@ -42,8 +77,17 @@ function exportCSV(leads: Lead[]) {
     "Type de projet",
     "Montant estimé",
     "Message",
+    "Source",
+    "UTM source",
+    "UTM medium",
+    "UTM campaign",
+    "Référent",
+    "Langue",
+    "Tags",
+    "GHL statut",
+    "GHL synced",
   ];
-  const escape = (v: string | null) => {
+  const escape = (v: string | null | undefined) => {
     if (!v) return "";
     const s = v.replace(/"/g, '""');
     return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s}"` : s;
@@ -58,6 +102,15 @@ function exportCSV(leads: Lead[]) {
       escape(l.project_type),
       escape(l.estimated_amount),
       escape(l.message),
+      escape(l.source),
+      escape(l.utm_source),
+      escape(l.utm_medium),
+      escape(l.utm_campaign),
+      escape(l.referrer),
+      escape(l.language),
+      escape(l.tags),
+      escape(l.ghl_status),
+      escape(l.synced_to_ghl_at),
     ].join(","),
   );
 
@@ -76,6 +129,8 @@ function AdminLeadsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [filterSource, setFilterSource] = useState<string>("all");
+  const [filterGhl, setFilterGhl] = useState<string>("all");
   const [selected, setSelected] = useState<Lead | null>(null);
 
   useEffect(() => {
@@ -113,16 +168,20 @@ function AdminLeadsPage() {
 
   const filtered = useMemo(() => {
     return leads.filter((l) => {
+      if (filterSource !== "all" && (l.source ?? "") !== filterSource) return false;
+      if (filterGhl !== "all" && (l.ghl_status ?? "") !== filterGhl) return false;
       if (!search) return true;
       const q = search.toLowerCase();
       return (
         l.name.toLowerCase().includes(q) ||
         l.email.toLowerCase().includes(q) ||
         l.phone.toLowerCase().includes(q) ||
-        (l.project_type?.toLowerCase().includes(q) ?? false)
+        (l.project_type?.toLowerCase().includes(q) ?? false) ||
+        (l.utm_source?.toLowerCase().includes(q) ?? false) ||
+        (l.utm_campaign?.toLowerCase().includes(q) ?? false)
       );
     });
-  }, [leads, search]);
+  }, [leads, search, filterSource, filterGhl]);
 
   const stats = useMemo(() => {
     const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
@@ -214,17 +273,43 @@ function AdminLeadsPage() {
         />
       </div>
 
-      {/* Search */}
-      <div className="mb-6 relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gold/60" />
-        <input
-          type="text"
-          placeholder="Rechercher par nom, email, téléphone, type de projet…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-11 pr-4 py-3 bg-black-elevated/40 border border-gold/15 rounded-md focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all text-sm placeholder-foreground/40"
-          aria-label="Rechercher dans les leads"
-        />
+      {/* Search + filters */}
+      <div className="mb-6 flex flex-col md:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gold/60" />
+          <input
+            type="text"
+            placeholder="Rechercher nom, email, téléphone, projet, UTM…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 bg-black-elevated/40 border border-gold/15 rounded-md focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all text-sm placeholder-foreground/40"
+            aria-label="Rechercher dans les leads"
+          />
+        </div>
+        <select
+          value={filterSource}
+          onChange={(e) => setFilterSource(e.target.value)}
+          className="px-4 py-3 bg-black-elevated/40 border border-gold/15 rounded-md text-sm focus:border-gold/40 focus:outline-none cursor-pointer"
+          aria-label="Filtrer par source"
+        >
+          <option value="all">Toutes sources</option>
+          <option value="leadform">Formulaire</option>
+          <option value="midpage_cta">Mid-page</option>
+          <option value="exit_intent">Exit-intent</option>
+          <option value="calculator">Calculator</option>
+        </select>
+        <select
+          value={filterGhl}
+          onChange={(e) => setFilterGhl(e.target.value)}
+          className="px-4 py-3 bg-black-elevated/40 border border-gold/15 rounded-md text-sm focus:border-gold/40 focus:outline-none cursor-pointer"
+          aria-label="Filtrer par statut GHL"
+        >
+          <option value="all">GHL : tous</option>
+          <option value="ok">✓ Synchro OK</option>
+          <option value="error">⚠ Erreur</option>
+          <option value="pending">⏳ En cours</option>
+          <option value="skipped">⏸ Skipped</option>
+        </select>
       </div>
 
       {/* Table */}
@@ -242,8 +327,11 @@ function AdminLeadsPage() {
                   <th className="px-5 py-4 text-left font-medium">Date</th>
                   <th className="px-5 py-4 text-left font-medium">Nom</th>
                   <th className="px-5 py-4 text-left font-medium hidden md:table-cell">Contact</th>
+                  <th className="px-5 py-4 text-left font-medium hidden lg:table-cell">Source</th>
+                  <th className="px-5 py-4 text-left font-medium hidden xl:table-cell">UTM</th>
                   <th className="px-5 py-4 text-left font-medium hidden lg:table-cell">Projet</th>
-                  <th className="px-5 py-4 text-left font-medium hidden lg:table-cell">Montant</th>
+                  <th className="px-5 py-4 text-left font-medium hidden xl:table-cell">Montant</th>
+                  <th className="px-5 py-4 text-center font-medium">GHL</th>
                 </tr>
               </thead>
               <tbody>
@@ -266,7 +354,26 @@ function AdminLeadsPage() {
                     </td>
                     <td className="px-5 py-4 hidden md:table-cell text-foreground/55 text-xs">
                       <div>{l.email}</div>
-                      <div className="tabular-nums">{l.phone}</div>
+                      <div className="tabular-nums font-mono">{l.phone}</div>
+                    </td>
+                    <td className="px-5 py-4 hidden lg:table-cell">
+                      {l.source ? (
+                        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider bg-emerald-400/10 text-emerald-300 border border-emerald-400/25">
+                          {SOURCE_LABELS[l.source] ?? l.source}
+                        </span>
+                      ) : (
+                        <span className="text-foreground/30">—</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-4 hidden xl:table-cell text-foreground/55 text-[11px]">
+                      {l.utm_source ? (
+                        <span className="font-mono">
+                          {l.utm_source}
+                          {l.utm_medium ? ` · ${l.utm_medium}` : ""}
+                        </span>
+                      ) : (
+                        <span className="text-foreground/30">—</span>
+                      )}
                     </td>
                     <td className="px-5 py-4 hidden lg:table-cell">
                       {l.project_type ? (
@@ -277,8 +384,13 @@ function AdminLeadsPage() {
                         <span className="text-foreground/30">—</span>
                       )}
                     </td>
-                    <td className="px-5 py-4 hidden lg:table-cell text-foreground/65 text-xs">
+                    <td className="px-5 py-4 hidden xl:table-cell text-foreground/65 text-xs">
                       {l.estimated_amount || <span className="text-foreground/30">—</span>}
+                    </td>
+                    <td className="px-5 py-4 text-center" title={l.ghl_status ?? "—"}>
+                      <div className="flex items-center justify-center">
+                        <GhlStatusIcon status={l.ghl_status} />
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -410,6 +522,110 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
               </div>
             </Field>
           )}
+
+          {/* Section attribution */}
+          {(lead.source ||
+            lead.utm_source ||
+            lead.utm_medium ||
+            lead.utm_campaign ||
+            lead.referrer ||
+            lead.language ||
+            lead.tags) && (
+            <div className="pt-5 border-t border-gold/10 space-y-4">
+              <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-gold-light/70 font-medium">
+                <Globe className="w-3 h-3" />
+                <span>Attribution</span>
+              </div>
+              {lead.source && (
+                <Field label="Source du tunnel">
+                  <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider bg-emerald-400/10 text-emerald-300 border border-emerald-400/25">
+                    {SOURCE_LABELS[lead.source] ?? lead.source}
+                  </span>
+                </Field>
+              )}
+              {(lead.utm_source || lead.utm_medium || lead.utm_campaign) && (
+                <Field label="UTM">
+                  <div className="font-mono text-xs text-foreground/85 space-y-0.5">
+                    {lead.utm_source && (
+                      <div>
+                        <span className="text-foreground/45">source · </span>
+                        {lead.utm_source}
+                      </div>
+                    )}
+                    {lead.utm_medium && (
+                      <div>
+                        <span className="text-foreground/45">medium · </span>
+                        {lead.utm_medium}
+                      </div>
+                    )}
+                    {lead.utm_campaign && (
+                      <div>
+                        <span className="text-foreground/45">campaign · </span>
+                        {lead.utm_campaign}
+                      </div>
+                    )}
+                    {lead.utm_term && (
+                      <div>
+                        <span className="text-foreground/45">term · </span>
+                        {lead.utm_term}
+                      </div>
+                    )}
+                    {lead.utm_content && (
+                      <div>
+                        <span className="text-foreground/45">content · </span>
+                        {lead.utm_content}
+                      </div>
+                    )}
+                  </div>
+                </Field>
+              )}
+              {lead.referrer && (
+                <Field label="Référent">
+                  <a
+                    href={lead.referrer}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-foreground/70 break-all hover:text-gold transition-colors"
+                  >
+                    {lead.referrer}
+                  </a>
+                </Field>
+              )}
+              {lead.language && (
+                <Field label="Langue navigateur">
+                  <span className="font-mono text-xs">{lead.language}</span>
+                </Field>
+              )}
+            </div>
+          )}
+
+          {/* Section GHL sync */}
+          <div className="pt-5 border-t border-gold/10 space-y-4">
+            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-gold-light/70 font-medium">
+              <Tag className="w-3 h-3" />
+              <span>Sync GoHighLevel</span>
+            </div>
+            <Field label="Statut">
+              <div className="flex items-center gap-2 text-sm">
+                <GhlStatusIcon status={lead.ghl_status} />
+                <span className="text-foreground/85 capitalize">
+                  {lead.ghl_status || "—"}
+                </span>
+                {lead.synced_to_ghl_at && (
+                  <span className="text-xs text-foreground/45 tabular-nums">
+                    · {new Date(lead.synced_to_ghl_at).toLocaleString("fr-CA")}
+                  </span>
+                )}
+              </div>
+            </Field>
+            {lead.ghl_response && (
+              <Field label="Réponse GHL">
+                <div className="font-mono text-[11px] text-foreground/55 break-all bg-black-deep/40 rounded p-3 border border-gold/10">
+                  {lead.ghl_response}
+                </div>
+              </Field>
+            )}
+          </div>
 
           <div className="flex gap-2 pt-5 border-t border-gold/10">
             {lead.phone && (

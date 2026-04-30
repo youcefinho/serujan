@@ -9,6 +9,7 @@ import {
   trackPhoneClick,
   trackEmailClick,
 } from "@/lib/analytics";
+import { submitLead } from "@/lib/leadClient";
 import { isValidEmail, isValidPhone, sanitizeInput } from "@/lib/security";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { useState, useRef, useEffect } from "react";
@@ -87,10 +88,9 @@ export default function LeadForm() {
     const elapsed_ms = Date.now() - mountTimeRef.current;
 
     try {
-      const res = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const res = await submitLead({
+        source: "leadform",
+        payload: {
           name: sanitizeInput(form.name, 100),
           email: sanitizeInput(form.email, 200),
           phone: sanitizeInput(form.phone, 20),
@@ -99,7 +99,7 @@ export default function LeadForm() {
           message: sanitizeInput(form.message, 2000),
           hp: form.hp,
           elapsed_ms,
-        }),
+        },
       });
 
       if (!res.ok) {

@@ -6,6 +6,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { Calculator as CalcIcon, ArrowRight, Mail, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { trackCalculatorUse, trackLeadFormSubmit, trackFormSubmitError } from "@/lib/analytics";
+import { submitLead } from "@/lib/leadClient";
 
 // ═══════════════════════════════════════════════════════════
 // Calculator v2 — Donut SVG animé + valeurs qui s'animent
@@ -261,19 +262,17 @@ export default function Calculator() {
     const elapsed_ms = Date.now() - captureMountRef.current;
     const summary = `Simulation calculator — Prix ${fmt(propertyPrice)}, mise ${fmt(downPayment)}, taux ${interestRate}%, ${amortization} ans, mensuel ${fmt(calc.totalMonthly)}, LTV ${fmtPct(calc.ltv)}.`;
     try {
-      const res = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const res = await submitLead({
+        source: "calculator",
+        payload: {
           name: sanitizeInput(captureFirstName, 100),
           email: sanitizeInput(captureEmail, 200),
-          phone: "",
           project_type: "Calculator",
           estimated_amount: fmt(calc.loanAmount),
           message: summary,
           hp: "",
           elapsed_ms,
-        }),
+        },
       });
       if (!res.ok) throw new Error();
       setCaptureStatus("success");

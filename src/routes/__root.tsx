@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Outlet, Link, createRootRoute } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { LanguageProvider, useLanguage } from "@/lib/LanguageContext";
+import { GhlPixel } from "@/components/GhlPixel";
 
 function NotFoundComponent() {
   const { lang } = useLanguage();
@@ -73,6 +74,7 @@ function RootComponent() {
   return (
     <LanguageProvider>
       <SkipLink />
+      <GhlPixel />
       <Outlet />
     </LanguageProvider>
   );
