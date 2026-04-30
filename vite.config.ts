@@ -19,10 +19,21 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes("node_modules")) {
-            if (id.includes("motion")) return "vendor-motion";
-            if (id.includes("@tanstack")) return "vendor-tanstack";
-            if (id.includes("lucide-react")) return "vendor-icons";
-            if (id.includes("react-dom") || id.includes("react/") || id.includes("/react/")) return "vendor-react";
+            if (id.includes("/motion/")) return "vendor-motion";
+            if (id.includes("/@tanstack/")) return "vendor-tanstack";
+            if (id.includes("/lucide-react/")) return "vendor-icons";
+            // React 19 + ses dépendances directes doivent être dans le MÊME chunk.
+            // Sinon scheduler/use-sync-external-store init avant React et tente
+            // d'accéder à des APIs (ex: Activity) qui ne sont pas encore définies
+            // → "Cannot set properties of undefined (setting 'Activity')".
+            if (
+              id.includes("/react/") ||
+              id.includes("/react-dom/") ||
+              id.includes("/scheduler/") ||
+              id.includes("/use-sync-external-store/")
+            ) {
+              return "vendor-react";
+            }
             return "vendor";
           }
         },
