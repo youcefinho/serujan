@@ -86,6 +86,19 @@ export const clientConfig = {
 
   // ── Email notification (worker.ts) ─────────────────────
   emailFrom: "Équipe Serujan <onboarding@resend.dev>",
+
+  // ── GoHighLevel (multi-tenant ready) ────────────────────
+  // Pour onboarder un nouveau client : changer ces 6 valeurs +
+  // set GHL_WEBHOOK_URL (wrangler secret) + VITE_GHL_PIXEL_ID (.env).
+  // Voir DEPLOYMENT.md → "Onboarding d'un nouveau client".
+  ghl: {
+    enabled: true,                  // master switch (false → forward désactivé même si webhook configuré)
+    pixelId: "",                    // Public, build-time. Vide = pas d'injection pixel.
+    sourcePrefix: "serujan",        // → tags GHL kebab-case : "serujan-leadform"
+    clientName: "Serujan",          // → custom field GHL "site_source"
+    defaultTags: ["site-lead"],     // tags appliqués à TOUS les leads de ce client
+    defaultCountry: "CA",           // pour normalisation phone E.164 (+1 pour CA/US)
+  },
 } as const;
 
 // ── Types exportés ──────────────────────────────────────

@@ -15,6 +15,7 @@ import {
   MAX_LEAD_ATTEMPTS,
   LEAD_WINDOW_HOURS,
 } from "./lib/security";
+import { forwardToGhl } from "./worker/ghl";
 
 interface Env {
   DB: D1Database;
@@ -33,7 +34,7 @@ const SECURITY_HEADERS = buildSecurityHeaders(CSP_DIRECTIVES);
 
 // ── Fetch principal ─────────────────────────────────────────
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
     // Fail-fast : configuration runtime requise pour les routes API
@@ -51,7 +52,7 @@ export default {
         }
       }
 
-      const apiResponse = await handleApi(url.pathname, request, env);
+      const apiResponse = await handleApi(url.pathname, request, env, ctx);
       return withSecurityHeaders(apiResponse);
     }
 
@@ -61,9 +62,14 @@ export default {
   },
 } satisfies ExportedHandler<Env>;
 
-async function handleApi(pathname: string, request: Request, env: Env): Promise<Response> {
+async function handleApi(
+  pathname: string,
+  request: Request,
+  env: Env,
+  ctx: ExecutionContext,
+): Promise<Response> {
   if (pathname === "/api/leads" && request.method === "POST") {
-    return handleLeads(request, env);
+    return handleLeads(request, env, ctx);
   }
   if (pathname === "/api/admin/login" && request.method === "POST") {
     return handleAdminLogin(request, env);
@@ -78,7 +84,11 @@ async function handleApi(pathname: string, request: Request, env: Env): Promise<
 }
 
 // ── POST /api/leads ──────────────────────────────────────────
-async function handleLeads(request: Request, env: Env): Promise<Response> {
+async function handleLeads(
+  request: Request,
+  env: Env,
+  ctx: ExecutionContext,
+): Promise<Response> {
   try {
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
 
@@ -104,6 +114,15 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
       message?: string;
       elapsed_ms?: number;
       hp?: string; // honeypot
+      // Attribution (migration 004)
+      source?: string;
+      utm_source?: string;
+      utm_medium?: string;
+      utm_campaign?: string;
+      utm_term?: string;
+      utm_content?: string;
+      referrer?: string;
+      language?: string;
     };
 
     // Anti-bot : honeypot + timing
@@ -113,8 +132,6 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
     }
 
     // Nom obligatoire ; au moins UN canal de contact (email OU phone) requis.
-    // Permet la capture mid-page / exit-intent (nom + tel sans email)
-    // et la capture calculator (nom + email sans tel).
     if (!body.name || (!body.email && !body.phone)) {
       return json({ error: "Nom et téléphone ou courriel requis" }, 400);
     }
@@ -126,21 +143,50 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
     const cleanAmount = sanitizeInput(body.estimated_amount, 100);
     const cleanMessage = sanitizeInput(body.message, 1000);
 
+    // Attribution (sanitize light — données déjà filtrées côté client)
+    const cleanSource = sanitizeInput(body.source, 50);
+    const cleanUtmSource = sanitizeInput(body.utm_source, 100);
+    const cleanUtmMedium = sanitizeInput(body.utm_medium, 100);
+    const cleanUtmCampaign = sanitizeInput(body.utm_campaign, 100);
+    const cleanUtmTerm = sanitizeInput(body.utm_term, 100);
+    const cleanUtmContent = sanitizeInput(body.utm_content, 100);
+    const cleanReferrer = sanitizeInput(body.referrer, 500);
+    const cleanLanguage = sanitizeInput(body.language, 20);
+
     if (cleanName.length < 2) return json({ error: "Nom trop court" }, 400);
-    // Si email rempli, valider le format
     if (cleanEmail && !isValidEmail(cleanEmail)) return json({ error: "Email invalide" }, 400);
-    // Si phone rempli, valider le format
     if (cleanPhone && !isValidPhone(cleanPhone))
       return json({ error: "Numéro de téléphone invalide" }, 400);
-    // Au moins un canal de contact valide après nettoyage
     if (!cleanEmail && !cleanPhone) return json({ error: "Téléphone ou courriel requis" }, 400);
 
     const id = crypto.randomUUID();
 
+    // INSERT enrichi : 7 champs métier + 9 attribution + ghl_status par défaut
     await env.DB.prepare(
-      "INSERT INTO leads (id, name, email, phone, project_type, estimated_amount, message) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      `INSERT INTO leads (
+        id, name, email, phone, project_type, estimated_amount, message,
+        source, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
+        referrer, language, ghl_status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
-      .bind(id, cleanName, cleanEmail, cleanPhone, cleanProjectType, cleanAmount, cleanMessage)
+      .bind(
+        id,
+        cleanName,
+        cleanEmail,
+        cleanPhone,
+        cleanProjectType,
+        cleanAmount,
+        cleanMessage,
+        cleanSource,
+        cleanUtmSource,
+        cleanUtmMedium,
+        cleanUtmCampaign,
+        cleanUtmTerm,
+        cleanUtmContent,
+        cleanReferrer,
+        cleanLanguage,
+        env.GHL_WEBHOOK_URL && CLIENT.ghl.enabled ? "pending" : "skipped",
+      )
       .run();
 
     // Enregistrement de la tentative pour le rate limit
@@ -184,26 +230,48 @@ async function handleLeads(request: Request, env: Env): Promise<Response> {
       console.warn("Échec notification email:", emailErr);
     }
 
-    // Webhook GHL (best-effort)
-    if (env.GHL_WEBHOOK_URL) {
-      try {
-        await fetch(env.GHL_WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+    // Webhook GHL — non bloquant pour la réponse via ctx.waitUntil.
+    // Forward avec retry 1× + 500ms, puis UPDATE D1 avec le statut de sync.
+    ctx.waitUntil(
+      (async () => {
+        const result = await forwardToGhl(
+          env.GHL_WEBHOOK_URL,
+          CLIENT.ghl,
+          {
             name: cleanName,
             email: cleanEmail,
             phone: cleanPhone,
             project_type: cleanProjectType,
             estimated_amount: cleanAmount,
             message: cleanMessage,
-            source: "Site Serujan",
-          }),
-        });
-      } catch {
-        // GHL indisponible → non bloquant
-      }
-    }
+            source: cleanSource,
+          },
+          {
+            utm_source: cleanUtmSource,
+            utm_medium: cleanUtmMedium,
+            utm_campaign: cleanUtmCampaign,
+            utm_term: cleanUtmTerm,
+            utm_content: cleanUtmContent,
+            referrer: cleanReferrer,
+            language: cleanLanguage,
+          },
+        );
+        try {
+          await env.DB.prepare(
+            `UPDATE leads SET synced_to_ghl_at = ?, ghl_status = ?, ghl_response = ? WHERE id = ?`,
+          )
+            .bind(
+              result.status === "skipped" ? null : new Date().toISOString(),
+              result.status,
+              result.response,
+              id,
+            )
+            .run();
+        } catch (dbErr) {
+          console.warn("Échec UPDATE ghl_status:", dbErr);
+        }
+      })(),
+    );
 
     return json({ success: true, id });
   } catch (error) {

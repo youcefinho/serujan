@@ -189,3 +189,129 @@ Pour les données client (téléphone, email, adresse), modifier `src/lib/config
 - Logs worker : `wrangler tail --name serujan`
 - Dashboard Cloudflare : https://dash.cloudflare.com → Workers & Pages → serujan
 - Resend dashboard : https://resend.com/emails
+
+---
+
+## 🆕 Onboarding d'un nouveau client (multi-tenant GHL)
+
+Le code est prêt pour servir plusieurs clients. Chaque nouveau client = un nouveau
+worker Cloudflare + sub-account GoHighLevel + 6 valeurs à éditer.
+
+### Étape 1 — Côté GoHighLevel (5 min)
+
+1. **Créer un sub-account** dans l'agence GHL pour le client (Location).
+2. **Workflow webhook** : Workflows → New → trigger "Inbound Webhook"
+   → copier l'URL générée (`https://services.leadconnectorhq.com/hooks/XXX`)
+3. **Pixel ID** : Settings → Tracking → noter le Location ID du sub-account
+4. **Custom fields** : Settings → Custom Fields → créer (textarea) si besoin :
+   - `project_type`, `estimated_amount`, `message`
+   - `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`
+   - `referrer`, `language`, `site_source`, `submitted_at`
+
+   *(Si non créés : GHL ignorera ces fields silencieusement, mais le contact
+   sera quand même créé avec le standard set firstName/lastName/email/phone/tags.)*
+
+### Étape 2 — Côté code (10 min)
+
+Fork le repo, ouvre **`src/lib/config.ts`**, édite tout le `clientConfig` :
+
+```ts
+export const clientConfig = {
+  name: "Nouveau Client",
+  shortName: "NomCourt",
+  // ... toutes les autres valeurs (téléphone, email, address, etc.)
+
+  ghl: {
+    enabled: true,
+    pixelId: "",                          // sera lu depuis VITE_GHL_PIXEL_ID
+    sourcePrefix: "nouveauclient",        // → tags GHL "nouveauclient-leadform"
+    clientName: "Nouveau Client",         // → custom field site_source
+    defaultTags: ["site-lead"],
+    defaultCountry: "CA",
+  },
+} as const;
+```
+
+Édite **`src/lib/translations.ts`** pour les copies bilingues FR/EN.
+
+### Étape 3 — Côté infrastructure Cloudflare (5 min)
+
+```bash
+# 1. Créer la D1 dédiée pour ce client
+npx wrangler d1 create nouveauclient-leads
+
+# 2. Récupérer le database_id retourné, l'écrire dans wrangler.jsonc
+#    (binding "DB" → database_id: "...")
+
+# 3. Appliquer le schéma
+npx wrangler d1 execute nouveauclient-leads --file=./schema.sql --remote
+
+# 4. Appliquer toutes les migrations
+npx wrangler d1 execute nouveauclient-leads --file=./migrations/002_add_auth_tables.sql --remote
+npx wrangler d1 execute nouveauclient-leads --file=./migrations/003_add_lead_attempts.sql --remote
+npx wrangler d1 execute nouveauclient-leads --file=./migrations/004_add_lead_attribution.sql --remote
+
+# 5. Set les secrets
+npx wrangler secret put ADMIN_PASSWORD       # mot de passe admin du dashboard
+npx wrangler secret put RESEND_API_KEY        # clé Resend pour les emails
+npx wrangler secret put GHL_WEBHOOK_URL       # URL webhook GHL de l'étape 1.2
+
+# 6. Set la variable build-time pour le pixel GHL
+echo "VITE_GHL_PIXEL_ID=<location_id_de_l_étape_1.3>" >> .env.production
+```
+
+### Étape 4 — Déploiement
+
+```bash
+bun install
+bun run build      # build avec VITE_GHL_PIXEL_ID injecté
+npx wrangler deploy
+```
+
+### Étape 5 — Smoke test (5 min)
+
+1. Ouvrir le site déployé en navigation privée
+2. Soumettre **1 lead par chacun des 4 points de capture** :
+   - Hero LeadForm (formulaire complet)
+   - MidPageCTA (rappel rapide)
+   - ExitIntent (déclenché en sortant la souris en haut)
+   - Calculator (capture email après simulation)
+3. Vérifier dans GHL → Contacts qu'apparaissent **4 contacts** avec :
+   - Tags : `nouveauclient-leadform`, `nouveauclient-midpage-cta`, etc.
+   - `lang-fr` (ou `lang-en` selon la langue testée)
+   - Custom fields remplis (project_type, message, utm_*, etc.)
+4. Vérifier `/admin/leads` du site : 4 leads avec **GHL statut = ✓ ok**
+
+### Test attribution UTM
+
+Ouvrir une URL avec UTM, ex :
+```
+https://nouveauclient.com/?utm_source=google&utm_medium=cpc&utm_campaign=spring2026
+```
+
+Naviguer dans le site (les UTM disparaissent de l'URL), puis soumettre un lead.
+Dans GHL Contact → Custom Fields → vérifier `utm_source=google`, `utm_medium=cpc`,
+`utm_campaign=spring2026`.
+
+### Tag list disponible
+
+Tous les leads reçoivent automatiquement :
+| Tag | Quand |
+|---|---|
+| `<sourcePrefix>-<source>` | Toujours (ex: `serujan-leadform`) |
+| `lang-fr` ou `lang-en` | Selon `navigator.language` du visiteur |
+| `utm-<source>` | Si UTM source présent |
+| `utm-medium-<medium>` | Si UTM medium présent |
+| `campaign-<campaign>` | Si UTM campaign présent |
+| `<defaultTags[]>` | Tags par défaut du client (config.ts) |
+
+Cap : **10 tags max par lead**, dedup case-insensitive.
+
+### En cas de problème
+
+| Symptôme | Diagnostic | Solution |
+|---|---|---|
+| Lead arrive en D1 mais pas en GHL | `ghl_status = "error"` dans admin | Vérifier que `GHL_WEBHOOK_URL` est correct, tester avec Postman |
+| Lead arrive en D1 et GHL mais sans tags | Workflow GHL ne lit pas `tags` array | Activer "Add Tags" dans le step de création de contact GHL |
+| Custom fields vides dans GHL | Custom fields pas créés côté GHL | Étape 1.4 : créer les custom fields manquants |
+| `ghl_status = "skipped"` | `GHL_WEBHOOK_URL` non défini OU `ghl.enabled = false` | Set le secret + vérifier config.ts |

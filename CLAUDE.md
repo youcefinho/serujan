@@ -185,11 +185,28 @@ Chaque section v2 commence par :
 
 ### Tables D1 (schema.sql + migrations/)
 ```sql
-leads(id, name, email, phone, project_type, estimated_amount, message, created_at)
+leads(
+  id, name, email, phone, project_type, estimated_amount, message,
+  -- Attribution (migration 004)
+  source, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
+  referrer, language, tags,
+  -- GHL sync (migration 004)
+  synced_to_ghl_at, ghl_status, ghl_response,
+  created_at
+)
 admin_sessions(token, created_at, expires_at)  -- TTL 24h
 login_attempts(id, ip, attempted_at)           -- rate limit login
 lead_attempts(id, ip, attempted_at)            -- rate limit form
 ```
+
+### GoHighLevel multi-tenant (migration 004)
+- `src/lib/config.ts` → section `clientConfig.ghl` (sourcePrefix, clientName, pixelId, defaultTags, defaultCountry)
+- `src/worker/ghl.ts` → module pur (splitName, toE164, deriveTags, buildGhlPayload, forwardToGhl avec retry 1×)
+- `src/lib/leadClient.ts` → wrapper `submitLead({ source, payload })` utilisé par les 4 composants
+- `src/lib/attribution.ts` → capture UTM/referrer/lang à la 1ère visite (sessionStorage)
+- `src/components/GhlPixel.tsx` → injection conditionnelle pixel via `VITE_GHL_PIXEL_ID`
+- Worker : `ctx.waitUntil()` non bloquant pour forward GHL + UPDATE D1 avec statut sync
+- Onboarding nouveau client : voir DEPLOYMENT.md → section "Onboarding d'un nouveau client"
 
 ---
 

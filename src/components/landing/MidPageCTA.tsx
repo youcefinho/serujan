@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { PhoneCall, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
 import { trackCtaClick, trackFormSubmitError, trackLeadFormSubmit } from "@/lib/analytics";
+import { submitLead } from "@/lib/leadClient";
 
 // ═══════════════════════════════════════════════════════════
 // MidPageCTA — bandeau capture rapide entre Bio et Calculator
@@ -39,19 +40,16 @@ export default function MidPageCTA() {
     setStatus("sending");
     const elapsed_ms = Date.now() - mountRef.current;
     try {
-      const res = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const res = await submitLead({
+        source: "midpage_cta",
+        payload: {
           name: sanitizeInput(name, 100),
-          email: "",
           phone: sanitizeInput(phone, 30),
           project_type: "Rappel rapide",
-          estimated_amount: "",
           message: t(translations.midPageCTA.sourceTag),
           hp: "",
           elapsed_ms,
-        }),
+        },
       });
       if (!res.ok) throw new Error();
       setStatus("success");
