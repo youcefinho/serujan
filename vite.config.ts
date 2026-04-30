@@ -15,30 +15,10 @@ export default defineConfig({
     outDir: "dist",
     sourcemap: false,
     cssCodeSplit: true,
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (id.includes("node_modules")) {
-            if (id.includes("/motion/")) return "vendor-motion";
-            if (id.includes("/@tanstack/")) return "vendor-tanstack";
-            if (id.includes("/lucide-react/")) return "vendor-icons";
-            // React 19 + ses dépendances directes doivent être dans le MÊME chunk.
-            // Sinon scheduler/use-sync-external-store init avant React et tente
-            // d'accéder à des APIs (ex: Activity) qui ne sont pas encore définies
-            // → "Cannot set properties of undefined (setting 'Activity')".
-            if (
-              id.includes("/react/") ||
-              id.includes("/react-dom/") ||
-              id.includes("/scheduler/") ||
-              id.includes("/use-sync-external-store/")
-            ) {
-              return "vendor-react";
-            }
-            return "vendor";
-          }
-        },
-      },
-    },
+    // Pas de manualChunks custom : Vite/Rollup gèrent le code-splitting
+    // automatiquement par route (TanStack autoCodeSplitting) + dynamic imports.
+    // Le manuel a causé 2 bugs d'init order (React Activity, motion ReferenceError)
+    // car il sépare des modules qui se référencent en cycle.
   },
   test: {
     globals: true,
