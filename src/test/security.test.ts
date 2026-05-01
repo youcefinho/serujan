@@ -143,10 +143,14 @@ describe("buildSecurityHeaders + CSP", () => {
     expect(CSP_DIRECTIVES).toContain("frame-ancestors 'none'");
   });
 
-  it("CSP whitelist Google Analytics uniquement (zéro Calendly, zéro Spotify)", () => {
+  it("CSP whitelist services v2 validés (GA4 + GHL + Clarity + Calendly)", () => {
     expect(CSP_DIRECTIVES).toContain("https://*.google-analytics.com");
-    expect(CSP_DIRECTIVES).not.toContain("calendly");
+    expect(CSP_DIRECTIVES).toContain("https://*.leadconnectorhq.com");
+    expect(CSP_DIRECTIVES).toContain("https://*.clarity.ms");
+    expect(CSP_DIRECTIVES).toContain("https://*.calendly.com");
+    // Services non utilisés explicitement absents
     expect(CSP_DIRECTIVES).not.toContain("spotify");
+    expect(CSP_DIRECTIVES).not.toContain("twitch");
   });
 
   it("CSP autorise les fonts self-hosted (data: pour woff2 inline)", () => {

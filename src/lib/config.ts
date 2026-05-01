@@ -63,6 +63,11 @@ export const clientConfig = {
   elev8AcademyUrl: "https://elev8academie.ca/",
   siteUrl: "https://serujan.intralysqc.workers.dev",
 
+  // Calendly — lien de prise de rendez-vous direct (alternative au form GHL).
+  // Format : https://calendly.com/serujan/30min ou similaire.
+  // Si "REPLACE_WITH_CALENDLY_URL" → fallback vers mailto au click.
+  calendlyUrl: "REPLACE_WITH_CALENDLY_URL",
+
   // ── Assets ─────────────────────────────────────────────
   // Logo officiel "Équipe Serujan" — version recolorée (charbon-friendly)
   // ÉQUIPE en or #D4AF37 + SERUJAN en blanc + monogramme SK

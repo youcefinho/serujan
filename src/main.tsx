@@ -5,6 +5,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { initWebVitals } from "@/lib/web-vitals";
 
 // Polices self-hosted (zéro appel réseau, immune aux blocages CSP)
 import "@fontsource-variable/fraunces/index.css";
@@ -17,6 +19,7 @@ const router = createRouter({
   routeTree,
   scrollRestoration: true,
   defaultPreloadStaleTime: 0,
+  defaultPreload: "intent", // Hover prefetch — pages pre-loadées au hover des liens
 });
 
 // Register the router for type-safety
@@ -33,9 +36,14 @@ if (loader) {
   setTimeout(() => loader.remove(), 300);
 }
 
-// Mount the app
+// Initialize Web Vitals reporting (RUM → GA4)
+initWebVitals();
+
+// Mount the app — wrapped in ErrorBoundary pour filet de sécurité runtime
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ErrorBoundary>
+      <RouterProvider router={router} />
+    </ErrorBoundary>
   </StrictMode>,
 );

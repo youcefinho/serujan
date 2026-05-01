@@ -5,6 +5,8 @@ import { LanguageProvider, useLanguage } from "@/lib/LanguageContext";
 import { GhlPixel } from "@/components/GhlPixel";
 import { ClarityTag } from "@/components/ClarityTag";
 import { CookieBanner } from "@/components/CookieBanner";
+import { useScrollDepth } from "@/hooks/useScrollDepth";
+import { useTimeOnPage } from "@/hooks/useTimeOnPage";
 
 function NotFoundComponent() {
   const { lang } = useLanguage();
@@ -72,6 +74,10 @@ function RootComponent() {
     }
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);
+
+  // Tracking engagement enrichi (scroll depth + time on page)
+  useScrollDepth();
+  useTimeOnPage();
 
   return (
     <LanguageProvider>
