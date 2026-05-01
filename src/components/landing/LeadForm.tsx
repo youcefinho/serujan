@@ -1,148 +1,30 @@
 import { useLanguage } from "@/lib/LanguageContext";
-import { useNavigate } from "@tanstack/react-router";
 import { translations } from "@/lib/translations";
 import { clientConfig } from "@/lib/config";
-import {
-  trackLeadFormSubmit,
-  trackFormStart,
-  trackFormSubmitError,
-  trackPhoneClick,
-  trackEmailClick,
-} from "@/lib/analytics";
-import { submitLead } from "@/lib/leadClient";
-import { isValidEmail, isValidPhone, sanitizeInput } from "@/lib/security";
-import { motion, useInView, AnimatePresence } from "motion/react";
-import { useState, useRef, useEffect } from "react";
-import { toast } from "sonner";
-import {
-  Send,
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-  Shield,
-  Phone,
-  Mail,
-  ArrowRight,
-} from "lucide-react";
+import { trackPhoneClick, trackEmailClick } from "@/lib/analytics";
+import { motion, useInView } from "motion/react";
+import { useRef } from "react";
+import { Shield, Phone, Mail, ArrowRight } from "lucide-react";
+import { GhlFormEmbed } from "@/components/GhlFormEmbed";
 
 // ═══════════════════════════════════════════════════════════
-// LeadForm v2 — fusion FreeConsultation + Form
-// Côté gauche : pitch + 2 CTA directs (téléphone, email)
-// Côté droit  : formulaire premium avec anti-bot timing
+// LeadForm v3 — wrapper visuel + GhlFormEmbed
+//
+// Architecture v2 (mai 2026) — Site Forms GHL embed.
+// Côté gauche : pitch + 2 CTA directs (téléphone, email) — INCHANGÉ
+// Côté droit  : <GhlFormEmbed> qui rend le widget GHL dans une iframe
+//
+// Le composant custom v1 (~500 lignes Zod + state + submit) est archivé.
+// La logique form (validation, anti-bot, capture lead) est désormais
+// gérée par GHL natively via le trigger "Form Submitted".
 // ═══════════════════════════════════════════════════════════
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export default function LeadForm() {
-  const { t, ta } = useLanguage();
+  const { t } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.1 });
-  const navigate = useNavigate();
-
-  // Timestamp de mount pour anti-bot timing
-  const mountTimeRef = useRef<number>(Date.now());
-  useEffect(() => {
-    mountTimeRef.current = Date.now();
-  }, []);
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    projectType: "",
-    estimatedAmount: "",
-    message: "",
-    hp: "",
-  });
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const projectTypeOptions = ta(translations.leadForm.projectTypeOptions) as string[];
-  const amountOptions = ta(translations.leadForm.amountOptions) as string[];
-
-  function validate(): boolean {
-    const newErrors: Record<string, string> = {};
-    // Nom obligatoire (≥ 2 chars)
-    if (sanitizeInput(form.name).length < 2) newErrors.name = t(translations.leadForm.nameRequired);
-    // Téléphone obligatoire et valide
-    if (!form.phone.trim() || !isValidPhone(form.phone))
-      newErrors.phone = t(translations.leadForm.phoneInvalid);
-    // Montant obligatoire (sélection non vide)
-    if (!form.estimatedAmount) newErrors.estimatedAmount = t(translations.leadForm.amountRequired);
-    // Email optionnel mais validé si rempli
-    if (form.email && !isValidEmail(form.email))
-      newErrors.email = t(translations.leadForm.emailInvalid);
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) {
-      toast.error(t(translations.leadForm.validationError));
-    }
-    return Object.keys(newErrors).length === 0;
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (form.hp) return;
-    if (!validate()) return;
-
-    setStatus("sending");
-    const elapsed_ms = Date.now() - mountTimeRef.current;
-
-    try {
-      const res = await submitLead({
-        source: "leadform",
-        payload: {
-          name: sanitizeInput(form.name, 100),
-          email: sanitizeInput(form.email, 200),
-          phone: sanitizeInput(form.phone, 20),
-          project_type: sanitizeInput(form.projectType, 50),
-          estimated_amount: sanitizeInput(form.estimatedAmount, 50),
-          message: sanitizeInput(form.message, 2000),
-          hp: form.hp,
-          elapsed_ms,
-        },
-      });
-
-      if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as Record<string, string>;
-        throw new Error(data.error || t(translations.leadForm.serverError));
-      }
-
-      setStatus("success");
-      toast.success(t(translations.leadForm.success), {
-        description: t(translations.leadForm.trustText),
-      });
-      trackLeadFormSubmit(form.projectType);
-      setForm({
-        name: "",
-        email: "",
-        phone: "",
-        projectType: "",
-        estimatedAmount: "",
-        message: "",
-        hp: "",
-      });
-      // Redirection vers /merci pour tracking conversion
-      setTimeout(() => {
-        navigate({ to: "/merci" });
-      }, 800);
-    } catch (err) {
-      setStatus("error");
-      const reason = err instanceof Error ? err.message.slice(0, 60) : "leadform-network";
-      trackFormSubmitError(reason);
-      toast.error(t(translations.leadForm.error), {
-        description: `${t(translations.leadForm.genericError)} ${clientConfig.phone.display}`,
-      });
-    }
-  }
-
-  // Premier keystroke = form_start (une seule fois)
-  const startedRef = useRef(false);
-  function markStartedOnce() {
-    if (!startedRef.current) {
-      startedRef.current = true;
-      trackFormStart("lead");
-    }
-  }
 
   return (
     <section
@@ -150,7 +32,7 @@ export default function LeadForm() {
       ref={ref}
       className="relative py-28 md:py-36 px-6 bg-black-surface bg-stars grain-overlay overflow-hidden"
     >
-      {/* Halo */}
+      {/* Halos signature — wrapper visuel inchangé */}
       <div
         className="absolute top-1/2 -left-40 w-[40rem] h-[40rem] rounded-full pointer-events-none opacity-50"
         style={{
@@ -169,7 +51,7 @@ export default function LeadForm() {
       />
 
       <div className="relative max-w-6xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-        {/* ── Côté pitch ────────────────────────────────────── */}
+        {/* ── Côté pitch (inchangé v1→v2) ─────────────────────── */}
         <div className="lg:col-span-5 lg:sticky lg:top-32">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -262,228 +144,37 @@ export default function LeadForm() {
           </motion.div>
         </div>
 
-        {/* ── Formulaire ──────────────────────────────────── */}
+        {/* ── Côté formulaire — GHL Site Form embed (v2) ──────── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.3, ease }}
           className="lg:col-span-7"
         >
-          <AnimatePresence mode="wait">
-            {status === "success" ? (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.6, ease }}
-                className="relative p-10 md:p-12 rounded-2xl bg-gradient-to-br from-black-deep to-black-elevated border border-gold/30 shadow-elevate text-center"
-              >
-                <div className="w-16 h-16 rounded-full bg-gold/15 border border-gold/40 flex items-center justify-center mx-auto mb-6 shadow-gold-sm">
-                  <CheckCircle2 className="w-8 h-8 text-gold" strokeWidth={2} />
-                </div>
-                <h3 className="font-display text-3xl md:text-4xl text-foreground mb-4 tracking-tight">
-                  {t(translations.leadForm.success)}
-                </h3>
-                <p className="text-foreground/65 leading-relaxed max-w-md mx-auto">
-                  {t(translations.leadForm.trustText)}
-                </p>
-              </motion.div>
-            ) : (
-              <motion.form
-                key="form"
-                onSubmit={handleSubmit}
-                onFocus={markStartedOnce}
-                exit={{ opacity: 0, scale: 0.98 }}
-                className="relative p-8 md:p-10 rounded-2xl bg-black-deep/70 border border-gold/15 shadow-elevate"
-              >
-                {/* Trust badge en haut — rassure AVANT de remplir */}
-                <div className="flex items-center gap-2 mb-7 pb-6 border-b border-gold/10">
-                  <Shield className="w-4 h-4 text-gold flex-shrink-0" strokeWidth={1.7} />
-                  <span className="text-xs md:text-sm text-foreground/75 leading-relaxed">
-                    {t(translations.leadForm.trustBadge)}
-                  </span>
-                </div>
+          <div className="relative p-6 md:p-8 rounded-2xl bg-black-deep/70 border border-gold/15 shadow-elevate">
+            {/* Trust badge en haut — rassure AVANT de remplir */}
+            <div className="flex items-center gap-2 mb-6 pb-5 border-b border-gold/10">
+              <Shield className="w-4 h-4 text-gold flex-shrink-0" strokeWidth={1.7} />
+              <span className="text-xs md:text-sm text-foreground/75 leading-relaxed">
+                {t(translations.leadForm.trustBadge)}
+              </span>
+            </div>
 
-                {/* Honeypot */}
-                <input
-                  type="text"
-                  name="hp"
-                  value={form.hp}
-                  onChange={(e) => setForm({ ...form, hp: e.target.value })}
-                  className="hidden"
-                  tabIndex={-1}
-                  autoComplete="off"
-                  aria-hidden
-                />
+            {/* Widget GHL Site Form */}
+            <GhlFormEmbed
+              formId={clientConfig.ghl.formIds.leadform}
+              formName="Serujan Lead Form"
+              height={650}
+            />
 
-                {/* ── 3 champs essentiels (friction minimale) ── */}
-
-                {/* Nom — obligatoire */}
-                <Field label={`${t(translations.leadForm.name)} *`} error={errors.name}>
-                  <input
-                    type="text"
-                    required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className={inputCls}
-                    placeholder="Jean-Pierre Tremblay"
-                  />
-                </Field>
-
-                <div className="grid md:grid-cols-2 gap-5 mt-5">
-                  {/* Téléphone — obligatoire (B2B prime au tel) */}
-                  <Field label={`${t(translations.leadForm.phone)} *`} error={errors.phone}>
-                    <input
-                      type="tel"
-                      required
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className={inputCls}
-                      placeholder="(514) 555-1234"
-                    />
-                  </Field>
-                  {/* Montant — obligatoire (qualification) */}
-                  <Field
-                    label={`${t(translations.leadForm.estimatedAmount)} *`}
-                    error={errors.estimatedAmount}
-                  >
-                    <select
-                      required
-                      value={form.estimatedAmount}
-                      onChange={(e) => setForm({ ...form, estimatedAmount: e.target.value })}
-                      className={inputCls}
-                    >
-                      <option value="">—</option>
-                      {amountOptions.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  </Field>
-                </div>
-
-                {/* ── Accordéon optionnel — réduit la friction visuelle ── */}
-                <details className="mt-6 group">
-                  <summary className="cursor-pointer text-sm text-foreground/50 hover:text-gold transition-colors select-none flex items-center gap-2">
-                    <span className="w-4 h-4 rounded border border-gold/25 flex items-center justify-center text-[10px] text-gold/60 group-open:rotate-90 transition-transform duration-300">
-                      ›
-                    </span>
-                    {t(translations.leadForm.projectType)} {t(translations.leadForm.optional)}
-                  </summary>
-                  <div className="mt-4 space-y-5 animate-fade-in">
-                    <div className="grid md:grid-cols-2 gap-5">
-                      {/* Email — optionnel */}
-                      <Field
-                        label={`${t(translations.leadForm.email)} ${t(translations.leadForm.optional)}`}
-                        error={errors.email}
-                      >
-                        <input
-                          type="email"
-                          value={form.email}
-                          onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className={inputCls}
-                          placeholder="jean@entreprise.com"
-                        />
-                      </Field>
-                      {/* Type — optionnel */}
-                      <Field
-                        label={`${t(translations.leadForm.projectType)} ${t(translations.leadForm.optional)}`}
-                      >
-                        <select
-                          value={form.projectType}
-                          onChange={(e) => setForm({ ...form, projectType: e.target.value })}
-                          className={inputCls}
-                        >
-                          <option value="">—</option>
-                          {projectTypeOptions.map((opt) => (
-                            <option key={opt} value={opt}>
-                              {opt}
-                            </option>
-                          ))}
-                        </select>
-                      </Field>
-                    </div>
-                    {/* Message — optionnel */}
-                    <Field label={t(translations.leadForm.message)}>
-                      <textarea
-                        rows={3}
-                        value={form.message}
-                        onChange={(e) => setForm({ ...form, message: e.target.value })}
-                        className={`${inputCls} resize-none`}
-                        placeholder=""
-                      />
-                    </Field>
-                  </div>
-                </details>
-
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={status === "sending"}
-                  className="group relative overflow-hidden mt-8 w-full py-4 bg-gradient-gold text-black-deep font-semibold rounded-md shadow-gold-sm hover:shadow-gold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 flex items-center justify-center gap-2 btn-shine btn-glow"
-                >
-                  {status === "sending" ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>{t(translations.leadForm.sending)}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-                      <span>{t(translations.leadForm.submit)}</span>
-                    </>
-                  )}
-                </button>
-
-                {status === "error" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 flex items-center gap-2 p-3 rounded-md bg-destructive/10 border border-destructive/30 text-destructive-foreground text-sm"
-                  >
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <p>
-                      {t(translations.leadForm.genericError)}{" "}
-                      <a
-                        href={`tel:+${clientConfig.phone.international}`}
-                        onClick={() => trackPhoneClick("leadform-error-fallback")}
-                        className="underline font-semibold"
-                      >
-                        {clientConfig.phone.display}
-                      </a>
-                    </p>
-                  </motion.div>
-                )}
-              </motion.form>
-            )}
-          </AnimatePresence>
+            {/* Privacy note Loi 25 */}
+            <p className="mt-5 text-[11px] text-foreground/45 leading-relaxed">
+              Conformément à la Loi 25 du Québec, vos informations restent strictement confidentielles
+              et ne sont jamais transmises à un prêteur sans votre autorisation explicite.
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>
-  );
-}
-
-const inputCls =
-  "w-full px-4 py-3 rounded-md bg-black-elevated/40 border border-gold/10 text-foreground placeholder-foreground/30 focus:border-gold/40 focus:bg-black-elevated/60 focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all duration-200";
-
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <label className="block text-xs uppercase tracking-[0.18em] text-foreground/55 mb-2">
-        {label}
-      </label>
-      {children}
-      {error && <p className="text-xs text-destructive-foreground mt-1.5">{error}</p>}
-    </div>
   );
 }

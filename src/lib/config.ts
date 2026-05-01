@@ -88,10 +88,23 @@ export const clientConfig = {
   emailFrom: "Équipe Serujan <onboarding@resend.dev>",
 
   // ── GoHighLevel (multi-tenant ready) ────────────────────
-  // Pour onboarder un nouveau client : changer ces 6 valeurs +
-  // set GHL_WEBHOOK_URL (wrangler secret) + VITE_GHL_PIXEL_ID (.env).
-  // Voir DEPLOYMENT.md → "Onboarding d'un nouveau client".
+  // Architecture v2 (mai 2026) : Site Forms GHL embed au lieu de webhook custom.
+  // Voir intralys-blueprint/05-lead-form-rapide/composant-config-driven.md
+  //
+  // Pour onboarder un nouveau client :
+  // 1. GHL → Sites → Forms → New Form → ajouter champs niche → Save
+  // 2. Récupérer le formId depuis l'embed code GHL
+  // 3. Renseigner clientConfig.ghl.formIds.leadform ci-dessous
+  // 4. Côté GHL : créer workflow "Form Submitted" → automations niche-specific
   ghl: {
+    // ── v2 Site Forms ────────────────────────────────────
+    formIds: {
+      // ⚠️ PLACEHOLDER — à remplacer par le formId réel après création du form GHL.
+      // Tant que c'est "REPLACE_AFTER_GHL_SETUP", l'iframe affiche un message dev.
+      leadform: "REPLACE_AFTER_GHL_SETUP",
+    },
+
+    // ── v1 webhook (legacy, à retirer en D3) ─────────────
     enabled: true,                  // master switch (false → forward désactivé même si webhook configuré)
     pixelId: "",                    // Public, build-time. Vide = pas d'injection pixel.
     sourcePrefix: "serujan",        // → tags GHL kebab-case : "serujan-leadform"

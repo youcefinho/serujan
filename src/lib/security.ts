@@ -59,17 +59,18 @@ export function buildSecurityHeaders(csp: string): Record<string, string> {
   };
 }
 
-/** CSP whitelist pour Serujan v2 (GA4, Clarity, assets distants, vidéo Elev8). */
+/** CSP whitelist pour Serujan v2 (GA4, Clarity, GHL Site Form embed, assets distants, vidéo Elev8). */
 export const CSP_DIRECTIVES = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://*.google-analytics.com https://www.clarity.ms https://*.clarity.ms",
+  "script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://*.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://link.msgsndr.com https://msgsndr.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://assets.cdn.filesafe.space https://*.google-analytics.com https://*.googletagmanager.com https://*.clarity.ms",
+  "img-src 'self' data: blob: https://assets.cdn.filesafe.space https://*.google-analytics.com https://*.googletagmanager.com https://*.clarity.ms https://msgsndr.com https://*.leadconnectorhq.com",
   "font-src 'self' data:",
   "media-src 'self' https://o6xngqfgnt.wpdns.site",
-  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms",
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms https://*.leadconnectorhq.com https://api.leadconnectorhq.com https://msgsndr.com",
+  "frame-src https://*.leadconnectorhq.com https://api.leadconnectorhq.com https://msgsndr.com",
   "frame-ancestors 'none'",
-  "form-action 'self'",
+  "form-action 'self' https://*.leadconnectorhq.com",
   "base-uri 'self'",
   "object-src 'none'",
   "upgrade-insecure-requests",
