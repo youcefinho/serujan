@@ -3,6 +3,8 @@ import { Outlet, Link, createRootRoute } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { LanguageProvider, useLanguage } from "@/lib/LanguageContext";
 import { GhlPixel } from "@/components/GhlPixel";
+import { ClarityTag } from "@/components/ClarityTag";
+import { CookieBanner } from "@/components/CookieBanner";
 
 function NotFoundComponent() {
   const { lang } = useLanguage();
@@ -75,7 +77,9 @@ function RootComponent() {
     <LanguageProvider>
       <SkipLink />
       <GhlPixel />
+      <ClarityTag />
       <Outlet />
+      <CookieBanner />
     </LanguageProvider>
   );
 }
