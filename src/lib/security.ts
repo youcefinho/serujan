@@ -59,16 +59,16 @@ export function buildSecurityHeaders(csp: string): Record<string, string> {
   };
 }
 
-/** CSP whitelist pour Serujan v2 (GA4, Clarity, GHL Site Form embed, Calendly, assets distants, vidéo Elev8). */
+/** CSP whitelist pour Serujan v2 (GA4, Google Ads, Meta Pixel, Clarity, GHL Site Form embed, Calendly, assets distants, vidéo Elev8). */
 export const CSP_DIRECTIVES = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://*.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://link.msgsndr.com https://msgsndr.com https://assets.calendly.com",
+  "script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://*.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://link.msgsndr.com https://msgsndr.com https://assets.calendly.com https://connect.facebook.net https://www.googleadservices.com",
   "style-src 'self' 'unsafe-inline' https://assets.calendly.com",
-  "img-src 'self' data: blob: https://assets.cdn.filesafe.space https://*.google-analytics.com https://*.googletagmanager.com https://*.clarity.ms https://msgsndr.com https://*.leadconnectorhq.com https://*.calendly.com",
+  "img-src 'self' data: blob: https://assets.cdn.filesafe.space https://*.google-analytics.com https://*.googletagmanager.com https://*.clarity.ms https://msgsndr.com https://*.leadconnectorhq.com https://*.calendly.com https://www.facebook.com https://*.facebook.com",
   "font-src 'self' data:",
   "media-src 'self' https://o6xngqfgnt.wpdns.site",
-  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms https://*.leadconnectorhq.com https://api.leadconnectorhq.com https://msgsndr.com https://*.calendly.com",
-  "frame-src https://*.leadconnectorhq.com https://api.leadconnectorhq.com https://msgsndr.com https://*.calendly.com",
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms https://*.leadconnectorhq.com https://api.leadconnectorhq.com https://msgsndr.com https://*.calendly.com https://connect.facebook.net https://www.facebook.com https://*.facebook.com https://www.google.com https://googleads.g.doubleclick.net",
+  "frame-src https://*.leadconnectorhq.com https://api.leadconnectorhq.com https://msgsndr.com https://*.calendly.com https://www.facebook.com https://td.doubleclick.net",
   "frame-ancestors 'none'",
   "form-action 'self' https://*.leadconnectorhq.com https://*.calendly.com",
   "base-uri 'self'",

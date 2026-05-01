@@ -66,6 +66,12 @@
       gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
     </script>
 
+    <!-- SWAP: Google Ads conversion tag (AW-XXXXXXXXX). Reuse de gtag déjà chargé.
+         Tant que le placeholder AW-XXXXXXXXX n'est pas remplacé, gtag config est no-op côté serveur Google. -->
+    <script>
+      gtag('config', 'AW-XXXXXXXXX');
+    </script>
+
     <!-- PWA + favicons -->
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
@@ -80,6 +86,13 @@
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://assets.cdn.filesafe.space" />
     <link rel="preconnect" href="https://assets.cdn.filesafe.space" crossorigin />
+    <!-- GHL Site Forms embed -->
+    <link rel="preconnect" href="https://link.msgsndr.com" crossorigin />
+    <link rel="preconnect" href="https://api.leadconnectorhq.com" crossorigin />
+    <!-- Meta Pixel (chargé conditionnel après consent marketing) -->
+    <link rel="dns-prefetch" href="https://connect.facebook.net" />
+    <!-- Microsoft Clarity (chargé conditionnel après consent analytics) -->
+    <link rel="dns-prefetch" href="https://www.clarity.ms" />
 
     <!-- Preload fonts critiques — évite le FOIT (flash texte invisible) -->
     <link rel="preload" as="font" href="/fonts/inter-latin-wght-normal.woff2" type="font/woff2" crossorigin />

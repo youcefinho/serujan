@@ -3,6 +3,7 @@ import { Outlet, Link, createRootRoute } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { LanguageProvider, useLanguage } from "@/lib/LanguageContext";
 import { GhlPixel } from "@/components/GhlPixel";
+import { MetaPixel } from "@/components/MetaPixel";
 import { ClarityTag } from "@/components/ClarityTag";
 import { CookieBanner } from "@/components/CookieBanner";
 import { useScrollDepth } from "@/hooks/useScrollDepth";
@@ -83,6 +84,7 @@ function RootComponent() {
     <LanguageProvider>
       <SkipLink />
       <GhlPixel />
+      <MetaPixel />
       <ClarityTag />
       <Outlet />
       <CookieBanner />

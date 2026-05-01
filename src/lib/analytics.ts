@@ -1,8 +1,11 @@
 // ═══════════════════════════════════════════════════════
-// Module Analytics — Tracking GA4 des événements clés
+// Module Analytics — Tracking dual-side GA4 + Meta Pixel
 // ═══════════════════════════════════════════════════════
-// Utilisation : import { trackEvent } from "@/lib/analytics";
-//              trackEvent("cta_click", { location: "hero" });
+// Chaque event business (Contact, Lead) fire :
+//   1. GA4 (gtag) — analytics + Google Ads conversions
+//   2. Meta Pixel (fbq) — Facebook Ads optimisation
+// Les 2 sont consent-gated (Loi 25) : si user n'a pas consenti
+// marketing, fbq est undefined et le track est silencieusement skippé.
 // ═══════════════════════════════════════════════════════
 
 declare global {
@@ -20,13 +23,28 @@ export function trackEvent(
   }
 }
 
+// Événement Meta Pixel — silencieux si fbq pas chargé (consent marketing pas accepté)
+function trackMetaEvent(
+  eventName: string,
+  params?: Record<string, string | number | boolean>,
+): void {
+  if (typeof window !== "undefined" && typeof window.fbq === "function") {
+    window.fbq("track", eventName, params);
+  }
+}
+
 // ── Événements prédéfinis ────────────────────────────
 
+// Form lead soumis — dual-fire GA4 + Meta Pixel "Lead"
 export function trackLeadFormSubmit(projectType: string): void {
   trackEvent("lead_form_submit", {
     event_category: "conversion",
     event_label: projectType || "unspecified",
     project_type: projectType || "unspecified",
+  });
+  trackMetaEvent("Lead", {
+    content_name: `Lead form ${projectType || "unspecified"}`,
+    content_category: projectType || "unspecified",
   });
 }
 
@@ -38,12 +56,22 @@ export function trackLanguageToggle(lang: "fr" | "en"): void {
   });
 }
 
+// Appel téléphonique — dual-fire GA4 + Meta Pixel "Contact"
+// Anti-doublon : flag 5s pour éviter spam si user clique 2x rapide
+let phoneContactFired = false;
 export function trackPhoneClick(location: string): void {
   trackEvent("phone_click", {
     event_category: "conversion",
     event_label: location,
     cta_location: location,
   });
+  if (!phoneContactFired) {
+    trackMetaEvent("Contact", { content_name: `Click telephone ${location}` });
+    phoneContactFired = true;
+    setTimeout(() => {
+      phoneContactFired = false;
+    }, 5000);
+  }
 }
 
 export function trackScrollDepth(percent: number): void {
@@ -103,11 +131,19 @@ export function trackFormSubmitError(reason: string): void {
   });
 }
 
-// Lien email cliqué (mailto:)
+// Lien email cliqué (mailto:) — dual-fire GA4 + Meta Pixel "Contact"
+let emailContactFired = false;
 export function trackEmailClick(location: string): void {
   trackEvent("email_click", {
     event_category: "conversion",
     event_label: location,
     cta_location: location,
   });
+  if (!emailContactFired) {
+    trackMetaEvent("Contact", { content_name: `Click email ${location}` });
+    emailContactFired = true;
+    setTimeout(() => {
+      emailContactFired = false;
+    }, 5000);
+  }
 }
