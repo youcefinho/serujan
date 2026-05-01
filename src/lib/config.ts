@@ -104,13 +104,9 @@ export const clientConfig = {
       leadform: "REPLACE_AFTER_GHL_SETUP",
     },
 
-    // ── v1 webhook (legacy, à retirer en D3) ─────────────
-    enabled: true,                  // master switch (false → forward désactivé même si webhook configuré)
+    // ── Pixel GHL (tracking visites — séparé du form) ────
+    enabled: true,                  // master switch pour GhlPixel
     pixelId: "",                    // Public, build-time. Vide = pas d'injection pixel.
-    sourcePrefix: "serujan",        // → tags GHL kebab-case : "serujan-leadform"
-    clientName: "Serujan",          // → custom field GHL "site_source"
-    defaultTags: ["site-lead"],     // tags appliqués à TOUS les leads de ce client
-    defaultCountry: "CA",           // pour normalisation phone E.164 (+1 pour CA/US)
   },
 } as const;
 

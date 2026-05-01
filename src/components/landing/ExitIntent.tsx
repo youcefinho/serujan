@@ -1,19 +1,20 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations } from "@/lib/translations";
-import { isValidPhone, sanitizeInput } from "@/lib/security";
+import { clientConfig } from "@/lib/config";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { useState, useRef, useEffect, useCallback } from "react";
-import { toast } from "sonner";
-import { X, PhoneCall, Loader2, CheckCircle2 } from "lucide-react";
-import { trackExitIntent, trackFormSubmitError, trackLeadFormSubmit } from "@/lib/analytics";
-import { submitLead } from "@/lib/leadClient";
+import { useState, useEffect, useCallback } from "react";
+import { X, PhoneCall, ArrowRight, Phone } from "lucide-react";
+import { trackExitIntent, trackPhoneClick, trackCtaClick } from "@/lib/analytics";
 
 // ═══════════════════════════════════════════════════════════
-// ExitIntent — modal sobre, déclenché UNE FOIS par session
-// quand l'utilisateur s'apprête à quitter (souris vers le haut
-// sur desktop, ou inactivité prolongée sur mobile).
-// 2 champs : nom + tel. Backdrop blur, ESC ferme, click backdrop ferme.
-// Respect prefers-reduced-motion : pas d'animations agressives.
+// ExitIntent v3 — modal sortie souris/inactivité
+//
+// Architecture v2 (mai 2026) — Site Forms GHL embed.
+// Le form custom v1 (name + tel + submit POST /api/leads) est remplacé
+// par 2 CTAs : appel direct OU scroll vers LeadForm principal (#contact).
+//
+// Modal s'affiche UNE fois par session (sessionStorage).
+// Respecte prefers-reduced-motion.
 // ═══════════════════════════════════════════════════════════
 
 const STORAGE_KEY = "serujan-exitintent-shown";
@@ -37,24 +38,33 @@ function markShown() {
   }
 }
 
+function scrollToContact() {
+  if (typeof document === "undefined") return;
+  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 export default function ExitIntent() {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [armed, setArmed] = useState(false);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");
-  const mountRef = useRef<number>(Date.now());
   const reduced = useReducedMotion();
   const backdropTransition = reduced ? { duration: 0 } : { duration: 0.3 };
   const modalTransition = reduced ? { duration: 0 } : { duration: 0.45, ease };
-  const successTransition = reduced ? { duration: 0 } : { duration: 0.5, ease };
 
   const handleClose = useCallback(() => {
     setOpen(false);
     markShown();
     trackExitIntent("closed");
   }, []);
+
+  function handleScrollCta() {
+    trackExitIntent("clicked");
+    trackCtaClick("exit-intent", "scroll-to-leadform");
+    setOpen(false);
+    markShown();
+    // Petit délai pour laisser la modal se fermer avant le scroll
+    setTimeout(scrollToContact, 200);
+  }
 
   // Armer le déclencheur après un court délai (évite faux positif au load)
   useEffect(() => {
@@ -112,40 +122,6 @@ export default function ExitIntent() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open, handleClose]);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (sanitizeInput(name).length < 2) return;
-    if (!isValidPhone(phone)) return;
-    setStatus("sending");
-    const elapsed_ms = Date.now() - mountRef.current;
-    try {
-      const res = await submitLead({
-        source: "exit_intent",
-        payload: {
-          name: sanitizeInput(name, 100),
-          phone: sanitizeInput(phone, 30),
-          project_type: "Exit-intent",
-          message: t(translations.exitIntent.sourceTag),
-          hp: "",
-          elapsed_ms,
-        },
-      });
-      if (!res.ok) throw new Error();
-      setStatus("success");
-      trackLeadFormSubmit("Exit-intent");
-      trackExitIntent("clicked");
-      toast.success(t(translations.exitIntent.success));
-      setName("");
-      setPhone("");
-      // Fermer après 2.5s
-      setTimeout(() => setOpen(false), 2500);
-    } catch {
-      setStatus("idle");
-      trackFormSubmitError("exitintent-network");
-      toast.error(t(translations.leadForm.error));
-    }
-  }
-
   return (
     <AnimatePresence>
       {open && (
@@ -184,97 +160,52 @@ export default function ExitIntent() {
               <X className="w-4 h-4" />
             </button>
 
-            <AnimatePresence mode="wait">
-              {status === "success" ? (
-                <motion.div
-                  key="success"
-                  initial={reduced ? false : { opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={successTransition}
-                  className="text-center py-6"
-                >
-                  <div className="w-14 h-14 rounded-full bg-gold/15 border border-gold/40 flex items-center justify-center mx-auto mb-5 shadow-gold-sm">
-                    <CheckCircle2 className="w-7 h-7 text-gold" strokeWidth={2} />
-                  </div>
-                  <p className="font-display text-xl text-foreground leading-relaxed text-pretty">
-                    {t(translations.exitIntent.success)}
-                  </p>
-                </motion.div>
-              ) : (
-                <motion.form
-                  key="form"
-                  onSubmit={handleSubmit}
-                  initial={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <PhoneCall className="w-3.5 h-3.5 text-gold" strokeWidth={1.7} />
-                    <span className="text-[11px] uppercase tracking-[0.22em] text-gold-light">
-                      {t(translations.midPageCTA.label)}
-                    </span>
-                  </div>
+            <div className="flex items-center gap-2 mb-4">
+              <PhoneCall className="w-3.5 h-3.5 text-gold" strokeWidth={1.7} />
+              <span className="text-[11px] uppercase tracking-[0.22em] text-gold-light">
+                {t(translations.midPageCTA.label)}
+              </span>
+            </div>
 
-                  <h3
-                    id="exit-intent-title"
-                    className="font-display text-2xl md:text-3xl text-foreground tracking-tight mb-3 text-balance"
-                  >
-                    {t(translations.exitIntent.title)}
-                  </h3>
+            <h3
+              id="exit-intent-title"
+              className="font-display text-2xl md:text-3xl text-foreground tracking-tight mb-3 text-balance"
+            >
+              {t(translations.exitIntent.title)}
+            </h3>
 
-                  <p className="text-sm text-foreground/65 leading-relaxed mb-6 text-pretty">
-                    {t(translations.exitIntent.subtitle)}
-                  </p>
+            <p className="text-sm text-foreground/65 leading-relaxed mb-6 text-pretty">
+              {t(translations.exitIntent.subtitle)}
+            </p>
 
-                  <div className="space-y-3 mb-5">
-                    <input
-                      type="text"
-                      required
-                      minLength={2}
-                      maxLength={100}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder={t(translations.exitIntent.name)}
-                      aria-label={t(translations.exitIntent.name)}
-                      className="w-full px-4 py-3 rounded-md bg-black-elevated/60 border border-gold/15 text-foreground placeholder-foreground/40 focus:border-gold/45 focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all text-sm"
-                    />
-                    <input
-                      type="tel"
-                      required
-                      maxLength={30}
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder={t(translations.exitIntent.phone)}
-                      aria-label={t(translations.exitIntent.phone)}
-                      className="w-full px-4 py-3 rounded-md bg-black-elevated/60 border border-gold/15 text-foreground placeholder-foreground/40 focus:border-gold/45 focus:outline-none focus:ring-2 focus:ring-gold/20 transition-all text-sm tabular-nums"
-                    />
-                  </div>
+            {/* CTAs : appel direct OU scroll vers form */}
+            <div className="space-y-3">
+              <a
+                href={`tel:+${clientConfig.phone.international}`}
+                onClick={() => trackPhoneClick("exit-intent")}
+                className="group w-full inline-flex items-center justify-center gap-2 py-3 rounded-md bg-gradient-gold text-black-deep font-semibold text-sm hover:-translate-y-0.5 transition-all duration-300 shadow-gold-sm hover:shadow-gold btn-shine"
+              >
+                <Phone className="w-3.5 h-3.5" />
+                <span>{clientConfig.phone.display}</span>
+              </a>
 
-                  <button
-                    type="submit"
-                    disabled={status === "sending"}
-                    className="w-full py-3 rounded-md bg-gradient-gold text-black-deep font-semibold text-sm hover:-translate-y-0.5 transition-all duration-300 shadow-gold-sm hover:shadow-gold disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 btn-shine flex items-center justify-center gap-2"
-                  >
-                    {status === "sending" ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        <span>{t(translations.exitIntent.sending)}</span>
-                      </>
-                    ) : (
-                      <span>{t(translations.exitIntent.submit)}</span>
-                    )}
-                  </button>
+              <button
+                type="button"
+                onClick={handleScrollCta}
+                className="group w-full inline-flex items-center justify-center gap-2 py-3 rounded-md border border-gold/30 text-foreground font-medium text-sm hover:border-gold/60 hover:bg-gold/5 transition-all duration-300"
+              >
+                <span>{t(translations.exitIntent.submit)}</span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </button>
+            </div>
 
-                  <button
-                    type="button"
-                    onClick={handleClose}
-                    className="mt-3 w-full py-2 text-xs text-foreground/45 hover:text-foreground/70 transition-colors"
-                  >
-                    {t(translations.exitIntent.decline)}
-                  </button>
-                </motion.form>
-              )}
-            </AnimatePresence>
+            <button
+              type="button"
+              onClick={handleClose}
+              className="mt-4 w-full py-2 text-xs text-foreground/45 hover:text-foreground/70 transition-colors"
+            >
+              {t(translations.exitIntent.decline)}
+            </button>
           </motion.div>
         </motion.div>
       )}

@@ -12,10 +12,6 @@ import "@fontsource-variable/inter/index.css";
 
 import "./styles.css";
 
-// Capture UTM/referrer/language à la 1ère visite (sessionStorage-backed)
-import { captureOnce } from "./lib/attribution";
-captureOnce();
-
 // Create the router instance
 const router = createRouter({
   routeTree,
