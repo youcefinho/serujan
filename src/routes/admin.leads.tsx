@@ -13,12 +13,7 @@ import {
   Calendar,
   Inbox,
   TrendingUp,
-  CheckCircle2,
-  AlertCircle,
-  PauseCircle,
-  Clock,
   Globe,
-  Tag,
 } from "lucide-react";
 
 interface Lead {
@@ -40,7 +35,8 @@ interface Lead {
   referrer?: string | null;
   language?: string | null;
   tags?: string | null;
-  // GHL sync
+  // GHL sync — champs renvoyés par l'API mais non affichés dans le dashboard client.
+  // Cf. règle "client jamais d'erreur" — la sync technique reste interne agence.
   synced_to_ghl_at?: string | null;
   ghl_status?: string | null;
   ghl_response?: string | null;
@@ -52,14 +48,6 @@ const SOURCE_LABELS: Record<string, string> = {
   exit_intent: "Exit-intent",
   calculator: "Calculator",
 };
-
-function GhlStatusIcon({ status }: { status?: string | null }) {
-  if (status === "ok") return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />;
-  if (status === "error") return <AlertCircle className="w-3.5 h-3.5 text-rose-400" />;
-  if (status === "skipped") return <PauseCircle className="w-3.5 h-3.5 text-foreground/30" />;
-  if (status === "pending") return <Clock className="w-3.5 h-3.5 text-gold animate-pulse" />;
-  return <span className="text-foreground/30 text-xs">—</span>;
-}
 
 export const Route = createFileRoute("/admin/leads")({
   component: AdminLeadsPage,
@@ -84,8 +72,6 @@ function exportCSV(leads: Lead[]) {
     "Référent",
     "Langue",
     "Tags",
-    "GHL statut",
-    "GHL synced",
   ];
   const escape = (v: string | null | undefined) => {
     if (!v) return "";
@@ -109,8 +95,6 @@ function exportCSV(leads: Lead[]) {
       escape(l.referrer),
       escape(l.language),
       escape(l.tags),
-      escape(l.ghl_status),
-      escape(l.synced_to_ghl_at),
     ].join(","),
   );
 
@@ -130,7 +114,6 @@ function AdminLeadsPage() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [filterSource, setFilterSource] = useState<string>("all");
-  const [filterGhl, setFilterGhl] = useState<string>("all");
   const [selected, setSelected] = useState<Lead | null>(null);
 
   useEffect(() => {
@@ -169,7 +152,6 @@ function AdminLeadsPage() {
   const filtered = useMemo(() => {
     return leads.filter((l) => {
       if (filterSource !== "all" && (l.source ?? "") !== filterSource) return false;
-      if (filterGhl !== "all" && (l.ghl_status ?? "") !== filterGhl) return false;
       if (!search) return true;
       const q = search.toLowerCase();
       return (
@@ -181,7 +163,7 @@ function AdminLeadsPage() {
         (l.utm_campaign?.toLowerCase().includes(q) ?? false)
       );
     });
-  }, [leads, search, filterSource, filterGhl]);
+  }, [leads, search, filterSource]);
 
   const stats = useMemo(() => {
     const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
@@ -298,18 +280,6 @@ function AdminLeadsPage() {
           <option value="exit_intent">Exit-intent</option>
           <option value="calculator">Calculator</option>
         </select>
-        <select
-          value={filterGhl}
-          onChange={(e) => setFilterGhl(e.target.value)}
-          className="px-4 py-3 bg-black-elevated/40 border border-gold/15 rounded-md text-sm focus:border-gold/40 focus:outline-none cursor-pointer"
-          aria-label="Filtrer par statut GHL"
-        >
-          <option value="all">GHL : tous</option>
-          <option value="ok">✓ Synchro OK</option>
-          <option value="error">⚠ Erreur</option>
-          <option value="pending">⏳ En cours</option>
-          <option value="skipped">⏸ Skipped</option>
-        </select>
       </div>
 
       {/* Table */}
@@ -331,7 +301,6 @@ function AdminLeadsPage() {
                   <th className="px-5 py-4 text-left font-medium hidden xl:table-cell">UTM</th>
                   <th className="px-5 py-4 text-left font-medium hidden lg:table-cell">Projet</th>
                   <th className="px-5 py-4 text-left font-medium hidden xl:table-cell">Montant</th>
-                  <th className="px-5 py-4 text-center font-medium">GHL</th>
                 </tr>
               </thead>
               <tbody>
@@ -386,11 +355,6 @@ function AdminLeadsPage() {
                     </td>
                     <td className="px-5 py-4 hidden xl:table-cell text-foreground/65 text-xs">
                       {l.estimated_amount || <span className="text-foreground/30">—</span>}
-                    </td>
-                    <td className="px-5 py-4 text-center" title={l.ghl_status ?? "—"}>
-                      <div className="flex items-center justify-center">
-                        <GhlStatusIcon status={l.ghl_status} />
-                      </div>
                     </td>
                   </tr>
                 ))}
@@ -598,34 +562,6 @@ function LeadDetailModal({ lead, onClose }: { lead: Lead; onClose: () => void })
               )}
             </div>
           )}
-
-          {/* Section GHL sync */}
-          <div className="pt-5 border-t border-gold/10 space-y-4">
-            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-gold-light/70 font-medium">
-              <Tag className="w-3 h-3" />
-              <span>Sync GoHighLevel</span>
-            </div>
-            <Field label="Statut">
-              <div className="flex items-center gap-2 text-sm">
-                <GhlStatusIcon status={lead.ghl_status} />
-                <span className="text-foreground/85 capitalize">
-                  {lead.ghl_status || "—"}
-                </span>
-                {lead.synced_to_ghl_at && (
-                  <span className="text-xs text-foreground/45 tabular-nums">
-                    · {new Date(lead.synced_to_ghl_at).toLocaleString("fr-CA")}
-                  </span>
-                )}
-              </div>
-            </Field>
-            {lead.ghl_response && (
-              <Field label="Réponse GHL">
-                <div className="font-mono text-[11px] text-foreground/55 break-all bg-black-deep/40 rounded p-3 border border-gold/10">
-                  {lead.ghl_response}
-                </div>
-              </Field>
-            )}
-          </div>
 
           <div className="flex gap-2 pt-5 border-t border-gold/10">
             {lead.phone && (
