@@ -26,7 +26,7 @@ export default {
       });
     }
 
-    // Tout le reste → géré par le binding ASSETS de Cloudflare automatiquement (configuré dans wrangler.jsonc assets)
-    return new Response('Not Found', { status: 404 });
+    // Tout le reste → géré par le binding ASSETS de Cloudflare
+    return env.ASSETS.fetch(request);
   },
 } satisfies ExportedHandler<Env>;
